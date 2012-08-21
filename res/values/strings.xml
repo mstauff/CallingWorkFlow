@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CallingWorkFlow</string>
-    <string name="select_class_prompt">Select Class</string>
-    <string name="pick_date">Change Date</string>
+    <string name="select_status_group">Select group of callings</string>
+    <string name="add_btn_label">+ New Calling</string>
+
     <string name="save_btn_label">Save</string>
     <string name="clear_btn_label">Clear</string>
-    <string name="update_roster_btn_label">Update</string>
+    <string name="remove_btn_label">- Remove Calling</string>
 </resources>
