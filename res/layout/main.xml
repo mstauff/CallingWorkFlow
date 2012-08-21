@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <Spinner
+            android:id="@+id/dateSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    <Spinner
+            android:id="@+id/classSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/YM_Groups"
+            android:prompt="@string/select_class_prompt"
+            />
+    <!--<DatePicker
+        android:id="@+id/weekPicker"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+-->
+    <ListView
+            android:id="@+id/classMembersList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+            >
+
+        <Button
+                android:id="@+id/saveAttendanceBtn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/save_btn_label"
+                android:onClick="saveAttendance"
+                />
+        <Button
+                android:id="@+id/clearBtn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/clear_btn_label"
+                android:onClick="clearAttendance"
+                />
+        <Button
+                android:id="@+id/updateRosterBtn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/update_roster_btn_label"
+                android:onClick="updateRoster"
+                />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,19 @@
+<resources>
+    <string-array name="aux_arrays">
+        <item>High Priests</item>
+        <item>Elders</item>
+        <item>Relief Society</item>
+        <item>YM</item>
+        <item>YW</item>
+    </string-array>
+    <string-array name="YM_Groups">
+        <item>Priests</item>
+        <item>Teachers</item>
+        <item>Deacons</item>
+    </string-array>
+    <string-array name="YW_Groups">
+        <item>Laurels</item>
+        <item>Mia Maids</item>
+        <item>Beehives</item>
+    </string-array>
+</resources>
