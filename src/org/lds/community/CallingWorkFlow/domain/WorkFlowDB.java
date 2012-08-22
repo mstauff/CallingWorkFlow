@@ -8,21 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: matts
- * Date: 8/9/12
- * Time: 8:24 AM
- * To change this template use File | Settings | File Templates.
- */
 public class WorkFlowDB {
-    // Used for debugging and logging
+    /* Used for debugging and logging */
     private static final String TAG = "WorkFlowDB";
 
     /**
      * The database that the provider uses as its underlying data store
      */
-    private static final String DATABASE_NAME = "attendance.db";
+    private static final String DATABASE_NAME = "callingWorkFlow.db";
 
     /**
      * The database version
@@ -35,54 +28,100 @@ public class WorkFlowDB {
         dbHelper = new DatabaseHelper( context );
     }
 
-    public List<Member> getStudentsForClass( long classId ) {
-        Cursor results = dbHelper.getDb().query( Member.TABLE_NAME, Member.ALL_KEYS, Member.KEY_CLASS_ID + "=?",
-                new String[]{String.valueOf(classId)}, null, null, Member.KEY_LAST );
-        List<Member> members = new ArrayList<Member>( results.getCount() );
-        while( !results.isAfterLast() ) {
-            Member member = new Member();
-            member.setContent(results);
-            members.add(member);
-            results.moveToNext();
-        }
-        return members;
-    }
+	/*
+	 * /calling/<ind id>/update?callingId=<#>&status=<text>&date=<long>&byWho=<indId> optional POST body with history data
+	 */
+	public void saveCallings(List<CallingBaseRecord> callings) {
+		SQLiteDatabase db = dbHelper.getDb();
+		for( CallingBaseRecord calling : callings) {
+            if( calling.getId() > 0 ) {
+                String where = CallingBaseRecord._ID;
+                String[] id = new String[]{ String.valueOf(calling.getId()) };
 
-    public void saveStudents( List<Member> members) {
-        SQLiteDatabase db = dbHelper.getDb();
-        for( Member member : members) {
-            if( member.getId() > 0 ) {
-                String where = Member._ID;
-                String[] id = new String[]{ String.valueOf( member.getId() )};
-
-                db.update( Member.TABLE_NAME, member.getContentValues(), where, id );
+                db.update( CallingBaseRecord.TABLE_NAME, calling.getContentValues(), where, id );
             } else {
-                db.insert( Member.TABLE_NAME, null, member.getContentValues() );
+                db.insert( CallingBaseRecord.TABLE_NAME, null, calling.getContentValues() );
             }
         }
-    }
+	}
+
+	/*
+	 * /callingId
+	 */
+	public Long getCallingIds(List<CallingBaseRecord> calling) {
+		return null;
+	}
+
+	/*
+	 * /callings/pending/<sinceDate>
+	 */
+	public List<CallingBaseRecord> getPendingCallings() {
+		String SQL = "SELECT " + CallingBaseRecord.TABLE_NAME + ".* " +
+				     "  FROM " + CallingBaseRecord.TABLE_NAME + ", " + WorkFlowStatusBaseRecord.TABLE_NAME +
+				     " WHERE " + CallingBaseRecord.TABLE_NAME + "." + CallingBaseRecord.STATUS_ID + "=" +
+				                 WorkFlowStatusBaseRecord.TABLE_NAME + "." + WorkFlowStatusBaseRecord._ID +
+				     "   AND " + WorkFlowStatusBaseRecord.STATUS_NAME + "!=" + WorkFlowStatus.SET_APART;
+		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
+
+        List<CallingBaseRecord> callings = new ArrayList<CallingBaseRecord>( results.getCount() );
+        while( !results.isAfterLast() ) {
+	        CallingBaseRecord calling = new CallingBaseRecord();
+            calling.setContent(results);
+            callings.add(calling);
+            results.moveToNext();
+        }
+        return callings;
+	}
+
+	/*
+	 * /callings/completed/<sinceDate>
+	 */
+	public List<CallingBaseRecord> getCompletedCallings() {
+		String SQL = "SELECT " + CallingBaseRecord.TABLE_NAME + ".* " +
+				     "  FROM " + CallingBaseRecord.TABLE_NAME + ", " + WorkFlowStatusBaseRecord.TABLE_NAME +
+				     " WHERE " + CallingBaseRecord.TABLE_NAME + "." + CallingBaseRecord.STATUS_ID + "=" +
+				                 WorkFlowStatusBaseRecord.TABLE_NAME + "." + WorkFlowStatusBaseRecord._ID +
+				     "   AND " + WorkFlowStatusBaseRecord.STATUS_NAME + "==" + WorkFlowStatus.SET_APART;
+		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
+
+        List<CallingBaseRecord> callings = new ArrayList<CallingBaseRecord>( results.getCount() );
+        while( !results.isAfterLast() ) {
+	        CallingBaseRecord calling = new CallingBaseRecord();
+            calling.setContent(results);
+            callings.add(calling);
+            results.moveToNext();
+        }
+        return callings;
+	}
+
+	/*
+	 * /wardlist
+	 */
+	public List<Member> getWardList() {
+		return null;
+	}
 
     static class DatabaseHelper extends SQLiteOpenHelper {
 
         private SQLiteDatabase db;
         DatabaseHelper(Context context) {
 
-            // calls the super constructor, requesting the default cursor factory.
+            /* Calls the super constructor, requesting the default cursor factory. */
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         /**
-         *
          * Creates the underlying database with table name and column names taken from the
          * NotePad class.
          */
         @Override
         public void onCreate(SQLiteDatabase db) {
-            // todo - setup FK & INDEXES
+            // todo - setup INDEXES
             this.db = db;
             db.execSQL( CallingBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( WorkFlowBaseRecord.CREATE_SQL );
+	        db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
         }
 
         /**
@@ -102,14 +141,13 @@ public class WorkFlowDB {
         }
     }
 
-/*
-      */
 /**
  *
  * Initializes the provider by creating a new DatabaseHelper. onCreate() is called
  * automatically when Android creates the provider in response to a resolver request from a
  * client.
- *//*
+ */
+/*
 
       @Override
       public boolean onCreate() {

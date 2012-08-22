@@ -26,27 +26,27 @@ public class MemberBaseRecord implements BaseColumns {
     public static final String _ID = "_id";
     private long id = 0;
 
-    public static final String KEY_CLASS_ID = "class_id";
-    private long classId = 0;
+    public static final String CALLING_ID = "calling_id";
+    private long callingId = 0;
 
     /**
      * Column name for the lds.org individual id
      * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
      */
-    public static final String KEY_INDIVIDUAL_ID = "individual_id";
+    public static final String INDIVIDUAL_ID = "individual_id";
     private long individualId = 0;
 
     /**
      * <P>Type: TEXT</P>
      */
-    public static final String KEY_LAST = "last_name";
+    public static final String LAST_NAME = "last_name";
     private String lastName = "";
 
     /**
      * Column name of the note content
      * <P>Type: TEXT</P>
      */
-    public static final String KEY_FIRST = "first_name";
+    public static final String FIRST_NAME = "first_name";
     private String firstName = "";
 
     /**
@@ -62,18 +62,18 @@ public class MemberBaseRecord implements BaseColumns {
 //    public static final String COLUMN_NAME_INACTIVE_DATE = "ends_on";
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + MemberBaseRecord.TABLE_NAME + " ("
                           + MemberBaseRecord._ID + " INTEGER PRIMARY KEY,"
-                          + MemberBaseRecord.KEY_CLASS_ID + " INTEGER,"
-                          + MemberBaseRecord.KEY_INDIVIDUAL_ID + " INTEGER,"
-                          + MemberBaseRecord.KEY_LAST + " TEXT,"
-                          + MemberBaseRecord.KEY_FIRST + " TEXT"
+                          + MemberBaseRecord.CALLING_ID + " INTEGER,"
+                          + MemberBaseRecord.INDIVIDUAL_ID + " INTEGER,"
+                          + MemberBaseRecord.LAST_NAME + " TEXT,"
+                          + MemberBaseRecord.FIRST_NAME + " TEXT"
                           + ");";
 
     static final String[] ALL_KEYS = new String[] {
-            _ID,
-            KEY_CLASS_ID,
-            KEY_INDIVIDUAL_ID,
-            KEY_FIRST,
-            KEY_LAST
+        _ID,
+        CALLING_ID,
+        INDIVIDUAL_ID,
+        FIRST_NAME,
+        LAST_NAME
     };
 
     public String[] getAllKeys() {
@@ -82,26 +82,26 @@ public class MemberBaseRecord implements BaseColumns {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        values.put(KEY_CLASS_ID, classId);
-        values.put(KEY_INDIVIDUAL_ID, individualId);
-        values.put(KEY_LAST, lastName);
-        values.put(KEY_FIRST, firstName);
+        values.put(CALLING_ID, callingId);
+        values.put(INDIVIDUAL_ID, individualId);
+        values.put(LAST_NAME, lastName);
+        values.put(FIRST_NAME, firstName);
         return values;
     }
 
     public void setContent(ContentValues values) {
-        individualId = values.getAsLong(KEY_INDIVIDUAL_ID);
-        classId = values.getAsLong(KEY_CLASS_ID);
-        lastName = values.getAsString(KEY_LAST);
-        firstName = values.getAsString(KEY_FIRST);
+        individualId = values.getAsLong(INDIVIDUAL_ID);
+	    callingId = values.getAsLong(CALLING_ID);
+        lastName = values.getAsString(LAST_NAME);
+        firstName = values.getAsString(FIRST_NAME);
     }
 
     public void setContent(Cursor cursor) {
         id = cursor.getLong(cursor.getColumnIndex(_ID));
-        individualId = cursor.getLong(cursor.getColumnIndex(KEY_INDIVIDUAL_ID));
-        classId = cursor.getLong(cursor.getColumnIndex(KEY_CLASS_ID));
-        lastName = cursor.getString(cursor.getColumnIndex(KEY_LAST));
-        firstName = cursor.getString(cursor.getColumnIndex(KEY_FIRST));
+        individualId = cursor.getLong(cursor.getColumnIndex(INDIVIDUAL_ID));
+	    callingId = cursor.getLong(cursor.getColumnIndex(CALLING_ID));
+        lastName = cursor.getString(cursor.getColumnIndex(LAST_NAME));
+        firstName = cursor.getString(cursor.getColumnIndex(FIRST_NAME));
     }
 
     public long getId() {
@@ -112,12 +112,12 @@ public class MemberBaseRecord implements BaseColumns {
         this.id = id;
     }
 
-    public long getClassId() {
-        return classId;
+    public long getCallingId() {
+        return callingId;
     }
 
-    public void setClassId(long classId) {
-        this.classId = classId;
+    public void setCallingId(long callingId) {
+        this.callingId = callingId;
     }
 
     public long getIndividualId() {

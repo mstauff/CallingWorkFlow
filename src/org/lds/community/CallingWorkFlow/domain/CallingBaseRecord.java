@@ -4,77 +4,98 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
-/**
-* Created with IntelliJ IDEA.
-* User: matts
-* Date: 8/13/12
-* Time: 10:51 AM
-* To change this template use File | Settings | File Templates.
-*/
+import java.util.Date;
+
+import static org.lds.mobile.domain.BaseRecord.dateToDBString;
+
 public final class CallingBaseRecord implements BaseColumns {
 
-    // This class cannot be instantiated
+    /* This class cannot be instantiated */
     CallingBaseRecord() {}
 
     /**
      * The table name offered by this provider
      */
-    public static final String TABLE_NAME = "classes";
-
+    public static final String TABLE_NAME = "callings";
 
     /**
      * The default sort order for this table
      */
-    public static final String DEFAULT_SORT_ORDER = "class_name DESC";
+    public static final String DEFAULT_SORT_ORDER = "calling_name DESC";
 
-    /*
-    * Column definitions
-    */
+    /**
+     * Column definitions for the current record ID.
+     */
     public static final String _ID = "id";
     private long id = 0;
 
-    /**
-     * Column name for the title of the note
-     * <P>Type: TEXT</P>
+	/**
+     * Column definitions for the member's individual ID.
      */
-    public static final String KEY_CLASS_NAME = "class_name";
-    private String className = "";
+    public static final String INDIVIDUAL_ID = "individualId";
+    private long individualId = 0;
+
+	/**
+     * Column definitions for the calling ID.
+     */
+    public static final String CALLING_ID = "callingId";
+    private long callingId = 0;
 
     /**
-     * class external id (most likely won't have one)
+     * Column name for the calling name
      * <P>Type: TEXT</P>
      */
-    public static final String KEY_CLASS_EXTERNAL_ID = "class_external_id";
-    private long classExternalId;
+    public static final String CALLING_NAME = "calling_name";
+    private String callingName = "";
 
     /**
-     * parent auxiliary name (i.e. Young Men)
+     * reference the status id of the workflowstatus table.
+     * <P>Type: Integer</P>
+     */
+    public static final String STATUS_ID = "status_id";
+    private long statusId = 0;
+
+	/**
+     * Column name for the completed field
+     * <P>Type: INTEGER</P>
+     */
+	public static final String COMPLETED = "completed";
+	private Integer completed = 0;
+
+	/**
+     * Column name for the assigned_to field
+     * <P>Type: INTEGER</P>
+     */
+	public static final String ASSIGNED_TO = "assigned_to";
+	public long assigned_to = 0;
+
+	/**
+     * Column name for the due_date field
      * <P>Type: TEXT</P>
      */
-    public static final String KEY_AUX_NAME = "aux_name";
-    private String auxiliaryName = "";
+	public static final String DUE_DATE = "due_date";
+	private java.util.Date due_date = null;
 
-    /**
-     * parent auxiliary external id
-     * <P>Type: TEXT</P>
-     */
-    public static final String KEY_AUX_EXTERNAL_ID = "aux_external_id";
-    private long auxiliaryExternalId = 0;
+    public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
+	    CallingBaseRecord._ID + " INTEGER PRIMARY KEY," +
+	    CallingBaseRecord.CALLING_NAME + " TEXT," +
+	    CallingBaseRecord.INDIVIDUAL_ID + " INTEGER," +
+	    CallingBaseRecord.ASSIGNED_TO + " INTEGER," +
+	    CallingBaseRecord.COMPLETED + " INTEGER," +
+	    CallingBaseRecord.STATUS_ID + " INTEGER," +
+	    CallingBaseRecord.DUE_DATE + " TEXT " +
 
-    public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " ("
-            + CallingBaseRecord._ID + " INTEGER PRIMARY KEY,"
-            + CallingBaseRecord.KEY_AUX_NAME + " TEXT,"
-            + CallingBaseRecord.KEY_AUX_EXTERNAL_ID + " INTEGER,"
-            + CallingBaseRecord.KEY_CLASS_NAME + " TEXT,"
-            + CallingBaseRecord.KEY_CLASS_EXTERNAL_ID + " INTEGER"
-            + ");";
+	    "FOREIGN KEY(status_id) REFERENCES " + WorkFlowStatusBaseRecord.TABLE_NAME + "(_id)" +
+	    ");";
 
     static final String[] ALL_KEYS = new String[] {
-            _ID,
-            KEY_CLASS_NAME,
-            KEY_CLASS_EXTERNAL_ID,
-            KEY_AUX_NAME,
-            KEY_AUX_EXTERNAL_ID
+        _ID,
+        CALLING_NAME,
+	    INDIVIDUAL_ID,
+	    ASSIGNED_TO,
+	    COMPLETED,
+	    STATUS_ID,
+	    DUE_DATE
     };
 
     public String[] getAllKeys() {
@@ -83,26 +104,18 @@ public final class CallingBaseRecord implements BaseColumns {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        values.put(KEY_CLASS_NAME, className);
-        values.put(KEY_CLASS_EXTERNAL_ID, classExternalId);
-        values.put(KEY_AUX_NAME, auxiliaryName);
-        values.put(KEY_AUX_EXTERNAL_ID, auxiliaryExternalId);
+        values.put(CALLING_NAME, callingName);
+	    values.put(DUE_DATE, dateToDBString(due_date));
         return values;
     }
 
     public void setContent(ContentValues values) {
-        className = values.getAsString(KEY_CLASS_NAME);
-        classExternalId = values.getAsLong(KEY_CLASS_EXTERNAL_ID);
-        auxiliaryName = values.getAsString(KEY_AUX_NAME);
-        auxiliaryExternalId = values.getAsLong(KEY_AUX_EXTERNAL_ID);
+        callingName = values.getAsString(CALLING_NAME);
     }
 
     public void setContent(Cursor cursor) {
         id = cursor.getLong(cursor.getColumnIndex(_ID));
-        className = cursor.getString(cursor.getColumnIndex(KEY_CLASS_NAME));
-        classExternalId = cursor.getLong(cursor.getColumnIndex(KEY_CLASS_EXTERNAL_ID));
-        auxiliaryName = cursor.getString(cursor.getColumnIndex(KEY_AUX_NAME));
-        auxiliaryExternalId = cursor.getLong(cursor.getColumnIndex(KEY_AUX_EXTERNAL_ID));
+        callingName = cursor.getString(cursor.getColumnIndex(CALLING_NAME));
     }
 
     public long getId() {
@@ -113,35 +126,55 @@ public final class CallingBaseRecord implements BaseColumns {
         this.id = id;
     }
 
-    public String getClassName() {
-        return className;
+    public String getCallingName() {
+        return callingName;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setCallingName(String callingName) {
+        this.callingName = callingName;
     }
 
-    public long getClassExternalId() {
-        return classExternalId;
+    public long getIndividualId() {
+        return individualId;
     }
 
-    public void setClassExternalId(long classExternalId) {
-        this.classExternalId = classExternalId;
+    public void setIndividualId(long individualId) {
+        this.individualId = individualId;
     }
 
-    public String getAuxiliaryName() {
-        return auxiliaryName;
+	public long getAssignedToId() {
+        return assigned_to;
     }
 
-    public void setAuxiliaryName(String auxiliaryName) {
-        this.auxiliaryName = auxiliaryName;
+    public void setAssignedTo(long assigned_to) {
+        this.assigned_to = assigned_to;
     }
 
-    public long getAuxiliaryExternalId() {
-        return auxiliaryExternalId;
+	public Integer getCompleted() {
+        return completed;
     }
 
-    public void setAuxiliaryExternalId(long auxiliaryExternalId) {
-        this.auxiliaryExternalId = auxiliaryExternalId;
+    public void setCompleted(Integer completed) {
+        this.completed = completed;
+    }
+
+	public long getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(long statusId) {
+        this.statusId = statusId;
+    }
+
+	public Date getDueDate() {
+		return (due_date != null)
+			? (Date)due_date.clone()
+	        : null;
+    }
+
+    public void setDueDate(Date due_date) {
+	    this.due_date = (due_date != null)
+	        ? (Date) due_date.clone()
+			: null;
     }
 }
