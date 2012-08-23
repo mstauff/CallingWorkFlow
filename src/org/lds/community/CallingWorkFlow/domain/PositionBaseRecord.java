@@ -32,13 +32,6 @@ public class PositionBaseRecord implements BaseColumns {
     public static final String POSITION_NAME = "position_name";
     private String positionName = "";
 
-    /**
-     * reference the status id of the workflowstatus table.
-     * <P>Type: Integer</P>
-     */
-    public static final String STATUS_ID = "status_id";
-    private long statusId = 0;
-
 	/**
      * Column name for the completed field
      * <P>Type: INTEGER</P>
@@ -69,7 +62,6 @@ public class PositionBaseRecord implements BaseColumns {
 	    PositionBaseRecord.POSITION_NAME + " TEXT," +
 	    PositionBaseRecord.ASSIGNED_TO + " INTEGER," +
 	    PositionBaseRecord.COMPLETED + " INTEGER," +
-	    PositionBaseRecord.STATUS_ID + " INTEGER," +
 	    PositionBaseRecord.DUE_DATE + " INTEGER, " +
 		PositionBaseRecord.IS_DIRTY + " INTEGER " +
 
@@ -82,7 +74,6 @@ public class PositionBaseRecord implements BaseColumns {
         POSITION_NAME,
 	    ASSIGNED_TO,
 	    COMPLETED,
-	    STATUS_ID,
 	    DUE_DATE,
 		IS_DIRTY
     };
@@ -97,7 +88,6 @@ public class PositionBaseRecord implements BaseColumns {
 	    values.put(POSITION_NAME, positionName);
 	    values.put(ASSIGNED_TO, assigned_to);
 	    values.put(COMPLETED, completed);
-	    values.put(STATUS_ID, statusId);
 	    values.put(DUE_DATE, due_date);
 	    values.put(IS_DIRTY, isDirty);
         return values;
@@ -108,7 +98,6 @@ public class PositionBaseRecord implements BaseColumns {
 	    positionId = values.getAsLong(POSITION_ID);
 	    assigned_to = values.getAsLong(ASSIGNED_TO);
 	    completed = values.getAsInteger(COMPLETED);
-	    statusId = values.getAsLong(STATUS_ID);
 	    due_date = values.getAsLong(DUE_DATE);
 	    isDirty = values.getAsInteger(IS_DIRTY);
     }
@@ -118,7 +107,6 @@ public class PositionBaseRecord implements BaseColumns {
 	    positionId = cursor.getLong(cursor.getColumnIndex(POSITION_ID));
 	    assigned_to = cursor.getLong(cursor.getColumnIndex(ASSIGNED_TO));
 	    completed = cursor.getInt(cursor.getColumnIndex(COMPLETED));
-	    statusId = cursor.getLong(cursor.getColumnIndex(STATUS_ID));
 	    due_date = cursor.getLong(cursor.getColumnIndex(DUE_DATE));
 	    isDirty = cursor.getInt(cursor.getColumnIndex(IS_DIRTY));
     }
@@ -153,14 +141,6 @@ public class PositionBaseRecord implements BaseColumns {
 
     public void setCompleted(Integer completed) {
         this.completed = completed;
-    }
-
-	public long getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(long statusId) {
-        this.statusId = statusId;
     }
 
 	public long getDueDate() {
