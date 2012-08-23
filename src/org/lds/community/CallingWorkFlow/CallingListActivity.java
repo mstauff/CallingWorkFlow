@@ -5,14 +5,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
+import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
 
-public class CallingListActivity extends Activity implements AdapterView.OnItemSelectedListener
+import javax.inject.Inject;
+import java.util.List;
+
+public class CallingListActivity extends RoboActivity implements AdapterView.OnItemSelectedListener
 {
     WorkFlowDB db;
     /** Called when the activity is first created. */
+    @InjectView(R.id.callingsList)
+    ListView callingsListView;
+
+    @Inject
+    CwfNetworkUtil networkUtil;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
