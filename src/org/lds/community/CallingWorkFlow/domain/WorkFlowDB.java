@@ -62,10 +62,12 @@ public class WorkFlowDB {
 	 * /callings/pending/<sinceDate>
 	 */
 	public List<CallingViewItem> getPendingCallings() {
-		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*" +
+		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
+				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
 				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 0" +
-				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID;
+				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
+				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_ID;
 
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
@@ -83,10 +85,12 @@ public class WorkFlowDB {
 	 * /callings/completed/<sinceDate>
 	 */
 	public List<CallingViewItem> getCompletedCallings() {
-		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*" +
+		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
+				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
 				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 1" +
-				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID;
+				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
+				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_ID;
 
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
