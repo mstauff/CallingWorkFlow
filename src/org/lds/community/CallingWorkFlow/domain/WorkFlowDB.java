@@ -34,17 +34,23 @@ public class WorkFlowDB {
 	public void saveCallings(List<CallingBaseRecord> callings) {
 		SQLiteDatabase db = dbHelper.getDb();
 		for( CallingBaseRecord calling : callings) {
-            if( calling.getId() > 0 ) {
-                String where = CallingBaseRecord._ID;
-                String[] id = new String[]{ String.valueOf(calling.getId()) };
-
-                db.update( CallingBaseRecord.TABLE_NAME, calling.getContentValues(), where, id );
-            } else {
-                db.insert( CallingBaseRecord.TABLE_NAME, null, calling.getContentValues() );
-            }
+			String whereClause = "WHERE individualId=" + calling.getIndividualId() +
+					             "  AND positionId=" + calling.getPositionId();
+			db.delete(CallingBaseRecord.TABLE_NAME, whereClause, null);
+            db.insert( CallingBaseRecord.TABLE_NAME, null, calling.getContentValues() );
         }
+		db.close();
 	}
 
+	public void savePositions(List<PositionBaseRecord> positions) {
+		SQLiteDatabase db = dbHelper.getDb();
+		for( PositionBaseRecord position : positions) {
+			String whereClause = "WHERE positionId=" + position.getPositionId();
+			db.delete(PositionBaseRecord.TABLE_NAME, whereClause, null);
+            db.insert( PositionBaseRecord.TABLE_NAME, null, position.getContentValues() );
+        }
+		db.close();
+	}
 	/*
 	 * /callingId
 	 */
@@ -55,50 +61,56 @@ public class WorkFlowDB {
 	/*
 	 * /callings/pending/<sinceDate>
 	 */
-	public List<CallingBaseRecord> getPendingCallings() {
-		String SQL = "SELECT " + CallingBaseRecord.TABLE_NAME + ".* " +
-				     "  FROM " + CallingBaseRecord.TABLE_NAME + ", " + WorkFlowStatusBaseRecord.TABLE_NAME +
-				     " WHERE " + CallingBaseRecord.TABLE_NAME + "." + CallingBaseRecord.STATUS_ID + "=" +
-				                 WorkFlowStatusBaseRecord.TABLE_NAME + "." + WorkFlowStatusBaseRecord._ID +
-				     "   AND " + WorkFlowStatusBaseRecord.STATUS_NAME + "!=" + WorkFlowStatus.SET_APART;
+	public List<PositionBaseRecord> getPendingCallings() {
+		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".* " +
+				     "  FROM " + PositionBaseRecord.TABLE_NAME +
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + PositionBaseRecord.COMPLETED + "= 0";
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
-        List<CallingBaseRecord> callings = new ArrayList<CallingBaseRecord>( results.getCount() );
+        List<PositionBaseRecord> positions = new ArrayList<PositionBaseRecord>( results.getCount() );
         while( !results.isAfterLast() ) {
-	        CallingBaseRecord calling = new CallingBaseRecord();
-            calling.setContent(results);
-            callings.add(calling);
+	        PositionBaseRecord position = new PositionBaseRecord();
+	        position.setContent(results);
+	        positions.add(position);
             results.moveToNext();
         }
-        return callings;
+        return positions;
 	}
 
 	/*
 	 * /callings/completed/<sinceDate>
 	 */
-	public List<CallingBaseRecord> getCompletedCallings() {
-		String SQL = "SELECT " + CallingBaseRecord.TABLE_NAME + ".* " +
-				     "  FROM " + CallingBaseRecord.TABLE_NAME + ", " + WorkFlowStatusBaseRecord.TABLE_NAME +
-				     " WHERE " + CallingBaseRecord.TABLE_NAME + "." + CallingBaseRecord.STATUS_ID + "=" +
-				                 WorkFlowStatusBaseRecord.TABLE_NAME + "." + WorkFlowStatusBaseRecord._ID +
-				     "   AND " + WorkFlowStatusBaseRecord.STATUS_NAME + "==" + WorkFlowStatus.SET_APART;
+	public List<PositionBaseRecord> getCompletedCallings() {
+		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".* " +
+				     "  FROM " + PositionBaseRecord.TABLE_NAME +
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + PositionBaseRecord.COMPLETED + "= 1";
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
-        List<CallingBaseRecord> callings = new ArrayList<CallingBaseRecord>( results.getCount() );
+        List<PositionBaseRecord> positions = new ArrayList<PositionBaseRecord>( results.getCount() );
         while( !results.isAfterLast() ) {
-	        CallingBaseRecord calling = new CallingBaseRecord();
-            calling.setContent(results);
-            callings.add(calling);
+	        PositionBaseRecord position = new PositionBaseRecord();
+	        position.setContent(results);
+	        positions.add(position);
             results.moveToNext();
         }
-        return callings;
+        return positions;
 	}
 
 	/*
 	 * /wardlist
 	 */
-	public List<Member> getWardList() {
-		return null;
+	public List<MemberBaseRecord> getWardList() {
+		String SQL = "SELECT " + MemberBaseRecord.TABLE_NAME + ".* " +
+				     "  FROM " + MemberBaseRecord.TABLE_NAME;
+		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
+		List<MemberBaseRecord> members = new ArrayList<MemberBaseRecord>( results.getCount() );
+        while( !results.isAfterLast() ) {
+	        MemberBaseRecord member = new MemberBaseRecord();
+	        member.setContent(results);
+	        members.add(member);
+            results.moveToNext();
+        }
+        return members;
 	}
 
     static class DatabaseHelper extends SQLiteOpenHelper {
@@ -118,6 +130,7 @@ public class WorkFlowDB {
         public void onCreate(SQLiteDatabase db) {
             // todo - setup INDEXES
             this.db = db;
+	        db.execSQL( PositionBaseRecord.CREATE_SQL );
             db.execSQL( CallingBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( WorkFlowBaseRecord.CREATE_SQL );
@@ -140,24 +153,4 @@ public class WorkFlowDB {
             return db;
         }
     }
-
-/**
- *
- * Initializes the provider by creating a new DatabaseHelper. onCreate() is called
- * automatically when Android creates the provider in response to a resolver request from a
- * client.
- */
-/*
-
-      @Override
-      public boolean onCreate() {
-
-          // Creates a new helper object. Note that the database itself isn't opened until
-          // something tries to access it, and it's only created if it doesn't already exist.
-          dbHelper = new DatabaseHelper(getContext());
-
-          // Assumes that any failures will be reported by a thrown exception.
-          return true;
-      }
-*/
 }

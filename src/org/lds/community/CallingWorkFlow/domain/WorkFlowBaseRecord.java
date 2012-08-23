@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
-public final class WorkFlowBaseRecord implements BaseColumns {
+public class WorkFlowBaseRecord implements BaseColumns {
 
     // This class cannot be instantiated
     WorkFlowBaseRecord() {}
@@ -14,15 +14,14 @@ public final class WorkFlowBaseRecord implements BaseColumns {
      */
     public static final String TABLE_NAME = "attendance";
 
-
     /**
      * The default sort order for this table
      */
     public static final String DEFAULT_SORT_ORDER = "attendance_date DESC";
 
-    /*
-    * Column definitions
-    */
+    /**
+     * Column definitions
+     */
     public static final String _ID = "id";
     private long id = 0;
 
@@ -71,7 +70,6 @@ public final class WorkFlowBaseRecord implements BaseColumns {
         studentId = values.getAsLong(KEY_STUDENT_ID);
         classId = values.getAsLong(KEY_CLASS_ID);
         attendanceDate = values.getAsLong(KEY_DATE);
-        status = WorkFlowStatus.valueOf(values.getAsString(KEY_STATUS));
     }
 
     public void setContent(Cursor cursor) {
@@ -79,7 +77,6 @@ public final class WorkFlowBaseRecord implements BaseColumns {
         studentId = cursor.getLong(cursor.getColumnIndex(KEY_STUDENT_ID));
         classId = cursor.getLong(cursor.getColumnIndex(KEY_CLASS_ID));
         attendanceDate = cursor.getLong(cursor.getColumnIndex(KEY_DATE));
-        status = WorkFlowStatus.valueOf(cursor.getString(cursor.getColumnIndex(KEY_STATUS)));
     }
 
     public long getId() {

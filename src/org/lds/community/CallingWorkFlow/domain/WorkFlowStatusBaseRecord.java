@@ -2,7 +2,7 @@ package org.lds.community.CallingWorkFlow.domain;
 
 import android.provider.BaseColumns;
 
-public final class WorkFlowStatusBaseRecord implements BaseColumns {
+public class WorkFlowStatusBaseRecord implements BaseColumns {
 	/* This class cannot be instantiated */
 	WorkFlowStatusBaseRecord() {}
 

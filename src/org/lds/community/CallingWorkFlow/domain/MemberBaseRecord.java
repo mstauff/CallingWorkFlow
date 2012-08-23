@@ -14,7 +14,6 @@ public class MemberBaseRecord implements BaseColumns {
      */
     public static final String TABLE_NAME = "member";
 
-
     /**
      * The default sort order for this table
      */
@@ -25,9 +24,6 @@ public class MemberBaseRecord implements BaseColumns {
     */
     public static final String _ID = "_id";
     private long id = 0;
-
-    public static final String CALLING_ID = "calling_id";
-    private long callingId = 0;
 
     /**
      * Column name for the lds.org individual id
@@ -49,20 +45,8 @@ public class MemberBaseRecord implements BaseColumns {
     public static final String FIRST_NAME = "first_name";
     private String firstName = "";
 
-    /**
-     * Column name for the creation timestamp
-     * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
-     */
-//    public static final String COLUMN_NAME_ACTIVE_DATE = "start_on";
-
-    /**
-     * Column name for the modification timestamp
-     * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
-     */
-//    public static final String COLUMN_NAME_INACTIVE_DATE = "ends_on";
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + MemberBaseRecord.TABLE_NAME + " ("
                           + MemberBaseRecord._ID + " INTEGER PRIMARY KEY,"
-                          + MemberBaseRecord.CALLING_ID + " INTEGER,"
                           + MemberBaseRecord.INDIVIDUAL_ID + " INTEGER,"
                           + MemberBaseRecord.LAST_NAME + " TEXT,"
                           + MemberBaseRecord.FIRST_NAME + " TEXT"
@@ -70,7 +54,6 @@ public class MemberBaseRecord implements BaseColumns {
 
     static final String[] ALL_KEYS = new String[] {
         _ID,
-        CALLING_ID,
         INDIVIDUAL_ID,
         FIRST_NAME,
         LAST_NAME
@@ -82,7 +65,6 @@ public class MemberBaseRecord implements BaseColumns {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        values.put(CALLING_ID, callingId);
         values.put(INDIVIDUAL_ID, individualId);
         values.put(LAST_NAME, lastName);
         values.put(FIRST_NAME, firstName);
@@ -91,7 +73,6 @@ public class MemberBaseRecord implements BaseColumns {
 
     public void setContent(ContentValues values) {
         individualId = values.getAsLong(INDIVIDUAL_ID);
-	    callingId = values.getAsLong(CALLING_ID);
         lastName = values.getAsString(LAST_NAME);
         firstName = values.getAsString(FIRST_NAME);
     }
@@ -99,7 +80,6 @@ public class MemberBaseRecord implements BaseColumns {
     public void setContent(Cursor cursor) {
         id = cursor.getLong(cursor.getColumnIndex(_ID));
         individualId = cursor.getLong(cursor.getColumnIndex(INDIVIDUAL_ID));
-	    callingId = cursor.getLong(cursor.getColumnIndex(CALLING_ID));
         lastName = cursor.getString(cursor.getColumnIndex(LAST_NAME));
         firstName = cursor.getString(cursor.getColumnIndex(FIRST_NAME));
     }
@@ -110,14 +90,6 @@ public class MemberBaseRecord implements BaseColumns {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getCallingId() {
-        return callingId;
-    }
-
-    public void setCallingId(long callingId) {
-        this.callingId = callingId;
     }
 
     public long getIndividualId() {
