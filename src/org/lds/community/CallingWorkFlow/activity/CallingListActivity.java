@@ -1,6 +1,5 @@
-package org.lds.community.CallingWorkFlow;
+package org.lds.community.CallingWorkFlow.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,14 +7,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
-import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class CallingListActivity extends RoboActivity implements AdapterView.OnItemSelectedListener
 {
@@ -43,12 +41,11 @@ public class CallingListActivity extends RoboActivity implements AdapterView.OnI
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         if( parent.getId() == R.id.callingGroupsSpinner ) {
             // lookup new class
-//            ListView classMembersList = (ListView) findViewById( R.id.classMembersList );
+            //ListView classMembersList = (ListView) findViewById( R.id.classMembersList );
             Toast infoToast = Toast.makeText( getApplicationContext(), "Changed to " + parent.getSelectedItem().toString(), Toast.LENGTH_SHORT );
             infoToast.show();
 
         }
-
     }
 
     public void onNothingSelected(AdapterView<?> adapterView) {

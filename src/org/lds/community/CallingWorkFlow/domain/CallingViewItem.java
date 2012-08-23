@@ -10,7 +10,7 @@ public class CallingViewItem {
 	private long individualId = 0;
     private long statusId = 0;
 	private Integer completed = 0;
-	public long assigned_to = 0;
+	private long assigned_to = 0;
 	private long due_date = 0;
 	private Integer isSynced = 0;
 	private String status_name = "";
@@ -24,7 +24,7 @@ public class CallingViewItem {
 		individualId = calling.getIndividualId();
 		statusId = calling.getStatusId();
 		completed = calling.getCompleted();
-		assigned_to = calling.assigned_to;
+		assigned_to = calling.getAssignedToId();
 		due_date = calling.getDueDate();
 		isSynced = calling.getIsSynced();
 		status_name = status.getStatusName();
