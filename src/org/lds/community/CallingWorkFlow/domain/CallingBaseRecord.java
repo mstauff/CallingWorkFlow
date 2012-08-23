@@ -38,10 +38,42 @@ public class CallingBaseRecord implements BaseColumns {
     public static final String STATUS_ID = "status_id";
     private long statusId = 0;
 
+	/**
+     * Column name for the completed field
+     * <P>Type: INTEGER</P>
+     */
+	public static final String COMPLETED = "completed";
+	private Integer completed = 0;
+
+	/**
+     * Column name for the assigned_to field
+     * <P>Type: INTEGER</P>
+     */
+	public static final String ASSIGNED_TO = "assigned_to";
+	public long assigned_to = 0;
+
+	/**
+     * Column name for the due_date field
+     * <P>Type: TEXT</P>
+     */
+	public static final String DUE_DATE = "due_date";
+	private long due_date = 0;
+
+	/**
+     * Column name for the is_synced field
+     * <P>Type: INTEGER for boolean representation</P>
+     */
+	public static final String IS_SYNCED = "is_synced";
+	private Integer isSynced = 0;
+
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
 	    CallingBaseRecord.POSITION_ID + " INTEGER PRIMARY KEY, " +
 	    CallingBaseRecord.INDIVIDUAL_ID + " INTEGER, " +
-		CallingBaseRecord.STATUS_ID + " INTEGER " +
+		CallingBaseRecord.STATUS_ID + " INTEGER, " +
+	    CallingBaseRecord.ASSIGNED_TO + " INTEGER," +
+	    CallingBaseRecord.DUE_DATE + " INTEGER, " +
+	    CallingBaseRecord.IS_SYNCED + " INTEGER, " +
+		CallingBaseRecord.COMPLETED + " INTEGER " +
 
 	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
 		                 PositionBaseRecord.TABLE_NAME + "(" + PositionBaseRecord._ID + ")" +
@@ -50,7 +82,11 @@ public class CallingBaseRecord implements BaseColumns {
     static final String[] ALL_KEYS = new String[] {
 		POSITION_ID,
 	    INDIVIDUAL_ID,
-		STATUS_ID
+		STATUS_ID,
+	    ASSIGNED_TO,
+        DUE_DATE,
+        IS_SYNCED,
+        COMPLETED
     };
 
     public String[] getAllKeys() {
@@ -62,6 +98,10 @@ public class CallingBaseRecord implements BaseColumns {
         values.put(POSITION_ID, positionId);
 	    values.put(INDIVIDUAL_ID, individualId);
 	    values.put(STATUS_ID, statusId);
+	    values.put(ASSIGNED_TO, assigned_to);
+        values.put(DUE_DATE, due_date);
+        values.put(IS_SYNCED, isSynced);
+	    values.put(COMPLETED, completed);
         return values;
     }
 
@@ -69,12 +109,20 @@ public class CallingBaseRecord implements BaseColumns {
         positionId = values.getAsLong(POSITION_ID);
 	    individualId = values.getAsLong(INDIVIDUAL_ID);
 	    statusId = values.getAsLong(STATUS_ID);
+	    assigned_to = values.getAsLong(ASSIGNED_TO);
+        due_date = values.getAsLong(DUE_DATE);
+        isSynced = values.getAsInteger(IS_SYNCED);
+	    completed = values.getAsInteger(COMPLETED);
     }
 
     public void setContent(Cursor cursor) {
 	    positionId = cursor.getLong(cursor.getColumnIndex(POSITION_ID));
 	    individualId = cursor.getLong(cursor.getColumnIndex(INDIVIDUAL_ID));
 	    statusId = cursor.getLong(cursor.getColumnIndex(STATUS_ID));
+	    assigned_to = cursor.getLong(cursor.getColumnIndex(ASSIGNED_TO));
+        due_date = cursor.getLong(cursor.getColumnIndex(DUE_DATE));
+        isSynced = cursor.getInt(cursor.getColumnIndex(IS_SYNCED));
+	    completed = cursor.getInt(cursor.getColumnIndex(COMPLETED));
     }
 
     public long getPositionId() {
@@ -99,5 +147,37 @@ public class CallingBaseRecord implements BaseColumns {
 
     public void setStatusId(long statusId) {
         this.statusId = statusId;
+    }
+
+	public long getAssignedToId() {
+        return assigned_to;
+    }
+
+    public void setAssignedTo(long assigned_to) {
+        this.assigned_to = assigned_to;
+    }
+
+	public Integer getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Integer completed) {
+        this.completed = completed;
+    }
+
+	public long getDueDate() {
+		return this.due_date;
+    }
+
+    public void setDueDate(long due_date) {
+	    this.due_date = due_date;
+    }
+
+	public Integer getIsSynced() {
+        return isSynced;
+    }
+
+    public void setIsSynced(Integer isSynced) {
+        this.isSynced = isSynced;
     }
 }

@@ -61,39 +61,43 @@ public class WorkFlowDB {
 	/*
 	 * /callings/pending/<sinceDate>
 	 */
-	public List<PositionBaseRecord> getPendingCallings() {
-		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".* " +
-				     "  FROM " + PositionBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + PositionBaseRecord.COMPLETED + "= 0";
+	public List<CallingViewItem> getPendingCallings() {
+		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*" +
+				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 0" +
+				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID;
+
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
-        List<PositionBaseRecord> positions = new ArrayList<PositionBaseRecord>( results.getCount() );
+        List<CallingViewItem> callings = new ArrayList<CallingViewItem>( results.getCount() );
         while( !results.isAfterLast() ) {
-	        PositionBaseRecord position = new PositionBaseRecord();
-	        position.setContent(results);
-	        positions.add(position);
+	        CallingViewItem calling = new CallingViewItem();
+	        calling.setContent(results);
+	        callings.add(calling);
             results.moveToNext();
         }
-        return positions;
+        return callings;
 	}
 
 	/*
 	 * /callings/completed/<sinceDate>
 	 */
-	public List<PositionBaseRecord> getCompletedCallings() {
-		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".* " +
-				     "  FROM " + PositionBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + PositionBaseRecord.COMPLETED + "= 1";
+	public List<CallingViewItem> getCompletedCallings() {
+		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*" +
+				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 1" +
+				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID;
+
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
-        List<PositionBaseRecord> positions = new ArrayList<PositionBaseRecord>( results.getCount() );
+        List<CallingViewItem> callings = new ArrayList<CallingViewItem>( results.getCount() );
         while( !results.isAfterLast() ) {
-	        PositionBaseRecord position = new PositionBaseRecord();
-	        position.setContent(results);
-	        positions.add(position);
+	        CallingViewItem calling = new CallingViewItem();
+	        calling.setContent(results);
+	        callings.add(calling);
             results.moveToNext();
         }
-        return positions;
+        return callings;
 	}
 
 	/*
@@ -133,7 +137,6 @@ public class WorkFlowDB {
 	        db.execSQL( PositionBaseRecord.CREATE_SQL );
             db.execSQL( CallingBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
-            db.execSQL( WorkFlowBaseRecord.CREATE_SQL );
 	        db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
         }
 
