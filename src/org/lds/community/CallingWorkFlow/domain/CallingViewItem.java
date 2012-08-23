@@ -13,10 +13,12 @@ public class CallingViewItem {
 	public long assigned_to = 0;
 	private long due_date = 0;
 	private Integer isSynced = 0;
+	private String status_name = "";
+	private Integer sequence = 0;
 
 	CallingViewItem() {}
 
-	CallingViewItem(CallingBaseRecord calling, PositionBaseRecord position) {
+	CallingViewItem(CallingBaseRecord calling, PositionBaseRecord position, WorkFlowStatusBaseRecord status) {
 		positionId = calling.getPositionId();
 		positionName = position.getPositionName();
 		individualId = calling.getIndividualId();
@@ -25,6 +27,8 @@ public class CallingViewItem {
 		assigned_to = calling.assigned_to;
 		due_date = calling.getDueDate();
 		isSynced = calling.getIsSynced();
+		status_name = status.getStatusName();
+		sequence = status.getSequence();
 	}
 
 	public String getPositionName() {
@@ -91,6 +95,22 @@ public class CallingViewItem {
         this.isSynced = isSynced;
     }
 
+	public String getStatusName() {
+		return this.status_name;
+	}
+
+	public void setStatusName(String status_name) {
+		this.status_name = status_name;
+	}
+
+	public Integer getSequence() {
+		return this.sequence;
+	}
+
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
+	}
+
 	static final String[] ALL_KEYS = new String[] {
         PositionBaseRecord._ID,
 		PositionBaseRecord.POSITION_ID,
@@ -100,7 +120,9 @@ public class CallingViewItem {
 		CallingBaseRecord.ASSIGNED_TO,
 		CallingBaseRecord.DUE_DATE,
 		CallingBaseRecord.IS_SYNCED,
-		CallingBaseRecord.COMPLETED
+		CallingBaseRecord.COMPLETED,
+		WorkFlowStatusBaseRecord.STATUS_NAME,
+	    WorkFlowStatusBaseRecord.SEQUENCE
     };
 
     public String[] getAllKeys() {
@@ -117,6 +139,8 @@ public class CallingViewItem {
         values.put(CallingBaseRecord.DUE_DATE, due_date);
         values.put(CallingBaseRecord.IS_SYNCED, isSynced);
         values.put(CallingBaseRecord.COMPLETED, completed);
+	    values.put(WorkFlowStatusBaseRecord.STATUS_NAME, status_name);
+	    values.put(WorkFlowStatusBaseRecord.SEQUENCE, sequence);
         return values;
     }
 
@@ -129,6 +153,8 @@ public class CallingViewItem {
         due_date = values.getAsLong(CallingBaseRecord.DUE_DATE);
         isSynced = values.getAsInteger(CallingBaseRecord.IS_SYNCED);
         completed = values.getAsInteger(CallingBaseRecord.COMPLETED);
+	    status_name = values.getAsString(WorkFlowStatusBaseRecord.STATUS_NAME);
+	    sequence = values.getAsInteger(WorkFlowStatusBaseRecord.SEQUENCE);
     }
 
     public void setContent(Cursor cursor) {
@@ -140,5 +166,7 @@ public class CallingViewItem {
         due_date = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.DUE_DATE));
         isSynced = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.IS_SYNCED));
         completed = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.COMPLETED));
+	    status_name = cursor.getString(cursor.getColumnIndex(WorkFlowStatusBaseRecord.STATUS_NAME));
+	    sequence = cursor.getInt(cursor.getColumnIndex(WorkFlowStatusBaseRecord.SEQUENCE));
     }
 }

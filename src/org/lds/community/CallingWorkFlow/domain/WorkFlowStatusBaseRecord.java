@@ -1,5 +1,7 @@
 package org.lds.community.CallingWorkFlow.domain;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.provider.BaseColumns;
 
 public class WorkFlowStatusBaseRecord implements BaseColumns {
@@ -35,6 +37,46 @@ public class WorkFlowStatusBaseRecord implements BaseColumns {
 			        WorkFlowStatusBaseRecord.STATUS_NAME + " TEXT NOT NULL," +
 				    WorkFlowStatusBaseRecord.SEQUENCE + " INTEGER);";
 
-	/*********************************** Methods **********************************************/
+	static final String[] ALL_KEYS = new String[] {
+			_ID,
+			STATUS_NAME,
+			SEQUENCE
+    };
 
+    public String[] getAllKeys() {
+        return ALL_KEYS.clone();
+    }
+
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+	    values.put(STATUS_NAME, status_name);
+	    values.put(SEQUENCE, sequence);
+        return values;
+    }
+
+    public void setContent(ContentValues values) {
+        status_name = values.getAsString(STATUS_NAME);
+	    sequence = values.getAsInteger(SEQUENCE);
+    }
+
+    public void setContent(Cursor cursor) {
+	    status_name = cursor.getString(cursor.getColumnIndex(STATUS_NAME));
+	    sequence = cursor.getInt(cursor.getColumnIndex(SEQUENCE));
+    }
+
+	public String getStatusName() {
+		return this.status_name;
+	}
+
+	public void setStatusName(String status_name) {
+		this.status_name = status_name;
+	}
+
+	public Integer getSequence() {
+		return this.sequence;
+	}
+
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
+	}
 }
