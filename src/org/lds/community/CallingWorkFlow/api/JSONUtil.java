@@ -3,8 +3,9 @@ package org.lds.community.CallingWorkFlow.api;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lds.community.CallingWorkFlow.domain.CallingBaseRecord;
+import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.Member;
+import org.lds.community.CallingWorkFlow.domain.Position;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,24 +53,21 @@ public class JSONUtil {
         return memberList;
     }
 
-/*
     public static Calling parseCalling( JSONObject json ) throws JSONException {
         Calling calling = new Calling();
-        calling.setIndividualId( json.getLong( CALLING_IND_ID ) );
-        calling.setFirstName( json.getLong( CALLING_POS_ID ) );
-        calling.setLastName( json.getString( CALLING_STATUS_NAME ) );
+        calling.setIndividualId(json.getLong(CALLING_IND_ID));
+        calling.setPositionId(json.getLong(CALLING_POS_ID));
+//        calling.setStatusId( json.getString( CALLING_STATUS_NAME ) );
         return calling;
     }
-*/
 
-/*
-    public static Member parsePosition( JSONObject json ) throws JSONException {
+    public static Position parsePosition( JSONObject json ) throws JSONException {
         Position position = new Position();
         position.setPositionId( json.getLong( POSITION_ID ) );
+        position.setPositionName( json.getString( POSITION_NAME ) );
 
         return position;
 
     }
-*/
 
 }
