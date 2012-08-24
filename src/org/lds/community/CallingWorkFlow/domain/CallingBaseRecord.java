@@ -67,14 +67,14 @@ public class CallingBaseRecord implements BaseColumns {
 	private Integer isSynced = 0;
 
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
-	    CallingBaseRecord.POSITION_ID + " INTEGER PRIMARY KEY, " +
+	    CallingBaseRecord.POSITION_ID + " INTEGER, " +
 	    CallingBaseRecord.INDIVIDUAL_ID + " INTEGER, " +
 		CallingBaseRecord.STATUS_ID + " INTEGER, " +
 	    CallingBaseRecord.ASSIGNED_TO + " INTEGER," +
 	    CallingBaseRecord.DUE_DATE + " INTEGER, " +
 	    CallingBaseRecord.IS_SYNCED + " INTEGER, " +
 		CallingBaseRecord.COMPLETED + " INTEGER " +
-
+		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + ")" +
 	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
 		                 PositionBaseRecord.TABLE_NAME + "(" + PositionBaseRecord._ID + ")" +
 	    ");";
