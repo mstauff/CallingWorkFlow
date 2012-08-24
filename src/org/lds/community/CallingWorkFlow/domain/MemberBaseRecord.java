@@ -19,12 +19,6 @@ public class MemberBaseRecord implements BaseColumns {
      */
     public static final String DEFAULT_SORT_ORDER = "last_name DESC";
 
-    /*
-    * Column definitions
-    */
-    public static final String _ID = "_id";
-    private long id = 0;
-
     /**
      * Column name for the lds.org individual id
      * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
@@ -46,14 +40,12 @@ public class MemberBaseRecord implements BaseColumns {
     private String firstName = "";
 
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + MemberBaseRecord.TABLE_NAME + " ("
-                          + MemberBaseRecord._ID + " INTEGER PRIMARY KEY,"
-                          + MemberBaseRecord.INDIVIDUAL_ID + " INTEGER,"
+                          + MemberBaseRecord.INDIVIDUAL_ID + " INTEGER PRIMARY KEY,"
                           + MemberBaseRecord.LAST_NAME + " TEXT,"
                           + MemberBaseRecord.FIRST_NAME + " TEXT"
                           + ");";
 
     static final String[] ALL_KEYS = new String[] {
-        _ID,
         INDIVIDUAL_ID,
         FIRST_NAME,
         LAST_NAME
@@ -78,18 +70,9 @@ public class MemberBaseRecord implements BaseColumns {
     }
 
     public void setContent(Cursor cursor) {
-        id = cursor.getLong(cursor.getColumnIndex(_ID));
         individualId = cursor.getLong(cursor.getColumnIndex(INDIVIDUAL_ID));
         lastName = cursor.getString(cursor.getColumnIndex(LAST_NAME));
         firstName = cursor.getString(cursor.getColumnIndex(FIRST_NAME));
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public long getIndividualId() {

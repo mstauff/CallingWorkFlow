@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.Position;
+import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class JSONUtil {
         member.setFirstName( json.getString( MEMBER_FIRST ) );
         member.setLastName(json.getString(MEMBER_LAST));
         member.setIndividualId(json.getLong(MEMBER_IND_ID));
+
         return member;
 
     }
@@ -53,20 +55,62 @@ public class JSONUtil {
         return memberList;
     }
 
+   public static List<Calling> parseCallings( JSONArray jsonArray ) throws JSONException {
+        List<Calling> callingList = new ArrayList<Calling>( jsonArray.length() );
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            callingList.add(parseCalling(jsonArray.getJSONObject(i)));
+        }
+
+        return callingList;
+    }
+
     public static Calling parseCalling( JSONObject json ) throws JSONException {
         Calling calling = new Calling();
         calling.setIndividualId(json.getLong(CALLING_IND_ID));
         calling.setPositionId(json.getLong(CALLING_POS_ID));
-//        calling.setStatusId( json.getString( CALLING_STATUS_NAME ) );
+        calling.setStatusName( json.getString( CALLING_STATUS_NAME ) );
         return calling;
     }
 
     public static Position parsePosition( JSONObject json ) throws JSONException {
         Position position = new Position();
-        position.setPositionId( json.getLong( POSITION_ID ) );
-        position.setPositionName( json.getString( POSITION_NAME ) );
+        position.setPositionId(json.getLong(POSITION_ID));
+        position.setPositionName(json.getString(POSITION_NAME));
 
         return position;
+
+    }
+
+    public static List<Position> parsePositionIds(JSONArray jsonArray) throws JSONException {
+        List<Position> positionList = new ArrayList<Position>( jsonArray.length() );
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            positionList.add(parsePosition(jsonArray.getJSONObject(i)));
+        }
+
+        return positionList;
+
+    }
+
+    public static WorkFlowStatus parseStatus( JSONObject json ) throws JSONException {
+        WorkFlowStatus status = new WorkFlowStatus();
+        status.setStatusName( json.getString( STATUS_NAME ) );
+        status.setSequence(json.getInt(STATUS_ORDER));
+        status.setComplete(json.getInt(STATUS_COMPLETE));
+
+        return status;
+
+    }
+
+    public static List<WorkFlowStatus> parseStatuses(JSONArray jsonArray) throws JSONException {
+        List<WorkFlowStatus> statusList = new ArrayList<WorkFlowStatus>( jsonArray.length() );
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            statusList.add(parseStatus(jsonArray.getJSONObject(i)));
+        }
+
+        return statusList;
 
     }
 

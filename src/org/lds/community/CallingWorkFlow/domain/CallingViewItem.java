@@ -8,7 +8,7 @@ public class CallingViewItem {
 	private long positionId = 0;
 	private String positionName = "";
 	private long individualId = 0;
-    private long statusId = 0;
+    private String statusName = "";
 	private Integer completed = 0;
 	private long assigned_to = 0;
 	private long due_date = 0;
@@ -22,7 +22,7 @@ public class CallingViewItem {
 		positionId = calling.getPositionId();
 		positionName = position.getPositionName();
 		individualId = calling.getIndividualId();
-		statusId = calling.getStatusId();
+		statusName = calling.getStatusName();
 		completed = calling.getCompleted();
 		assigned_to = calling.getAssignedToId();
 		due_date = calling.getDueDate();
@@ -53,14 +53,6 @@ public class CallingViewItem {
 
     public void setIndividualId(long individualId) {
         this.individualId = individualId;
-    }
-
-	public long getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(long statusId) {
-        this.statusId = statusId;
     }
 
 	public long getAssignedToId() {
@@ -116,7 +108,7 @@ public class CallingViewItem {
 		PositionBaseRecord.POSITION_ID,
 		PositionBaseRecord.POSITION_NAME,
 		CallingBaseRecord.INDIVIDUAL_ID,
-		CallingBaseRecord.STATUS_ID,
+		CallingBaseRecord.STATUS_NAME,
 		CallingBaseRecord.ASSIGNED_TO,
 		CallingBaseRecord.DUE_DATE,
 		CallingBaseRecord.IS_SYNCED,
@@ -134,7 +126,7 @@ public class CallingViewItem {
 	    values.put(PositionBaseRecord.POSITION_ID, positionId);
 	    values.put(PositionBaseRecord.POSITION_NAME, positionName);
 	    values.put(CallingBaseRecord.INDIVIDUAL_ID, individualId);
-        values.put(CallingBaseRecord.STATUS_ID, statusId);
+        values.put(CallingBaseRecord.STATUS_NAME, statusName);
         values.put(CallingBaseRecord.ASSIGNED_TO, assigned_to);
         values.put(CallingBaseRecord.DUE_DATE, due_date);
         values.put(CallingBaseRecord.IS_SYNCED, isSynced);
@@ -148,7 +140,7 @@ public class CallingViewItem {
         positionName = values.getAsString(PositionBaseRecord.POSITION_NAME);
 	    positionId = values.getAsLong(PositionBaseRecord.POSITION_ID);
 	    individualId = values.getAsLong(CallingBaseRecord.INDIVIDUAL_ID);
-        statusId = values.getAsLong(CallingBaseRecord.STATUS_ID);
+        statusName = values.getAsString(CallingBaseRecord.STATUS_NAME);
         assigned_to = values.getAsLong(CallingBaseRecord.ASSIGNED_TO);
         due_date = values.getAsLong(CallingBaseRecord.DUE_DATE);
         isSynced = values.getAsInteger(CallingBaseRecord.IS_SYNCED);
@@ -161,7 +153,7 @@ public class CallingViewItem {
         positionName = cursor.getString(cursor.getColumnIndex(PositionBaseRecord.POSITION_NAME));
 	    positionId = cursor.getLong(cursor.getColumnIndex(PositionBaseRecord.POSITION_ID));
 	    individualId = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.INDIVIDUAL_ID));
-        statusId = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.STATUS_ID));
+        statusName = cursor.getString(cursor.getColumnIndex(CallingBaseRecord.STATUS_NAME));
         assigned_to = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.ASSIGNED_TO));
         due_date = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.DUE_DATE));
         isSynced = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.IS_SYNCED));

@@ -67,7 +67,7 @@ public class WorkFlowDB {
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
 				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 0" +
 				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
-				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_ID;
+				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_NAME;
 
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
@@ -90,7 +90,7 @@ public class WorkFlowDB {
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
 				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 1" +
 				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
-				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_ID;
+				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_NAME;
 
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
