@@ -37,7 +37,7 @@ public class PositionBaseRecord implements BaseColumns {
 		PositionBaseRecord.POSITION_ID + " INTEGER, " +
 	    PositionBaseRecord.POSITION_NAME + " TEXT, " +
 
-	    "FOREIGN KEY(status_id) REFERENCES " + WorkFlowStatusBaseRecord.TABLE_NAME + "(_id)" +
+	    "FOREIGN KEY(status_id) REFERENCES " + WorkFlowStatusBaseRecord.TABLE_NAME + "(_id) " +
 	    ");";
 
     static final String[] ALL_KEYS = new String[] {
