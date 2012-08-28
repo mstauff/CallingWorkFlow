@@ -2,6 +2,7 @@ package org.lds.community.CallingWorkFlow.domain;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -107,19 +108,37 @@ public class WorkFlowDB {
 	/*
 	 * /wardlist
 	 */
-	public List<MemberBaseRecord> getWardList() {
-		String SQL = "SELECT " + MemberBaseRecord.TABLE_NAME + ".* " +
-				     "  FROM " + MemberBaseRecord.TABLE_NAME;
-		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
-		List<MemberBaseRecord> members = new ArrayList<MemberBaseRecord>( results.getCount() );
+	public List<Member> getWardList() {
+		Cursor results = dbHelper.getDb().query(MemberBaseRecord.TABLE_NAME, null, null, null, null, null, null);
+		List<Member> members = new ArrayList<Member>( results.getCount() );
         while( !results.isAfterLast() ) {
-	        MemberBaseRecord member = new MemberBaseRecord();
+	        Member member = new Member();
 	        member.setContent(results);
 	        members.add(member);
             results.moveToNext();
         }
         return members;
 	}
+
+    public void updateWardList( List<Member> memberList ) {
+        SQLiteDatabase db = dbHelper.getDb();
+        db.beginTransaction();
+        try {
+            db.delete(MemberBaseRecord.TABLE_NAME, null, null);
+            DatabaseUtils.InsertHelper insertHelper = new DatabaseUtils.InsertHelper( db, Member.TABLE_NAME);
+
+            for( Member member : memberList ) {
+                insertHelper.insert( member.getContentValues() );
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } finally {
+            db.endTransaction();
+        }
+
+
+    }
 
     static class DatabaseHelper extends SQLiteOpenHelper {
 

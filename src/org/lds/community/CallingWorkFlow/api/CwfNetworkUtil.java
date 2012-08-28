@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.Position;
@@ -77,7 +78,19 @@ public class CwfNetworkUtil {
         return response;
     }
 
-    // todo - still need updateCalling
+    public Calling updateCalling( Calling calling ) {
+        Calling callingResult = null;
+        try {
+            String url = String.format( CALLING_UPDATE_URL, calling.getIndividualId(), calling.getPositionId(), calling.getStatusName() );
+            String jsonResult = executeGetJSONRequest( new HttpGet( url ) );
+            callingResult = JSONUtil.parseCalling(new JSONObject(jsonResult));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return callingResult;
+    }
 
     public List<Member> getWardList() {
         List<Member> wardList = new ArrayList<Member>();
