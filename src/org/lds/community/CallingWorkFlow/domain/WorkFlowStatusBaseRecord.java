@@ -18,13 +18,16 @@ public class WorkFlowStatusBaseRecord implements BaseColumns {
 	 * Column status enum
 	 */
 	public static final String STATUS_NAME = "status_name";
-	private String status_name = "";
+	private String statusName = "";
 
 	/**
 	 * Column status enum
 	 */
 	public static final String SEQUENCE = "sequence";
 	private Integer sequence = 0;
+
+	public static final String IS_COMPLETE = "is_complete";
+	private Integer isComplete = 0;
 
     /**
      * The default sort order for this table
@@ -33,14 +36,14 @@ public class WorkFlowStatusBaseRecord implements BaseColumns {
 
 	/********************************* Properties *********************************************/
 	public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
-				    WorkFlowStatusBaseRecord._ID + " INTEGER PRIMARY KEY," +
-			        WorkFlowStatusBaseRecord.STATUS_NAME + " TEXT NOT NULL," +
+			        WorkFlowStatusBaseRecord.STATUS_NAME + " TEXT PRIMARY KEY," +
+			        WorkFlowStatusBaseRecord.IS_COMPLETE + " INTEGER," +
 				    WorkFlowStatusBaseRecord.SEQUENCE + " INTEGER);";
 
 	static final String[] ALL_KEYS = new String[] {
-			_ID,
 			STATUS_NAME,
-			SEQUENCE
+			SEQUENCE,
+            IS_COMPLETE
     };
 
     public String[] getAllKeys() {
@@ -49,27 +52,28 @@ public class WorkFlowStatusBaseRecord implements BaseColumns {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-	    values.put(STATUS_NAME, status_name);
+	    values.put(STATUS_NAME, statusName);
+	    values.put(IS_COMPLETE, isComplete);
 	    values.put(SEQUENCE, sequence);
         return values;
     }
 
     public void setContent(ContentValues values) {
-        status_name = values.getAsString(STATUS_NAME);
+        statusName = values.getAsString(STATUS_NAME);
 	    sequence = values.getAsInteger(SEQUENCE);
     }
 
     public void setContent(Cursor cursor) {
-	    status_name = cursor.getString(cursor.getColumnIndex(STATUS_NAME));
+	    statusName = cursor.getString(cursor.getColumnIndex(STATUS_NAME));
 	    sequence = cursor.getInt(cursor.getColumnIndex(SEQUENCE));
     }
 
 	public String getStatusName() {
-		return this.status_name;
+		return this.statusName;
 	}
 
 	public void setStatusName(String status_name) {
-		this.status_name = status_name;
+		this.statusName = status_name;
 	}
 
 	public Integer getSequence() {
@@ -79,4 +83,12 @@ public class WorkFlowStatusBaseRecord implements BaseColumns {
 	public void setSequence(Integer sequence) {
 		this.sequence = sequence;
 	}
+
+    public Integer getComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(Integer complete) {
+        isComplete = complete;
+    }
 }

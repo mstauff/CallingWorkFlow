@@ -35,8 +35,8 @@ public class CallingBaseRecord implements BaseColumns {
      * reference the status id of the workflowstatus table.
      * <P>Type: Integer</P>
      */
-    public static final String STATUS_ID = "status_id";
-    private long statusId = 0;
+    public static final String STATUS_NAME = "status_name";
+    private String statusName = "";
 
 	/**
      * Column name for the completed field
@@ -69,7 +69,7 @@ public class CallingBaseRecord implements BaseColumns {
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
 	    CallingBaseRecord.POSITION_ID + " INTEGER, " +
 	    CallingBaseRecord.INDIVIDUAL_ID + " INTEGER, " +
-		CallingBaseRecord.STATUS_ID + " INTEGER, " +
+		CallingBaseRecord.STATUS_NAME + " TEXT, " +
 	    CallingBaseRecord.ASSIGNED_TO + " INTEGER," +
 	    CallingBaseRecord.DUE_DATE + " INTEGER, " +
 	    CallingBaseRecord.IS_SYNCED + " INTEGER, " +
@@ -82,7 +82,7 @@ public class CallingBaseRecord implements BaseColumns {
     static final String[] ALL_KEYS = new String[] {
 		POSITION_ID,
 	    INDIVIDUAL_ID,
-		STATUS_ID,
+            STATUS_NAME,
 	    ASSIGNED_TO,
         DUE_DATE,
         IS_SYNCED,
@@ -97,7 +97,7 @@ public class CallingBaseRecord implements BaseColumns {
         ContentValues values = new ContentValues();
         values.put(POSITION_ID, positionId);
 	    values.put(INDIVIDUAL_ID, individualId);
-	    values.put(STATUS_ID, statusId);
+	    values.put(STATUS_NAME, statusName);
 	    values.put(ASSIGNED_TO, assigned_to);
         values.put(DUE_DATE, due_date);
         values.put(IS_SYNCED, isSynced);
@@ -108,7 +108,7 @@ public class CallingBaseRecord implements BaseColumns {
     public void setContent(ContentValues values) {
         positionId = values.getAsLong(POSITION_ID);
 	    individualId = values.getAsLong(INDIVIDUAL_ID);
-	    statusId = values.getAsLong(STATUS_ID);
+	    statusName = values.getAsString(STATUS_NAME);
 	    assigned_to = values.getAsLong(ASSIGNED_TO);
         due_date = values.getAsLong(DUE_DATE);
         isSynced = values.getAsInteger(IS_SYNCED);
@@ -118,7 +118,7 @@ public class CallingBaseRecord implements BaseColumns {
     public void setContent(Cursor cursor) {
 	    positionId = cursor.getLong(cursor.getColumnIndex(POSITION_ID));
 	    individualId = cursor.getLong(cursor.getColumnIndex(INDIVIDUAL_ID));
-	    statusId = cursor.getLong(cursor.getColumnIndex(STATUS_ID));
+        statusName = cursor.getString(cursor.getColumnIndex(STATUS_NAME));
 	    assigned_to = cursor.getLong(cursor.getColumnIndex(ASSIGNED_TO));
         due_date = cursor.getLong(cursor.getColumnIndex(DUE_DATE));
         isSynced = cursor.getInt(cursor.getColumnIndex(IS_SYNCED));
@@ -141,12 +141,12 @@ public class CallingBaseRecord implements BaseColumns {
         this.individualId = individualId;
     }
 
-	public long getStatusId() {
-        return statusId;
+	public String getStatusName() {
+        return statusName;
     }
 
-    public void setStatusId(long statusId) {
-        this.statusId = statusId;
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
 	public long getAssignedToId() {

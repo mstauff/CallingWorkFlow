@@ -33,15 +33,13 @@ public class PositionBaseRecord implements BaseColumns {
     private String positionName = "";
 
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + PositionBaseRecord.TABLE_NAME + " (" +
-	    PositionBaseRecord._ID + " INTEGER PRIMARY KEY, " +
-		PositionBaseRecord.POSITION_ID + " INTEGER, " +
+		PositionBaseRecord.POSITION_ID + " INTEGER PRIMARY KEY, " +
 	    PositionBaseRecord.POSITION_NAME + " TEXT, " +
 
 	    "FOREIGN KEY(status_id) REFERENCES " + WorkFlowStatusBaseRecord.TABLE_NAME + "(_id) " +
 	    ");";
 
     static final String[] ALL_KEYS = new String[] {
-        _ID,
 		POSITION_ID,
         POSITION_NAME
     };
