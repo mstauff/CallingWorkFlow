@@ -66,7 +66,7 @@ public class WorkFlowDB {
 		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
 				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 0" +
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "" + CallingBaseRecord.COMPLETED + "= 0" +
 				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
 				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_NAME;
 
@@ -89,7 +89,7 @@ public class WorkFlowDB {
 		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
 				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "." + CallingBaseRecord.COMPLETED + "= 1" +
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "" + CallingBaseRecord.COMPLETED + "= 1" +
 				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
 				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_NAME;
 
