@@ -1,4 +1,4 @@
-package main.java.org.lds.community.CallingWorkFlow.activity;
+package org.lds.community.CallingWorkFlow.activity;
 
 import android.os.Bundle;
 import org.lds.community.CallingWorkFlow.CallingWorkFlow;
