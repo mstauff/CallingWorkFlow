@@ -112,7 +112,7 @@ public class WorkFlowDB {
 	public List<Member> getWardList() {
 		Cursor results = dbHelper.getDb().query(MemberBaseRecord.TABLE_NAME, null, null, null, null, null, null);
 		List<Member> members = new ArrayList<Member>( results.getCount() );
-
+        results.moveToFirst();
         while( !results.isAfterLast() ) {
 	        Member member = new Member();
 	        member.setContent(results);
