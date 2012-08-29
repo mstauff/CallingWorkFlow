@@ -27,6 +27,7 @@ public class WorkFlowDB {
 
     public WorkFlowDB(Context context) {
         dbHelper = new DatabaseHelper( context );
+
     }
 
 	/*
@@ -147,6 +148,9 @@ public class WorkFlowDB {
 
             /* Calls the super constructor, requesting the default cursor factory. */
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            // todo - does this need to change to have a writeable instance only where necessary?
+            // use readable everywhere else?
+            db = super.getWritableDatabase();
         }
 
         /**
