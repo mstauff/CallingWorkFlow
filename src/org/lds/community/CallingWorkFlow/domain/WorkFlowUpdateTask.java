@@ -3,6 +3,8 @@ package org.lds.community.CallingWorkFlow.domain;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
+import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
+import org.lds.community.CallingWorkFlow.api.ServiceException;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,20 +19,24 @@ public class WorkFlowUpdateTask extends AsyncTask<String, Void, List<Member>> {
     @Inject
     private SharedPreferences preferences;
 
-/*
     @Inject
-    private NetworkUtilities networkUtilities;
+    private CwfNetworkUtil networkUtil;
 
-    private ServiceError serviceError = ServiceError.NONE;
-*/
+    @Inject
+    private WorkFlowDB db;
+
+    private ServiceException.ServiceError serviceError = ServiceException.ServiceError.NONE;
     private Handler handler;
     @Override
     protected List<Member> doInBackground(String... strings) {
-
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return networkUtil.getWardList();
     }
 
     protected void onPostExecute(List<Member> members) {
+        if( !members.isEmpty() ) {
+            db.updateWardList( members );
+
+        }
 
     }
 }
