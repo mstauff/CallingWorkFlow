@@ -33,7 +33,7 @@ public class CallingListFragment  extends RoboSherlockListFragment implements Lo
 
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        if( parent.getId() == R.id.callingGroupsSpinner ) {
+        if( parent.getId() == R.id.showTitle ) {
             // lookup new class
             //ListView classMembersList = (ListView) findViewById( R.id.classMembersList );
         }
@@ -66,12 +66,13 @@ public class CallingListFragment  extends RoboSherlockListFragment implements Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.id.callingsList, container, false);
+        return inflater.inflate(R.id.calling_list, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedState) {
         super.onActivityCreated(savedState);
+	    getActivity().findViewById(R.id.workflow_listview_layout).setBackgroundDrawable(null);
 	    /*
         dualFragments = getActivity().findViewById(R.id.callings_position_list) != null;
 
