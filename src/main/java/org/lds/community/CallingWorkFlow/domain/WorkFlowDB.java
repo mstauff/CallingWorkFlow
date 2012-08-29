@@ -112,6 +112,7 @@ public class WorkFlowDB {
 	public List<Member> getWardList() {
 		Cursor results = dbHelper.getDb().query(MemberBaseRecord.TABLE_NAME, null, null, null, null, null, null);
 		List<Member> members = new ArrayList<Member>( results.getCount() );
+
         while( !results.isAfterLast() ) {
 	        Member member = new Member();
 	        member.setContent(results);
@@ -161,10 +162,10 @@ public class WorkFlowDB {
         public void onCreate(SQLiteDatabase db) {
             // todo - setup INDEXES
             this.db = db;
-	        db.execSQL( PositionBaseRecord.CREATE_SQL );
-            db.execSQL( CallingBaseRecord.CREATE_SQL );
+            db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
-	        db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
+            db.execSQL( PositionBaseRecord.CREATE_SQL );
+            db.execSQL( CallingBaseRecord.CREATE_SQL );
         }
 
         /**

@@ -4,7 +4,11 @@ import android.test.AndroidTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,7 +64,6 @@ public class WorkFlowDBTest extends AndroidTestCase {
     @Test
       public void testUpdateWardList() throws Exception {
 
-/*
           List<Member> memberList = new ArrayList<Member>();
           memberList.add(new Member("lastName1", "firstName1", 11111));
           memberList.add(new Member("lastName2", "firstName2", 22222));
@@ -70,7 +73,6 @@ public class WorkFlowDBTest extends AndroidTestCase {
           List<Member> fromDbMemberList = db.getWardList();
 
           assertEquals("Records not stored in db", memberList.size(), fromDbMemberList.size());
-*/
 
 
       }
