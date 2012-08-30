@@ -74,9 +74,10 @@ public class CallingBaseRecord implements BaseColumns {
 	    CallingBaseRecord.DUE_DATE + " INTEGER, " +
 	    CallingBaseRecord.IS_SYNCED + " INTEGER, " +
 		CallingBaseRecord.COMPLETED + " INTEGER, " +
-		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + "), " +
-	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
-		                 PositionBaseRecord.TABLE_NAME + "(" + PositionBaseRecord._ID + ") " +
+		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + ") " +
+//		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + "), " +
+//	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
+//		                 PositionBaseRecord.TABLE_NAME + "(" + PositionBaseRecord.POSITION_ID + ") " +
 	    ");";
 
     static final String[] ALL_KEYS = new String[] {
