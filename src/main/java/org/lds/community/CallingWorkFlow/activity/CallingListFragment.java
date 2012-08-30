@@ -44,7 +44,7 @@ public class CallingListFragment  extends RoboSherlockListFragment implements Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.id.workflow_listview_layout, container, false);
+        return inflater.inflate(R.layout.callingworkflow_list, container, false);
     }
 
 	@Override
