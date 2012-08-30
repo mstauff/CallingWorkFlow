@@ -1,7 +1,6 @@
 package org.lds.community.CallingWorkFlow.activity;
 
 import android.os.Bundle;
-import org.lds.community.CallingWorkFlow.CallingWorkFlow;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.task.StartupTask;
 import roboguice.activity.RoboActivity;
@@ -11,8 +10,8 @@ public class StartupActivity extends RoboActivity {
     public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    /* We do not have a startup/splash screen yet */
-        setContentView(R.layout.main);
+        setContentView(R.layout.workflow);
 
-        new StartupTask(this, CallingWorkFlow.class).execute();
+        new StartupTask(this, WorkFlowActivity.class).execute();
     }
 }

@@ -26,9 +26,7 @@ public class StartupTask extends AsyncTask<Void, Void, Boolean> {
     }
 	@Override
     public void onPostExecute(Boolean result) {
-
-        Intent startIntent;
-        startIntent = new Intent(contextActivity, startupActivityClass);
+        Intent startIntent = new Intent(contextActivity, startupActivityClass);
 
         // start initial UI
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
