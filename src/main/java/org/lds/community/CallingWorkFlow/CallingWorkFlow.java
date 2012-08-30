@@ -1,7 +1,7 @@
 package org.lds.community.CallingWorkFlow;
 
-import android.app.Activity;
 import android.app.Application;
+import android.app.Activity;
 import android.content.Intent;
 import org.lds.community.CallingWorkFlow.activity.StartupActivity;
 import org.lds.mobile.util.TagUtil;
