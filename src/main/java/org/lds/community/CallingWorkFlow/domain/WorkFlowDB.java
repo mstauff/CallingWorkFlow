@@ -44,7 +44,34 @@ public class WorkFlowDB {
 		db.close();
 	}
 
-	public void savePositions(List<PositionBaseRecord> positions) {
+    public List<CallingViewItem> getCallingsToSync() {
+        List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
+        Cursor results = null;
+        try {
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            // todo - need to change this query to have all the data for a CallingViewItem, not just Calling
+            results = db.query( CallingBaseRecord.TABLE_NAME, null, CallingBaseRecord.IS_SYNCED + "=false", null, null, null, null );
+            results.moveToFirst();
+            while(!results.isAfterLast()) {
+                CallingViewItem calling = new CallingViewItem();
+                calling.setContent( results );
+                callings.add( calling );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } finally {
+            closeCursor(results);
+        }
+        return callings;
+    }
+
+    private void closeCursor(Cursor results) {
+        if( results != null ) {
+            results.close();
+        }
+    }
+
+    public void savePositions(List<PositionBaseRecord> positions) {
 		SQLiteDatabase db = dbHelper.getDb();
 		for( PositionBaseRecord position : positions) {
 			String whereClause = "WHERE positionId=" + position.getPositionId();
@@ -110,14 +137,21 @@ public class WorkFlowDB {
 	 * /wardlist
 	 */
 	public List<Member> getWardList() {
-		Cursor results = dbHelper.getDb().query(MemberBaseRecord.TABLE_NAME, null, null, null, null, null, null);
-		List<Member> members = new ArrayList<Member>( results.getCount() );
-        results.moveToFirst();
-        while( !results.isAfterLast() ) {
-	        Member member = new Member();
-	        member.setContent(results);
-	        members.add(member);
-            results.moveToNext();
+        List<Member> members = new ArrayList<Member>( );
+        Cursor results = null;
+        try {
+            results = dbHelper.getDb().query(MemberBaseRecord.TABLE_NAME, null, null, null, null, null, null);
+            results.moveToFirst();
+            while( !results.isAfterLast() ) {
+                Member member = new Member();
+                member.setContent(results);
+                members.add(member);
+                results.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } finally {
+            closeCursor( results );
         }
         return members;
 	}

@@ -5,8 +5,7 @@ import android.database.Cursor;
 import android.provider.BaseColumns;
 
 public class WorkFlowStatusBaseRecord implements BaseColumns {
-	/* This class cannot be instantiated */
-	WorkFlowStatusBaseRecord() {}
+	public WorkFlowStatusBaseRecord() {}
 
 	/************************************* Fields *********************************************/
     /**

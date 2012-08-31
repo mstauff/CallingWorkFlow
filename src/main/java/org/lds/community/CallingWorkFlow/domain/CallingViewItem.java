@@ -8,29 +8,32 @@ public class CallingViewItem {
 	private long positionId = 0;
 	private String positionName = "";
 	private long individualId = 0;
-    private String statusName = "";
+    private String firstName = "";
+    private String lastName = "";
 	private Integer completed = 0;
-	private long assigned_to = 0;
-	private long due_date = 0;
+	private long assignedTo = 0;
+	private long dueDate = 0;
 	private Integer isSynced = 0;
-	private String status_name = "";
-	private Integer sequence = 0;
+	private String statusName = "";
 
 	CallingViewItem() {}
 
-	CallingViewItem(CallingBaseRecord calling, PositionBaseRecord position, WorkFlowStatusBaseRecord status) {
+/*	CallingViewItem(CallingBaseRecord calling, PositionBaseRecord position, WorkFlowStatusBaseRecord status) {
 		positionId = calling.getPositionId();
 		positionName = position.getPositionName();
 		individualId = calling.getIndividualId();
-		statusName = calling.getStatusName();
+		firstName = calling.getStatusName();
 		completed = calling.getCompleted();
-		assigned_to = calling.getAssignedToId();
-		due_date = calling.getDueDate();
+		assignedTo = calling.getAssignedToId();
+		dueDate = calling.getDueDate();
 		isSynced = calling.getIsSynced();
-		status_name = status.getStatusName();
+		statusName = status.getStatusName();
 		sequence = status.getSequence();
-	}
+	}*/
 
+    public Calling getCalling() {
+        return new Calling( individualId, positionId, statusName, getCompleted(), assignedTo, dueDate, getIsSynced() );
+    }
 	public String getPositionName() {
         return positionName;
     }
@@ -56,53 +59,76 @@ public class CallingViewItem {
     }
 
 	public long getAssignedToId() {
-        return assigned_to;
+        return assignedTo;
     }
 
     public void setAssignedTo(long assigned_to) {
-        this.assigned_to = assigned_to;
+        this.assignedTo = assigned_to;
     }
 
-	public Integer getCompleted() {
-        return completed;
+	public boolean getCompleted() {
+        return completed == 1;
     }
 
-    public void setCompleted(Integer completed) {
-        this.completed = completed;
+    public void setCompleted(boolean completed) {
+        this.completed = completed ? 1 : 0;
     }
 
 	public long getDueDate() {
-		return this.due_date;
+		return this.dueDate;
     }
 
     public void setDueDate(long due_date) {
-	    this.due_date = due_date;
+	    this.dueDate = due_date;
     }
 
-	public Integer getIsSynced() {
-        return isSynced;
+	public boolean getIsSynced() {
+        return isSynced == 1;
     }
 
-    public void setIsSynced(Integer isSynced) {
-        this.isSynced = isSynced;
+    public void setIsSynced(boolean isSynced) {
+        this.isSynced = isSynced ? 1 : 0;
     }
 
-	public String getStatusName() {
-		return this.status_name;
+	public String getFirstName() {
+		return this.firstName;
 	}
 
-	public void setStatusName(String status_name) {
-		this.status_name = status_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public Integer getSequence() {
-		return this.sequence;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setSequence(Integer sequence) {
-		this.sequence = sequence;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+    public void setContent(Cursor cursor) {
+         positionName = cursor.getString(cursor.getColumnIndex(PositionBaseRecord.POSITION_NAME));
+ 	    positionId = cursor.getLong(cursor.getColumnIndex(PositionBaseRecord.POSITION_ID));
+ 	    individualId = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.INDIVIDUAL_ID));
+         firstName = cursor.getString(cursor.getColumnIndex(MemberBaseRecord.FIRST_NAME));
+         lastName = cursor.getString(cursor.getColumnIndex(MemberBaseRecord.LAST_NAME));
+         assignedTo = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.ASSIGNED_TO));
+         dueDate = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.DUE_DATE));
+         isSynced = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.IS_SYNCED));
+         completed = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.COMPLETED));
+ 	    statusName = cursor.getString(cursor.getColumnIndex(WorkFlowStatusBaseRecord.STATUS_NAME));
+     }
+
+    // these functions shouldn't be needed since this doesn't map directly to a single db row
+/*
 	static final String[] ALL_KEYS = new String[] {
         PositionBaseRecord._ID,
 		PositionBaseRecord.POSITION_ID,
@@ -126,12 +152,12 @@ public class CallingViewItem {
 	    values.put(PositionBaseRecord.POSITION_ID, positionId);
 	    values.put(PositionBaseRecord.POSITION_NAME, positionName);
 	    values.put(CallingBaseRecord.INDIVIDUAL_ID, individualId);
-        values.put(CallingBaseRecord.STATUS_NAME, statusName);
-        values.put(CallingBaseRecord.ASSIGNED_TO, assigned_to);
-        values.put(CallingBaseRecord.DUE_DATE, due_date);
+        values.put(CallingBaseRecord.STATUS_NAME, firstName);
+        values.put(CallingBaseRecord.ASSIGNED_TO, assignedTo);
+        values.put(CallingBaseRecord.DUE_DATE, dueDate);
         values.put(CallingBaseRecord.IS_SYNCED, isSynced);
         values.put(CallingBaseRecord.COMPLETED, completed);
-	    values.put(WorkFlowStatusBaseRecord.STATUS_NAME, status_name);
+	    values.put(WorkFlowStatusBaseRecord.STATUS_NAME, statusName);
 	    values.put(WorkFlowStatusBaseRecord.SEQUENCE, sequence);
         return values;
     }
@@ -140,25 +166,15 @@ public class CallingViewItem {
         positionName = values.getAsString(PositionBaseRecord.POSITION_NAME);
 	    positionId = values.getAsLong(PositionBaseRecord.POSITION_ID);
 	    individualId = values.getAsLong(CallingBaseRecord.INDIVIDUAL_ID);
-        statusName = values.getAsString(CallingBaseRecord.STATUS_NAME);
-        assigned_to = values.getAsLong(CallingBaseRecord.ASSIGNED_TO);
-        due_date = values.getAsLong(CallingBaseRecord.DUE_DATE);
+        firstName = values.getAsString(MemberBaseRecord.FIRST_NAME);
+        lastName = values.getAsString(MemberBaseRecord.LAST_NAME);
+        assignedTo = values.getAsLong(CallingBaseRecord.ASSIGNED_TO);
+        dueDate = values.getAsLong(CallingBaseRecord.DUE_DATE);
         isSynced = values.getAsInteger(CallingBaseRecord.IS_SYNCED);
         completed = values.getAsInteger(CallingBaseRecord.COMPLETED);
-	    status_name = values.getAsString(WorkFlowStatusBaseRecord.STATUS_NAME);
+	    statusName = values.getAsString(WorkFlowStatusBaseRecord.STATUS_NAME);
 	    sequence = values.getAsInteger(WorkFlowStatusBaseRecord.SEQUENCE);
     }
+*/
 
-    public void setContent(Cursor cursor) {
-        positionName = cursor.getString(cursor.getColumnIndex(PositionBaseRecord.POSITION_NAME));
-	    positionId = cursor.getLong(cursor.getColumnIndex(PositionBaseRecord.POSITION_ID));
-	    individualId = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.INDIVIDUAL_ID));
-        statusName = cursor.getString(cursor.getColumnIndex(CallingBaseRecord.STATUS_NAME));
-        assigned_to = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.ASSIGNED_TO));
-        due_date = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.DUE_DATE));
-        isSynced = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.IS_SYNCED));
-        completed = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.COMPLETED));
-	    status_name = cursor.getString(cursor.getColumnIndex(WorkFlowStatusBaseRecord.STATUS_NAME));
-	    sequence = cursor.getInt(cursor.getColumnIndex(WorkFlowStatusBaseRecord.SEQUENCE));
-    }
-}
+ }
