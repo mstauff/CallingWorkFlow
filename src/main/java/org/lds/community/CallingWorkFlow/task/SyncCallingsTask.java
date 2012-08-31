@@ -3,6 +3,7 @@ package org.lds.community.CallingWorkFlow.task;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.api.ServiceException;
@@ -29,6 +30,9 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
     private List<String> failures;
     private String successString;
     private String failureString;
+
+    private static final String TAG = SyncCallingsTask.class.getSimpleName();
+
 
     @Override
     protected Void doInBackground(String... strings) {
@@ -58,6 +62,7 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
     protected void onProgressUpdate(String updateString) {
         // print out the string
+        Log.d( TAG, "Progress update: " + updateString );
 
     }
 
@@ -68,6 +73,7 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
     protected void onPostExecute() {
         // todo - show success/complete messages
+        Log.d( TAG, "Post Execute" );
 
     }
 }

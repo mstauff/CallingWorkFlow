@@ -1,5 +1,6 @@
 package org.lds.community.CallingWorkFlow.task;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.api.ServiceException;
 import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import roboguice.util.RoboAsyncTask;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 //import org.lds.ldstools.api.ServiceError;
 //import org.lds.ldstools.api.ServiceException;
 
-public class WardListUpdateTask extends AsyncTask<String, Void, List<Member>> {
+public class WardListUpdateTask extends RoboAsyncTask{
     @Inject
     private SharedPreferences preferences;
 
@@ -29,15 +31,32 @@ public class WardListUpdateTask extends AsyncTask<String, Void, List<Member>> {
 
     private ServiceException.ServiceError serviceError = ServiceException.ServiceError.NONE;
     private Handler handler;
-    @Override
-    protected List<Member> doInBackground(String... strings) {
-        return networkUtil.getWardList();
+
+    public  WardListUpdateTask(Context context) {
+        super(context);
     }
 
-    protected void onPostExecute(List<Member> members) {
+/*
+    @Override
+    protected Void doInBackground(Void... unused) {
+        List<Member> members = networkUtil.getWardList();
         if( !members.isEmpty() ) {
             db.updateWardList( members );
         }
+        return null;
+    }
+*/
+
+    protected void onPostExecute() {
+    }
+
+    @Override
+    public Void call() throws Exception {
+        List<Member> members = networkUtil.getWardList();
+        if( !members.isEmpty() ) {
+            db.updateWardList( members );
+        }
+        return null;
     }
 }
 

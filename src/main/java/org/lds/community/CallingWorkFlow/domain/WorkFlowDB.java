@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class WorkFlowDB {
 
     private DatabaseHelper dbHelper;
 
+    @Inject
     public WorkFlowDB(Context context) {
         dbHelper = new DatabaseHelper( context );
 
@@ -133,9 +136,33 @@ public class WorkFlowDB {
         return callings;
 	}
 
-	/*
-	 * /wardlist
-	 */
+    public boolean updateCalling( Calling calling ) {
+        int result = 0;
+        try {
+            String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
+            result = dbHelper.getWritableDatabase().update( Calling.TABLE_NAME, calling.getContentValues(), whereClause,
+                    new String[]{String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())} );
+        } catch (Exception e) {
+            Log.w(TAG, "Exception updating calling: " + e.toString() );
+        }
+        return result > 0;
+    }
+
+    public static String getWhereForColumns(String... columnNames) {
+        StringBuilder whereClause = new StringBuilder();
+        for( String columnName : columnNames ) {
+            whereClause.append( columnName + "=?, " );
+        }
+        // remove extra ", " from the last element
+        if( whereClause.length() > 2 ) {
+            whereClause.delete( whereClause.length() -2, whereClause.length() );
+        }
+        return whereClause.toString();
+    }
+
+    /*
+      * /wardlist
+      */
 	public List<Member> getWardList() {
         List<Member> members = new ArrayList<Member>( );
         Cursor results = null;
@@ -174,6 +201,10 @@ public class WorkFlowDB {
         }
 
 
+    }
+
+    public boolean hasMemberData() {
+        return DatabaseUtils.queryNumEntries( dbHelper.getReadableDatabase(), Member.TABLE_NAME ) > 0;
     }
 
     static class DatabaseHelper extends SQLiteOpenHelper {
