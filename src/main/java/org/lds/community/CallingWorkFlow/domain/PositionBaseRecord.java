@@ -6,8 +6,7 @@ import android.provider.BaseColumns;
 
 public class PositionBaseRecord implements BaseColumns {
 
-	/* This class cannot be instantiated */
-	PositionBaseRecord() {}
+	public PositionBaseRecord() {}
 
     /**
      * The table name offered by this provider

@@ -6,8 +6,7 @@ import android.provider.BaseColumns;
 
 public class CallingBaseRecord implements BaseColumns {
 
-    /* This class cannot be instantiated */
-    CallingBaseRecord() {}
+    public CallingBaseRecord() {}
 
     /**
      * The table name offered by this provider
@@ -22,13 +21,13 @@ public class CallingBaseRecord implements BaseColumns {
 	/**
      * Column definitions for the member's individual ID.
      */
-    public static final String INDIVIDUAL_ID = "individualId";
+    public static final String INDIVIDUAL_ID = "individual_id";
     private long individualId = 0;
 
 	/**
      * Column definitions for the position ID.
      */
-    public static final String POSITION_ID = "positionId";
+    public static final String POSITION_ID = "position_id";
     private long positionId = 0;
 
 	/**
@@ -46,18 +45,18 @@ public class CallingBaseRecord implements BaseColumns {
 	private Integer completed = 0;
 
 	/**
-     * Column name for the assigned_to field
+     * Column name for the assignedTo field
      * <P>Type: INTEGER</P>
      */
 	public static final String ASSIGNED_TO = "assigned_to";
-	public long assigned_to = 0;
+	public long assignedTo = 0;
 
 	/**
-     * Column name for the due_date field
+     * Column name for the dueDate field
      * <P>Type: TEXT</P>
      */
 	public static final String DUE_DATE = "due_date";
-	private long due_date = 0;
+	private long dueDate = 0;
 
 	/**
      * Column name for the is_synced field
@@ -99,8 +98,8 @@ public class CallingBaseRecord implements BaseColumns {
         values.put(POSITION_ID, positionId);
 	    values.put(INDIVIDUAL_ID, individualId);
 	    values.put(STATUS_NAME, statusName);
-	    values.put(ASSIGNED_TO, assigned_to);
-        values.put(DUE_DATE, due_date);
+	    values.put(ASSIGNED_TO, assignedTo);
+        values.put(DUE_DATE, dueDate);
         values.put(IS_SYNCED, isSynced);
 	    values.put(COMPLETED, completed);
         return values;
@@ -110,8 +109,8 @@ public class CallingBaseRecord implements BaseColumns {
         positionId = values.getAsLong(POSITION_ID);
 	    individualId = values.getAsLong(INDIVIDUAL_ID);
 	    statusName = values.getAsString(STATUS_NAME);
-	    assigned_to = values.getAsLong(ASSIGNED_TO);
-        due_date = values.getAsLong(DUE_DATE);
+	    assignedTo = values.getAsLong(ASSIGNED_TO);
+        dueDate = values.getAsLong(DUE_DATE);
         isSynced = values.getAsInteger(IS_SYNCED);
 	    completed = values.getAsInteger(COMPLETED);
     }
@@ -120,8 +119,8 @@ public class CallingBaseRecord implements BaseColumns {
 	    positionId = cursor.getLong(cursor.getColumnIndex(POSITION_ID));
 	    individualId = cursor.getLong(cursor.getColumnIndex(INDIVIDUAL_ID));
         statusName = cursor.getString(cursor.getColumnIndex(STATUS_NAME));
-	    assigned_to = cursor.getLong(cursor.getColumnIndex(ASSIGNED_TO));
-        due_date = cursor.getLong(cursor.getColumnIndex(DUE_DATE));
+	    assignedTo = cursor.getLong(cursor.getColumnIndex(ASSIGNED_TO));
+        dueDate = cursor.getLong(cursor.getColumnIndex(DUE_DATE));
         isSynced = cursor.getInt(cursor.getColumnIndex(IS_SYNCED));
 	    completed = cursor.getInt(cursor.getColumnIndex(COMPLETED));
     }
@@ -151,11 +150,11 @@ public class CallingBaseRecord implements BaseColumns {
     }
 
 	public long getAssignedToId() {
-        return assigned_to;
+        return assignedTo;
     }
 
     public void setAssignedTo(long assigned_to) {
-        this.assigned_to = assigned_to;
+        this.assignedTo = assigned_to;
     }
 
 	public Integer getCompleted() {
@@ -167,11 +166,11 @@ public class CallingBaseRecord implements BaseColumns {
     }
 
 	public long getDueDate() {
-		return this.due_date;
+		return this.dueDate;
     }
 
     public void setDueDate(long due_date) {
-	    this.due_date = due_date;
+	    this.dueDate = due_date;
     }
 
 	public Integer getIsSynced() {

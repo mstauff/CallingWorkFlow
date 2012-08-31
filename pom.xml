@@ -31,6 +31,11 @@
             <version>1.1.0.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.lds.stack.test</groupId>
+            <artifactId>stack-test-unit</artifactId>
+            <version>3.0.2</version>
+        </dependency>
         <!-- NOTE: Roboguice DOES produce the following exception and is a non-issue (http://code.google.com/p/roboguice/issues/detail?id=161): -->
         <!-- -->
         <!-- java.io.FileNotFoundException: com/google/inject/internal/util/$Finalizer.class -->

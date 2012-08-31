@@ -12,4 +12,7 @@
     <string name="error">Error</string>
     <string name="error_service_unavailable">No data connection</string>
     <string name="error_lost_connection">Connection was here, but it\'s not now</string>
+
+    <string name="calling_update_success">Successfully Updated %1$s - %2$s</string>
+    <string name="calling_update_failure">Update failed for %1$s - %2$s</string>
 </resources>
