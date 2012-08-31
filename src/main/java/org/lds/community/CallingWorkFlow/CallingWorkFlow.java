@@ -16,12 +16,10 @@ public class CallingWorkFlow extends Application {
     }
 
 	public static void startRootActivity(Class clazz, Activity activity) {
-	        currentRootClass = clazz;
+        currentRootClass = clazz;
 
-        if (activity.getIntent().hasExtra("RESTART")) {
-            Intent intent = new Intent(activity, StartupActivity.class);
-            activity.startActivity(intent);
-            activity.finish();
-        }
+        Intent intent = new Intent(activity, StartupActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
     }
 }

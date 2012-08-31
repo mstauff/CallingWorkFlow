@@ -9,15 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
-import android.widget.ListView;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
-import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockListFragment;
+import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockFragment;
 
 import javax.inject.Inject;
 
-public class CallingListFragment  extends RoboSherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CallingListFragment  extends RoboSherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     WorkFlowDB db;
 
     @Inject
@@ -44,23 +43,19 @@ public class CallingListFragment  extends RoboSherlockListFragment implements Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.callingworkflow_list, container, false);
+	    return getLayoutInflater( savedInstanceState ).inflate( R.layout.callingworkflow_list, container );
+        //return inflater.inflate(R.layout.callingworkflow_list, container, false);
     }
 
 	@Override
 	public void onPause() {
-
+		super.onPause();
 	}
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-		outState.putInt("LIST_POS", getListView().getFirstVisiblePosition());
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        selectPosition(position, id);
+		//outState.putInt("LIST_POS", getListView().getFirstVisiblePosition());
     }
 
     public void selectPosition(int position, long id) {
@@ -75,11 +70,10 @@ public class CallingListFragment  extends RoboSherlockListFragment implements Lo
 	}
 
 	@Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor data) {
-        setSelection(currentPositionInList);
-    }
+	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+	}
 
-    @Override
+	@Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         listAdapter.changeCursor(null);
     }
