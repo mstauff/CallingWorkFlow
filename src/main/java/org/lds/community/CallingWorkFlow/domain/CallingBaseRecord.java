@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
-public class CallingBaseRecord implements BaseColumns {
+public class CallingBaseRecord implements BaseRecord {
 
     public CallingBaseRecord() {}
 
@@ -157,12 +157,12 @@ public class CallingBaseRecord implements BaseColumns {
         this.assignedTo = assigned_to;
     }
 
-	public Integer getCompleted() {
-        return completed;
+	public boolean getCompleted() {
+        return completed == 1;
     }
 
-    public void setCompleted(Integer completed) {
-        this.completed = completed;
+    public void setCompleted(boolean completed) {
+        this.completed = completed ? 1 : 0;
     }
 
 	public long getDueDate() {
@@ -173,11 +173,11 @@ public class CallingBaseRecord implements BaseColumns {
 	    this.dueDate = due_date;
     }
 
-	public Integer getIsSynced() {
-        return isSynced;
+	public boolean getIsSynced() {
+        return isSynced == 1;
     }
 
-    public void setIsSynced(Integer isSynced) {
-        this.isSynced = isSynced;
+    public void setIsSynced( boolean isSynced ) {
+        this.isSynced = isSynced ? 1 : 0;
     }
 }

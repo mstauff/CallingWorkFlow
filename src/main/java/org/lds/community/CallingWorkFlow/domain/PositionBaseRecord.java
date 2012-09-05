@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
-public class PositionBaseRecord implements BaseColumns {
+public class PositionBaseRecord implements BaseRecord {
 
 	public PositionBaseRecord() {}
 

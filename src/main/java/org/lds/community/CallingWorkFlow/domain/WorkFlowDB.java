@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class WorkFlowDB {
 
     private DatabaseHelper dbHelper;
 
+    @Inject
     public WorkFlowDB(Context context) {
         dbHelper = new DatabaseHelper( context );
 
@@ -71,14 +74,16 @@ public class WorkFlowDB {
         }
     }
 
-    public void savePositions(List<PositionBaseRecord> positions) {
-		SQLiteDatabase db = dbHelper.getDb();
-		for( PositionBaseRecord position : positions) {
-			String whereClause = "WHERE positionId=" + position.getPositionId();
-			db.delete(PositionBaseRecord.TABLE_NAME, whereClause, null);
-            db.insert( PositionBaseRecord.TABLE_NAME, null, position.getContentValues() );
-        }
-		db.close();
+    public void updateCallings(List<Calling> callings) {
+        updateData( Calling.TABLE_NAME, callings );
+    }
+
+    public void updateWorkFlowStatus(List<WorkFlowStatus> statuses) {
+        updateData( WorkFlowStatus.TABLE_NAME, statuses );
+    }
+
+    public void updatePositions(List<Position> positions) {
+		updateData( Position.TABLE_NAME, positions);
 	}
 	/*
 	 * /callingId
@@ -91,35 +96,24 @@ public class WorkFlowDB {
 	 * /callings/pending/<sinceDate>
 	 */
 	public List<CallingViewItem> getPendingCallings() {
-		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
-				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
-				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "" + CallingBaseRecord.COMPLETED + "= 0" +
-				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
-				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_NAME;
-
-		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
-
-        List<CallingViewItem> callings = new ArrayList<CallingViewItem>( results.getCount() );
-        while( !results.isAfterLast() ) {
-	        CallingViewItem calling = new CallingViewItem();
-	        calling.setContent(results);
-	        callings.add(calling);
-            results.moveToNext();
-        }
-        return callings;
-	}
+        return getCallings( false );
+    }
 
 	/*
 	 * /callings/completed/<sinceDate>
 	 */
 	public List<CallingViewItem> getCompletedCallings() {
+        return getCallings( true );
+	}
+
+	private List<CallingViewItem> getCallings( boolean completed ) {
+        String completedDbValue = completed ? "1" : "0";
 		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
 				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
 				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "" + CallingBaseRecord.COMPLETED + "= 1" +
-				     "   AND " + PositionBaseRecord._ID + "=" + CallingBaseRecord.POSITION_ID +
-				     "   AND " + WorkFlowStatusBaseRecord._ID + "=" + CallingBaseRecord.STATUS_NAME;
+				     " WHERE " + PositionBaseRecord.TABLE_NAME + "" + CallingBaseRecord.COMPLETED + "=" + completedDbValue +
+				     "   AND " + PositionBaseRecord.POSITION_ID + "=" + CallingBaseRecord.POSITION_ID +
+				     "   AND " + WorkFlowStatusBaseRecord.STATUS_NAME + "=" + CallingBaseRecord.STATUS_NAME;
 
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
@@ -133,9 +127,33 @@ public class WorkFlowDB {
         return callings;
 	}
 
-	/*
-	 * /wardlist
-	 */
+    public boolean updateCalling( Calling calling ) {
+        int result = 0;
+        try {
+            String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
+            result = dbHelper.getWritableDatabase().update( Calling.TABLE_NAME, calling.getContentValues(), whereClause,
+                    new String[]{String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())} );
+        } catch (Exception e) {
+            Log.w(TAG, "Exception updating calling: " + e.toString() );
+        }
+        return result > 0;
+    }
+
+    public static String getWhereForColumns(String... columnNames) {
+        StringBuilder whereClause = new StringBuilder();
+        for( String columnName : columnNames ) {
+            whereClause.append( columnName + "=?, " );
+        }
+        // remove extra ", " from the last element
+        if( whereClause.length() > 2 ) {
+            whereClause.delete( whereClause.length() -2, whereClause.length() );
+        }
+        return whereClause.toString();
+    }
+
+    /*
+      * /wardlist
+      */
 	public List<Member> getWardList() {
         List<Member> members = new ArrayList<Member>( );
         Cursor results = null;
@@ -157,14 +175,18 @@ public class WorkFlowDB {
 	}
 
     public void updateWardList( List<Member> memberList ) {
+        updateData( Member.TABLE_NAME, memberList );
+    }
+
+    private void updateData( String tableName, List<? extends BaseRecord> data ) {
         SQLiteDatabase db = dbHelper.getDb();
         db.beginTransaction();
         try {
-            db.delete(MemberBaseRecord.TABLE_NAME, null, null);
-            DatabaseUtils.InsertHelper insertHelper = new DatabaseUtils.InsertHelper( db, Member.TABLE_NAME);
+            db.delete(tableName, null, null);
+            DatabaseUtils.InsertHelper insertHelper = new DatabaseUtils.InsertHelper( db, tableName);
 
-            for( Member member : memberList ) {
-                insertHelper.insert( member.getContentValues() );
+            for( BaseRecord dataRow : data ) {
+                insertHelper.insert( dataRow.getContentValues() );
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {
@@ -174,6 +196,10 @@ public class WorkFlowDB {
         }
 
 
+    }
+
+    public boolean hasData( String tableName ) {
+        return DatabaseUtils.queryNumEntries( dbHelper.getReadableDatabase(), tableName ) > 0;
     }
 
     static class DatabaseHelper extends SQLiteOpenHelper {

@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 /**
  * MemberBaseRecord table contract
  */
-public class MemberBaseRecord implements BaseColumns {
+public class MemberBaseRecord implements BaseRecord {
 
     /**
      * The table name offered by this provider

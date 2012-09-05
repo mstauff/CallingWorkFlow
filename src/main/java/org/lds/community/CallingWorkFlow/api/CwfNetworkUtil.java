@@ -1,6 +1,7 @@
 package org.lds.community.CallingWorkFlow.api;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -34,7 +35,7 @@ public class CwfNetworkUtil {
     @Inject
     private SharedPreferences preferences;
 
-    private static final String ROOT = "http://10.0.2.2:8080";
+    private static final String ROOT = "http://cwf.jit.su";
     private static final String WARD_LIST_URL = ROOT + "/wardList";
     private static final String POSITION_LIST_URL = ROOT + "/callingIds";
     private static final String STATUSES_URL = ROOT + "/statuses";
@@ -59,11 +60,15 @@ public class CwfNetworkUtil {
     }
 
     private String executeGetJSONRequest(HttpGet getMethod) throws IOException {
-        return NetworkUtil.executeGetJSONRequest(getHttpClient(), getMethod);
+        Log.i(TAG, "executeGetJSONRequest() getting from: " + getMethod.getURI().toString() );
+        String result = NetworkUtil.executeGetJSONRequest(getHttpClient(), getMethod);
+        Log.i(TAG, "executeGetJSONRequest(). Response=" + result);
+        return result;
     }
 
     private HttpResponse executeGetRequest(HttpGet getMethod) {
 
+        Log.i(TAG, "executeGetRequest() getting from: " + getMethod.toString() );
         HttpResponse response = NetworkUtil.executeGetRequest(getHttpClient(), getMethod);
 
         if (!NetworkUtil.isResponseOK(response)) {
@@ -75,6 +80,7 @@ public class CwfNetworkUtil {
             }
         }
 
+        Log.i(TAG, "executeGetRequest(). Response=" + response );
         return response;
     }
 

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
-public class WorkFlowStatusBaseRecord implements BaseColumns {
+public class WorkFlowStatusBaseRecord implements BaseRecord {
 	public WorkFlowStatusBaseRecord() {}
 
 	/************************************* Fields *********************************************/

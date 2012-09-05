@@ -1,12 +1,15 @@
 package org.lds.community.CallingWorkFlow.task;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Handler;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.api.ServiceException;
 import org.lds.community.CallingWorkFlow.domain.Member;
+import org.lds.community.CallingWorkFlow.domain.Position;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
+import roboguice.util.RoboAsyncTask;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,7 +20,7 @@ import java.util.List;
 //import org.lds.ldstools.api.ServiceError;
 //import org.lds.ldstools.api.ServiceException;
 
-public class WardListUpdateTask extends AsyncTask<String, Void, List<Member>> {
+public class WardListUpdateTask extends RoboAsyncTask{
     @Inject
     private SharedPreferences preferences;
 
@@ -29,15 +32,49 @@ public class WardListUpdateTask extends AsyncTask<String, Void, List<Member>> {
 
     private ServiceException.ServiceError serviceError = ServiceException.ServiceError.NONE;
     private Handler handler;
-    @Override
-    protected List<Member> doInBackground(String... strings) {
-        return networkUtil.getWardList();
+
+    public  WardListUpdateTask(Context context) {
+        super(context);
     }
 
-    protected void onPostExecute(List<Member> members) {
+/*
+    @Override
+    protected Void doInBackground(Void... unused) {
+        List<Member> members = networkUtil.getWardList();
         if( !members.isEmpty() ) {
             db.updateWardList( members );
         }
+        return null;
+    }
+*/
+
+    protected void onPostExecute() {
+    }
+
+    @Override
+    public Void call() throws Exception {
+        if( !db.hasData(Member.TABLE_NAME) ) {
+            List<Member> members = networkUtil.getWardList();
+            if( !members.isEmpty() ) {
+                db.updateWardList( members );
+            }
+        }
+
+        if ( !db.hasData(Position.TABLE_NAME) ) {
+            List<Position> positions = networkUtil.getPositionIds();
+            if( !positions.isEmpty() ) {
+                db.updatePositions( positions );
+            }
+        }
+
+        if ( !db.hasData(WorkFlowStatus.TABLE_NAME) ) {
+            List<WorkFlowStatus> statuses = networkUtil.getStatuses();
+            if( !statuses.isEmpty() ) {
+                db.updateWorkFlowStatus( statuses );
+            }
+        }
+
+        return null;
     }
 }
 

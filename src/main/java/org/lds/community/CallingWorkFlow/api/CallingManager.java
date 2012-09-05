@@ -21,12 +21,27 @@ public class CallingManager {
     CwfNetworkUtil networkUtil;
 
     public boolean updateCallingOnServer( Calling calling ) {
-        // todo - perform business logic:
+        boolean success = false;
         // 1 - make the rest call to update calling
+        Calling updatedCalling = networkUtil.updateCalling( calling );
+
         // 2 - if successful then update isSynce & save to db
+        if( areCallingsEqual( calling, updatedCalling ) ) {
+            calling.setIsSynced( true );
+            db.updateCalling(calling);
+            success = true;
+        }
+
         // return true if was successful, false otherwise
 
-        return true;
+        return success;
 
+    }
+
+    private boolean areCallingsEqual(Calling calling, Calling updatedCalling) {
+        // for now we're just going with same indId & posId - may beef it up later
+        return calling != null && updatedCalling != null
+                && calling.getPositionId() == updatedCalling.getPositionId()
+                && calling.getIndividualId() == updatedCalling.getIndividualId();
     }
 }
