@@ -5,10 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.api.ServiceException;
-import org.lds.community.CallingWorkFlow.domain.Member;
-import org.lds.community.CallingWorkFlow.domain.Position;
-import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
-import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
+import org.lds.community.CallingWorkFlow.domain.*;
 import roboguice.util.RoboAsyncTask;
 
 import javax.inject.Inject;
@@ -63,14 +60,21 @@ public class WardListUpdateTask extends RoboAsyncTask{
         if ( !db.hasData(Position.TABLE_NAME) ) {
             List<Position> positions = networkUtil.getPositionIds();
             if( !positions.isEmpty() ) {
-                db.updatePositions( positions );
+                db.updatePositions(positions);
             }
         }
 
         if ( !db.hasData(WorkFlowStatus.TABLE_NAME) ) {
             List<WorkFlowStatus> statuses = networkUtil.getStatuses();
             if( !statuses.isEmpty() ) {
-                db.updateWorkFlowStatus( statuses );
+                db.updateWorkFlowStatus(statuses);
+            }
+        }
+
+        if ( !db.hasData(Calling.TABLE_NAME) ) {
+            List<Calling> callings = networkUtil.getPendingCallings();
+            if( !callings.isEmpty() ) {
+                db.updateCallings( callings );
             }
         }
 

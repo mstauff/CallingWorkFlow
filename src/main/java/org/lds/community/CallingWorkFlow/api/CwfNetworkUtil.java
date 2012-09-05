@@ -37,7 +37,7 @@ public class CwfNetworkUtil {
 
     private static final String ROOT = "http://cwf.jit.su";
     private static final String WARD_LIST_URL = ROOT + "/wardList";
-    private static final String POSITION_LIST_URL = ROOT + "/callingIds";
+    private static final String POSITION_LIST_URL = ROOT + "/positionIds";
     private static final String STATUSES_URL = ROOT + "/statuses";
     private static final String CALLINGS_PENDING_URL = ROOT + "/callings/pending";
     private static final String CALLINGS_COMPLETED_URL = ROOT + "/callings/completed";

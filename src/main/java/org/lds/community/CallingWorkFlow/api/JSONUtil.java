@@ -97,7 +97,7 @@ public class JSONUtil {
         WorkFlowStatus status = new WorkFlowStatus();
         status.setStatusName( json.getString( STATUS_NAME ) );
         status.setSequence(json.getInt(STATUS_ORDER));
-        status.setComplete(json.getInt(STATUS_COMPLETE));
+        status.setComplete(json.getBoolean(STATUS_COMPLETE));
 
         return status;
 

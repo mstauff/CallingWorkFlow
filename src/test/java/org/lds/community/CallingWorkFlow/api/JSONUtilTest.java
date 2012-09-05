@@ -132,7 +132,7 @@ public class JSONUtilTest {
 
     @Test
     public void testParseStatus() throws Exception {
-        WorkFlowStatus status1=createStatus(1,"ACTIVE",null,null,1);
+        WorkFlowStatus status1=createStatus(true ,"ACTIVE",null,null,1);
         WorkFlowStatus status2=JSONUtil.parseStatus(new JSONObject("{" + JSONUtil.STATUS_COMPLETE + ":1;" + JSONUtil.STATUS_NAME + ":ACTIVE;" + JSONUtil.STATUS_ORDER + ":1" + "}"));
 
         Assert.assertEquals(status1.getComplete(), status2.getComplete());
@@ -142,9 +142,9 @@ public class JSONUtilTest {
 
     @Test
     public void testParseStatuses() throws Exception {
-        WorkFlowStatus status1=createStatus(1,"ACTIVE",null,null,1);
-        WorkFlowStatus status2=createStatus(0,"NON_ACTIVE",null,null,2);
-        WorkFlowStatus status3=createStatus(1,"PASSIVE",null,null,3);
+        WorkFlowStatus status1=createStatus(true,"ACTIVE",null,null,1);
+        WorkFlowStatus status2=createStatus(false,"NON_ACTIVE",null,null,2);
+        WorkFlowStatus status3=createStatus(true,"PASSIVE",null,null,3);
 
         JSONArray listSource=new JSONArray();
         listSource.put(new JSONObject("{" + JSONUtil.STATUS_COMPLETE + ":1;" + JSONUtil.STATUS_NAME + ":ACTIVE;"  + JSONUtil.STATUS_ORDER + ":1" + "}"));
@@ -187,7 +187,7 @@ public class JSONUtilTest {
         return positionObj;
     }
 
-    private WorkFlowStatus createStatus(int complete, String statusName, ContentValues cValues, Cursor cursor, int sequence){
+    private WorkFlowStatus createStatus(boolean complete, String statusName, ContentValues cValues, Cursor cursor, int sequence){
         WorkFlowStatus statusObj=new WorkFlowStatus();
         statusObj.setStatusName(statusName);
         statusObj.setComplete(complete);
