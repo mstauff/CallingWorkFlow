@@ -1,19 +1,15 @@
 package org.lds.community.CallingWorkFlow.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.activity.RoboSherlockFragmentActivity;
 
-public class WorkFlowActivity extends RoboSherlockFragmentActivity {
+public class DetailActivity extends RoboSherlockFragmentActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		setContentView(R.layout.workflow);
+		setContentView(R.layout.callingdetail);
     }
 
     @Override
@@ -31,8 +27,11 @@ public class WorkFlowActivity extends RoboSherlockFragmentActivity {
         super.onBackPressed();
     }
 
-    public void addNewCalling(View v){
-        Intent intent = new Intent(this,DetailActivity.class);
-        startActivity(intent);
+    public void saveCalling(View v){
+
+    }
+
+    public void cancelChanges(View v){
+
     }
 }

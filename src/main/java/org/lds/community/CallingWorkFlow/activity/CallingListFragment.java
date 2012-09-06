@@ -46,6 +46,9 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 
 	}
 
+    public void addNewCalling(View v){
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

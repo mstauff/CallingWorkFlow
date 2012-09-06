@@ -8,6 +8,10 @@
     <string name="clear_btn_label">Clear</string>
     <string name="remove_btn_label">- Remove Calling</string>
 
+    <string name="cancel_btn_label">Cancel</string>
+    <string name="calling_label">Calling</string>
+    <string name="name_label">Name</string>
+
     <string name="ok">Ok</string>
     <string name="error">Error</string>
     <string name="error_service_unavailable">No data connection</string>

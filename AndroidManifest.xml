@@ -11,5 +11,6 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activity.WorkFlowActivity"/>
+        <activity android:name=".activity.DetailActivity"/>
 	</application>
 </manifest>
