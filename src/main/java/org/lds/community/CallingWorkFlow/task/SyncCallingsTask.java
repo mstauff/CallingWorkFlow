@@ -1,5 +1,6 @@
 package org.lds.community.CallingWorkFlow.task;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import roboguice.RoboGuice;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -33,6 +35,9 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
     private static final String TAG = SyncCallingsTask.class.getSimpleName();
 
+    public SyncCallingsTask(Context context) {
+        RoboGuice.getInjector( context ).injectMembers(this);
+    }
 
     @Override
     protected Void doInBackground(String... strings) {

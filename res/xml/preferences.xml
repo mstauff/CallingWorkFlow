@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="@+id/pref_sync_callings_now"
+        android:title="@string/pref_sync_callings_now_title"
+        android:summary="@string/pref_sync_callings_now_summary">
+    </Preference>
+ <Preference
+        android:key="@+id/pref_sync_all_now"
+        android:title="@string/pref_sync_all_now_title"
+        android:summary="@string/pref_sync_all_now_summary">
+    </Preference>
 
 </PreferenceScreen>

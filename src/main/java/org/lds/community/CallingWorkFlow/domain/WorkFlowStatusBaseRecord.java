@@ -11,7 +11,7 @@ public class WorkFlowStatusBaseRecord implements BaseRecord {
     /**
      * The table name offered by this provider
      */
-    public static final String TABLE_NAME = "WorkFlowStatusType";
+    public static final String TABLE_NAME = "workflow_status";
 
 	/**
 	 * Column status enum
@@ -34,7 +34,7 @@ public class WorkFlowStatusBaseRecord implements BaseRecord {
     public static final String DEFAULT_SORT_ORDER = "sequence";
 
 	/********************************* Properties *********************************************/
-	public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
+	public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + WorkFlowStatusBaseRecord.TABLE_NAME + " (" +
 			        WorkFlowStatusBaseRecord.STATUS_NAME + " TEXT PRIMARY KEY," +
 			        WorkFlowStatusBaseRecord.IS_COMPLETE + " INTEGER," +
 				    WorkFlowStatusBaseRecord.SEQUENCE + " INTEGER);";
@@ -83,11 +83,11 @@ public class WorkFlowStatusBaseRecord implements BaseRecord {
 		this.sequence = sequence;
 	}
 
-    public Integer getComplete() {
-        return isComplete;
+    public boolean getComplete() {
+        return isComplete == 1;
     }
 
-    public void setComplete(Integer complete) {
-        isComplete = complete;
+    public void setComplete(boolean complete) {
+        isComplete = complete ? 1 : 0;
     }
 }
