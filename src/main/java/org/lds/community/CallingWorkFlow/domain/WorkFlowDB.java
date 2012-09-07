@@ -106,7 +106,7 @@ public class WorkFlowDB {
         return getCallings( true );
 	}
 
-	private List<CallingViewItem> getCallings( boolean completed ) {
+	public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
 		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
 				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
