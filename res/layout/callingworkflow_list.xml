@@ -11,8 +11,7 @@
             <Button android:id="@+id/addNewCallingBtn"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="@string/add_btn_label"
-                    android:onClick="addNewCalling" />
+                    android:text="@string/add_btn_label"/>
             <Button android:id="@+id/removeCallingBtn"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"

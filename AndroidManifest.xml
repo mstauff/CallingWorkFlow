@@ -11,6 +11,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activity.WorkFlowActivity"/>
+		<activity android:name=".activity.DetailActivity"/>
         <activity android:label="@string/pref_title" android:name=".activity.SettingsActivity"/>
     </application>
 </manifest>

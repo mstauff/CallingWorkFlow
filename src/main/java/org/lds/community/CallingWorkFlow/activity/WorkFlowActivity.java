@@ -31,8 +31,5 @@ public class WorkFlowActivity extends RoboSherlockFragmentActivity {
         super.onBackPressed();
     }
 
-    public void addNewCalling(View v){
-        Intent intent = new Intent(this,DetailActivity.class);
-        startActivity(intent);
-    }
+
 }
