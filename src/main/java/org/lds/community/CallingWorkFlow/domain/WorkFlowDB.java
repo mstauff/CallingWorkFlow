@@ -108,12 +108,15 @@ public class WorkFlowDB {
 
 	public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
-		String SQL = "SELECT " + PositionBaseRecord.TABLE_NAME + ".*, " + CallingBaseRecord.TABLE_NAME + ".*"
-				               + WorkFlowStatusBaseRecord.TABLE_NAME + ".*" +
-				     "  FROM " + PositionBaseRecord.TABLE_NAME + ", " + CallingBaseRecord.TABLE_NAME +
-				     " WHERE " + PositionBaseRecord.TABLE_NAME + "" + CallingBaseRecord.COMPLETED + "=" + completedDbValue +
-				     "   AND " + PositionBaseRecord.POSITION_ID + "=" + CallingBaseRecord.POSITION_ID +
-				     "   AND " + WorkFlowStatusBaseRecord.STATUS_NAME + "=" + CallingBaseRecord.STATUS_NAME;
+		String SQL = "SELECT " + "p.*, "
+				               + "c.*,"
+				               + "w.*" +
+				     "  FROM " + PositionBaseRecord.TABLE_NAME + " p, "
+				               + CallingBaseRecord.TABLE_NAME + " c, "
+				               + WorkFlowStatusBaseRecord.TABLE_NAME + " w" +
+				     " WHERE c." + CallingBaseRecord.COMPLETED + "=" + completedDbValue +
+				     "   AND p." + PositionBaseRecord.POSITION_ID + "= c." + CallingBaseRecord.POSITION_ID +
+				     "   AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + "= c." + CallingBaseRecord.STATUS_NAME;
 
 		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
 
