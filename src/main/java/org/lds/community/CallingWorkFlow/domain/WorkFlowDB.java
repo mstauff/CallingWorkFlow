@@ -24,6 +24,14 @@ public class WorkFlowDB {
      * The database version
      */
     private static final int DATABASE_VERSION = 2;
+    public static final String CALLING_VIEW_ITEM_JOIN = "SELECT " + "p.*, "
+            + "c.*,"
+            + "w.*" +
+            "  FROM " + PositionBaseRecord.TABLE_NAME + " p, "
+            + CallingBaseRecord.TABLE_NAME + " c, "
+            + WorkFlowStatusBaseRecord.TABLE_NAME + " w" +
+            " WHERE p." + PositionBaseRecord.POSITION_ID + "= c." + CallingBaseRecord.POSITION_ID +
+            "   AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + "= c." + CallingBaseRecord.STATUS_NAME;
 
     private DatabaseHelper dbHelper;
 
@@ -52,13 +60,14 @@ public class WorkFlowDB {
         Cursor results = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            // todo - need to change this query to have all the data for a CallingViewItem, not just Calling
-            results = db.query( CallingBaseRecord.TABLE_NAME, null, CallingBaseRecord.IS_SYNCED + "=false", null, null, null, null );
+            String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
+            results = db.rawQuery( SQL, null );
             results.moveToFirst();
             while(!results.isAfterLast()) {
                 CallingViewItem calling = new CallingViewItem();
                 calling.setContent( results );
                 callings.add( calling );
+                results.moveToNext();
             }
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -108,24 +117,24 @@ public class WorkFlowDB {
 
 	public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
-		String SQL = "SELECT " + "p.*, "
-				               + "c.*,"
-				               + "w.*" +
-				     "  FROM " + PositionBaseRecord.TABLE_NAME + " p, "
-				               + CallingBaseRecord.TABLE_NAME + " c, "
-				               + WorkFlowStatusBaseRecord.TABLE_NAME + " w" +
-				     " WHERE c." + CallingBaseRecord.COMPLETED + "=" + completedDbValue +
-				     "   AND p." + PositionBaseRecord.POSITION_ID + "= c." + CallingBaseRecord.POSITION_ID +
-				     "   AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + "= c." + CallingBaseRecord.STATUS_NAME;
+		String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + CallingBaseRecord.COMPLETED + "=" + completedDbValue;
 
-		Cursor results = dbHelper.getDb().rawQuery(SQL, null);
+		Cursor results = null;
+        List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
+        try {
+            results = dbHelper.getDb().rawQuery(SQL, null);
+            results.moveToFirst();
 
-        List<CallingViewItem> callings = new ArrayList<CallingViewItem>( results.getCount() );
-        while( !results.isAfterLast() ) {
-	        CallingViewItem calling = new CallingViewItem();
-	        calling.setContent(results);
-	        callings.add(calling);
-            results.moveToNext();
+            while( !results.isAfterLast() ) {
+                CallingViewItem calling = new CallingViewItem();
+                calling.setContent(results);
+                callings.add(calling);
+                results.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } finally {
+            closeCursor( results );
         }
         return callings;
 	}

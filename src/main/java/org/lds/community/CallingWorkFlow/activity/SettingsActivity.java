@@ -1,13 +1,11 @@
 package org.lds.community.CallingWorkFlow.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.task.SyncCallingsTask;
 import org.lds.community.CallingWorkFlow.task.WardListUpdateTask;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.activity.RoboSherlockPreferenceActivity;
-import roboguice.inject.InjectView;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,14 +16,15 @@ import roboguice.inject.InjectView;
  */
 public class SettingsActivity extends RoboSherlockPreferenceActivity{
 
-    @InjectView(R.id.pref_sync_callings_now)
     Preference syncCallingsPref;
 
-    @InjectView(R.id.pref_sync_all_now)
     Preference syncAllPref;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.preferences);
+        syncCallingsPref = findPreference("pref_sync_callings_now");
+        syncAllPref = findPreference("pref_sync_all_now");
         syncCallingsPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                      public boolean onPreferenceClick(Preference preference) {
                          syncCallings();

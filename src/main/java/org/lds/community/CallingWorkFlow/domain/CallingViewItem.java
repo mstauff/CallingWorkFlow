@@ -2,21 +2,22 @@ package org.lds.community.CallingWorkFlow.domain;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import org.lds.community.CallingWorkFlow.api.DBUtil;
 
 public class CallingViewItem {
 
-	private long positionId = 0;
-	private String positionName = "";
-	private long individualId = 0;
+    private long positionId = 0;
+    private String positionName = "";
+    private long individualId = 0;
     private String firstName = "";
     private String lastName = "";
-	private Integer completed = 0;
-	private long assignedTo = 0;
-	private long dueDate = 0;
-	private Integer isSynced = 0;
-	private String statusName = "";
+    private Integer completed = 0;
+    private long assignedTo = 0;
+    private long dueDate = 0;
+    private Integer isSynced = 0;
+    private String statusName = "";
 
-	CallingViewItem() {}
+    CallingViewItem() {}
 
 /*	CallingViewItem(CallingBaseRecord calling, PositionBaseRecord position, WorkFlowStatusBaseRecord status) {
 		positionId = calling.getPositionId();
@@ -34,7 +35,7 @@ public class CallingViewItem {
     public Calling getCalling() {
         return new Calling( individualId, positionId, statusName, getCompleted(), assignedTo, dueDate, getIsSynced() );
     }
-	public String getPositionName() {
+    public String getPositionName() {
         return positionName;
     }
 
@@ -42,7 +43,7 @@ public class CallingViewItem {
         this.positionName = positionName;
     }
 
-	public long getPositionId() {
+    public long getPositionId() {
         return positionId;
     }
 
@@ -50,7 +51,7 @@ public class CallingViewItem {
         this.positionId = positionId;
     }
 
-	public long getIndividualId() {
+    public long getIndividualId() {
         return individualId;
     }
 
@@ -58,7 +59,7 @@ public class CallingViewItem {
         this.individualId = individualId;
     }
 
-	public long getAssignedToId() {
+    public long getAssignedToId() {
         return assignedTo;
     }
 
@@ -66,7 +67,7 @@ public class CallingViewItem {
         this.assignedTo = assigned_to;
     }
 
-	public boolean getCompleted() {
+    public boolean getCompleted() {
         return completed == 1;
     }
 
@@ -74,15 +75,15 @@ public class CallingViewItem {
         this.completed = completed ? 1 : 0;
     }
 
-	public long getDueDate() {
-		return this.dueDate;
+    public long getDueDate() {
+        return this.dueDate;
     }
 
     public void setDueDate(long due_date) {
-	    this.dueDate = due_date;
+        this.dueDate = due_date;
     }
 
-	public boolean getIsSynced() {
+    public boolean getIsSynced() {
         return isSynced == 1;
     }
 
@@ -90,13 +91,13 @@ public class CallingViewItem {
         this.isSynced = isSynced ? 1 : 0;
     }
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+    public String getFirstName() {
+        return this.firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
     public String getLastName() {
         return lastName;
@@ -115,17 +116,17 @@ public class CallingViewItem {
     }
 
     public void setContent(Cursor cursor) {
-         positionName = cursor.getString(cursor.getColumnIndex(PositionBaseRecord.POSITION_NAME));
- 	    positionId = cursor.getLong(cursor.getColumnIndex(PositionBaseRecord.POSITION_ID));
- 	    individualId = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.INDIVIDUAL_ID));
-         firstName = cursor.getString(cursor.getColumnIndex(MemberBaseRecord.FIRST_NAME));
-         lastName = cursor.getString(cursor.getColumnIndex(MemberBaseRecord.LAST_NAME));
-         assignedTo = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.ASSIGNED_TO));
-         dueDate = cursor.getLong(cursor.getColumnIndex(CallingBaseRecord.DUE_DATE));
-         isSynced = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.IS_SYNCED));
-         completed = cursor.getInt(cursor.getColumnIndex(CallingBaseRecord.COMPLETED));
- 	    statusName = cursor.getString(cursor.getColumnIndex(WorkFlowStatusBaseRecord.STATUS_NAME));
-     }
+        positionName = DBUtil.getDbStringIfPresent(PositionBaseRecord.POSITION_NAME, cursor, "");
+        positionId = DBUtil.getDbLongIfPresent(PositionBaseRecord.POSITION_ID, cursor, -1);
+        individualId = DBUtil.getDbLongIfPresent(CallingBaseRecord.INDIVIDUAL_ID, cursor, -1);
+        firstName = DBUtil.getDbStringIfPresent(MemberBaseRecord.FIRST_NAME, cursor, "");
+        lastName = DBUtil.getDbStringIfPresent(MemberBaseRecord.LAST_NAME, cursor, "");
+        assignedTo = DBUtil.getDbLongIfPresent(CallingBaseRecord.ASSIGNED_TO, cursor, -1);
+        dueDate = DBUtil.getDbLongIfPresent(CallingBaseRecord.DUE_DATE, cursor, 0);
+        isSynced = DBUtil.getDbIntIfPresent(CallingBaseRecord.IS_SYNCED, cursor, 0);
+        completed = DBUtil.getDbIntIfPresent(CallingBaseRecord.COMPLETED, cursor, 0);
+        statusName = DBUtil.getDbStringIfPresent(WorkFlowStatusBaseRecord.STATUS_NAME, cursor, "");
+    }
 
     // these functions shouldn't be needed since this doesn't map directly to a single db row
 /*
@@ -177,4 +178,4 @@ public class CallingViewItem {
     }
 */
 
- }
+}
