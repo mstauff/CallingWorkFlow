@@ -180,4 +180,17 @@ public class CallingBaseRecord implements BaseRecord {
     public void setIsSynced( boolean isSynced ) {
         this.isSynced = isSynced ? 1 : 0;
     }
+
+    @Override
+    public String toString() {
+        return "CallingBaseRecord{" +
+                "individualId=" + individualId +
+                ", positionId=" + positionId +
+                ", statusName='" + statusName + '\'' +
+                ", completed=" + completed +
+                ", assignedTo=" + assignedTo +
+                ", dueDate=" + dueDate +
+                ", isSynced=" + isSynced +
+                '}';
+    }
 }
