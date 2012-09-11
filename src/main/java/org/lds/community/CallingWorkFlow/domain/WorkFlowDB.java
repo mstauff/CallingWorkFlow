@@ -41,52 +41,9 @@ public class WorkFlowDB {
 
     }
 
-	/*
-	 * /calling/<ind id>/update?callingId=<#>&status=<text>&date=<long>&byWho=<indId> optional POST body with history data
-	 */
-	public void saveCallings(List<CallingBaseRecord> callings) {
-		SQLiteDatabase db = dbHelper.getDb();
-		for( CallingBaseRecord calling : callings) {
-			String whereClause = "WHERE individualId=" + calling.getIndividualId() +
-					             "  AND positionId=" + calling.getPositionId();
-			db.delete(CallingBaseRecord.TABLE_NAME, whereClause, null);
-            db.insert( CallingBaseRecord.TABLE_NAME, null, calling.getContentValues() );
-        }
-		db.close();
-	}
-
-    public List<CallingViewItem> getCallingsToSync() {
-        List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
-        Cursor results = null;
-        try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
-            results = db.rawQuery( SQL, null );
-            results.moveToFirst();
-            while(!results.isAfterLast()) {
-                CallingViewItem calling = new CallingViewItem();
-                calling.setContent( results );
-                callings.add( calling );
-                results.moveToNext();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } finally {
-            closeCursor(results);
-        }
-        return callings;
+    public List<WorkFlowStatus> getWorkFlowStatuses() {
+        return getData( WorkFlowStatus.TABLE_NAME, WorkFlowStatus.class );
     }
-
-    private void closeCursor(Cursor results) {
-        if( results != null ) {
-            results.close();
-        }
-    }
-
-    public void updateCallings(List<Calling> callings) {
-        updateData( Calling.TABLE_NAME, callings );
-    }
-
     public void updateWorkFlowStatus(List<WorkFlowStatus> statuses) {
         updateData( WorkFlowStatus.TABLE_NAME, statuses );
     }
@@ -94,12 +51,10 @@ public class WorkFlowDB {
     public void updatePositions(List<Position> positions) {
 		updateData( Position.TABLE_NAME, positions);
 	}
-	/*
-	 * /callingId
-	 */
-	public Long getCallingIds(List<CallingBaseRecord> calling) {
-		return null;
-	}
+
+    public List<Position> getPositions() {
+        return getData( Position.TABLE_NAME, Position.class );
+    }
 
 	/*
 	 * /callings/pending/<sinceDate>
@@ -115,7 +70,7 @@ public class WorkFlowDB {
         return getCallings( true );
 	}
 
-	public List<CallingViewItem> getCallings(boolean completed) {
+	private List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
 		String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + CallingBaseRecord.COMPLETED + "=" + completedDbValue;
 
@@ -150,46 +105,85 @@ public class WorkFlowDB {
         }
         return result > 0;
     }
-
-    public static String getWhereForColumns(String... columnNames) {
-        StringBuilder whereClause = new StringBuilder();
-        for( String columnName : columnNames ) {
-            whereClause.append( columnName + "=?, " );
+	/**
+	 * Updates the given callings in the db.
+	 */
+	public void saveCallings(List<CallingBaseRecord> callings) {
+		SQLiteDatabase db = dbHelper.getDb();
+		for( CallingBaseRecord calling : callings) {
+			String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
+            String[] whereArgs = {String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())};
+            db.update(CallingBaseRecord.TABLE_NAME, calling.getContentValues(), whereClause, whereArgs);
         }
-        // remove extra ", " from the last element
-        if( whereClause.length() > 2 ) {
-            whereClause.delete( whereClause.length() -2, whereClause.length() );
-        }
-        return whereClause.toString();
-    }
+		db.close();
+	}
 
-    /*
-      * /wardlist
-      */
-	public List<Member> getWardList() {
-        List<Member> members = new ArrayList<Member>( );
+    public List<CallingViewItem> getCallingsToSync() {
+        List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
         Cursor results = null;
         try {
-            results = dbHelper.getDb().query(MemberBaseRecord.TABLE_NAME, null, null, null, null, null, null);
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
+            results = db.rawQuery( SQL, null );
             results.moveToFirst();
-            while( !results.isAfterLast() ) {
-                Member member = new Member();
-                member.setContent(results);
-                members.add(member);
+            while(!results.isAfterLast()) {
+                CallingViewItem calling = new CallingViewItem();
+                calling.setContent( results );
+                callings.add( calling );
                 results.moveToNext();
             }
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } finally {
-            closeCursor( results );
+            closeCursor(results);
         }
-        return members;
+        return callings;
+    }
+
+    /**
+     * This method nukes all existing callings in the db and replaces them with the list that is passed in. Should probably
+     * not be used.
+     *
+     * @param callings
+     */
+    public void updateCallings(List<Calling> callings) {
+        updateData( Calling.TABLE_NAME, callings );
+    }
+
+
+    /*
+      * /wardlist
+      */
+	public List<Member> getWardList() {
+        return getData( Member.TABLE_NAME, Member.class );
 	}
 
     public void updateWardList( List<Member> memberList ) {
         updateData( Member.TABLE_NAME, memberList );
     }
 
+    // generic/helper methods
+    private <T extends BaseRecord>List<T> getData(String tableName, Class<T> clazz ) {
+               List<T> resultList = new ArrayList<T>( );
+               Cursor results = null;
+               try {
+                   results = dbHelper.getDb().query(tableName, null, null, null, null, null, null);
+                   results.moveToFirst();
+                   while( !results.isAfterLast() ) {
+                       T record = clazz.newInstance();
+                       record.setContent(results);
+                       resultList.add(record);
+                       results.moveToNext();
+                   }
+               } catch (Exception e) {
+                   e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+               } finally {
+                   closeCursor( results );
+               }
+               return resultList;
+
+
+    }
     private void updateData( String tableName, List<? extends BaseRecord> data ) {
         SQLiteDatabase db = dbHelper.getDb();
         db.beginTransaction();
@@ -209,6 +203,25 @@ public class WorkFlowDB {
 
 
     }
+
+    private void closeCursor(Cursor results) {
+        if( results != null ) {
+            results.close();
+        }
+    }
+
+    public static String getWhereForColumns(String... columnNames) {
+        StringBuilder whereClause = new StringBuilder();
+        for( String columnName : columnNames ) {
+            whereClause.append( columnName + "=?, " );
+        }
+        // remove extra ", " from the last element
+        if( whereClause.length() > 2 ) {
+            whereClause.delete( whereClause.length() -2, whereClause.length() );
+        }
+        return whereClause.toString();
+    }
+
 
     public boolean hasData( String tableName ) {
         return DatabaseUtils.queryNumEntries( dbHelper.getReadableDatabase(), tableName ) > 0;
