@@ -10,9 +10,8 @@ public class Calling extends CallingBaseRecord {
         setIndividualId(individualId);
         setPositionId(positionId);
         setStatusName(statusName);
-        setCompleted( completed );
-        setAssignedTo( assignedTo );
-        setIsSynced( synced );
+        setAssignedTo(assignedTo);
+        setIsSynced(synced);
     }
 
 }

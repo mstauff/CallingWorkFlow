@@ -79,9 +79,9 @@ public class WorkFlowDB {
         return result > 0;
     }
 
-	private List<CallingViewItem> getCallings(boolean completed) {
+	public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
-		String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + CallingBaseRecord.COMPLETED + "=" + completedDbValue;
+		String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue;
 
 		Cursor results = null;
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();

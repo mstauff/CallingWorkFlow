@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
+import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import roboguice.fragment.RoboListFragment;
 import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class CallingListFragment extends RoboListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     WorkFlowDB db;
@@ -37,9 +38,12 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-		"Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-		"Linux", "OS/2" };
+		db = new WorkFlowDB(this.getActivity());
+		List<CallingViewItem> CallingViewItems = db.getCallings(false);
+		String[] values = new String[CallingViewItems.size()];
+		for(int i=0; i < CallingViewItems.size(); i++) {
+			values[i] = CallingViewItems.get(i).getPositionName();
+		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 		android.R.layout.simple_list_item_1, values);
 		setListAdapter(adapter);
@@ -55,8 +59,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-	// Do something with the data
-
+		// Do something with the data
 	}
 
     public void addNewCalling(View v){
@@ -85,7 +88,6 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         currentPositionInList = position;
     }
     */
-    private CursorAdapter listAdapter;
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -97,7 +99,6 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 	}
 
 	@Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        listAdapter.changeCursor(null);
-    }
+	public void onLoaderReset(Loader<Cursor> cursorLoader) {
+	}
 }
