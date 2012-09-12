@@ -1,6 +1,5 @@
 package org.lds.community.CallingWorkFlow.domain;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import org.lds.community.CallingWorkFlow.api.DBUtil;
 
@@ -124,7 +123,7 @@ public class CallingViewItem {
         assignedTo = DBUtil.getDbLongIfPresent(CallingBaseRecord.ASSIGNED_TO, cursor, -1);
         dueDate = DBUtil.getDbLongIfPresent(CallingBaseRecord.DUE_DATE, cursor, 0);
         isSynced = DBUtil.getDbIntIfPresent(CallingBaseRecord.IS_SYNCED, cursor, 0);
-        completed = DBUtil.getDbIntIfPresent(CallingBaseRecord.COMPLETED, cursor, 0);
+        completed = DBUtil.getDbIntIfPresent(WorkFlowStatusBaseRecord.IS_COMPLETE, cursor, 0);
         statusName = DBUtil.getDbStringIfPresent(WorkFlowStatusBaseRecord.STATUS_NAME, cursor, "");
     }
 

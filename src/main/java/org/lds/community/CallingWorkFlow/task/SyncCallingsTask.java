@@ -3,14 +3,9 @@ package org.lds.community.CallingWorkFlow.task;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
-import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
-import org.lds.community.CallingWorkFlow.api.ServiceException;
-import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
-import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import roboguice.RoboGuice;
 
@@ -47,7 +42,7 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
         List<CallingViewItem> callingsToSync = db.getCallingsToSync();
         String updateMsg = "";
         String baseMsgString;
-        List successOrFailList;
+        List<String> successOrFailList;
         for( CallingViewItem calling : callingsToSync ) {
             boolean success = callingMgr.updateCallingOnServer( calling.getCalling() );
             if( success ) {

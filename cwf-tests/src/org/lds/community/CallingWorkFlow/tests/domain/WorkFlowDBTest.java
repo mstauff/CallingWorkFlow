@@ -135,7 +135,6 @@ public class WorkFlowDBTest extends AndroidTestCase {
         values.put(Calling.ASSIGNED_TO, 111111L);
         values.put(Calling.DUE_DATE, 123456874455L);
         values.put(Calling.IS_SYNCED, 1);
-        values.put(Calling.COMPLETED, 1);
 
         calling.setContent(values);
         ContentValues values2=calling.getContentValues();
@@ -147,14 +146,12 @@ public class WorkFlowDBTest extends AndroidTestCase {
         assertEquals("ASSIGNED_TO Id was not equal",values.getAsString(calling.ASSIGNED_TO), values2.getAsString(calling.ASSIGNED_TO));
         assertEquals("DUE_DATE Id was not equal",values.getAsString(calling.DUE_DATE), values2.getAsString(calling.DUE_DATE));
         assertEquals("IS_SYNCED Id was not equal",values.getAsString(calling.IS_SYNCED), values2.getAsString(calling.IS_SYNCED));
-        assertEquals("COMPLETED Id was not equal",values.getAsString(calling.COMPLETED), values2.getAsString(calling.COMPLETED));
     }
 
     // UTIL METHOD
     private Calling createCalling(Long positionId,boolean completed,Long dueDate, Long assignedTo,Long individualId, boolean isSync, String status){
         Calling calling=new Calling();
         calling.setPositionId(positionId);
-        calling.setCompleted(completed);
         calling.setDueDate(dueDate);
         calling.setAssignedTo(assignedTo);
         calling.setIndividualId(individualId);

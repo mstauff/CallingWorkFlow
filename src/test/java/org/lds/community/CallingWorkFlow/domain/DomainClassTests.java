@@ -25,7 +25,7 @@ public class DomainClassTests {
     @Test
     public void test_WorkFlowDB_GetWhereForColumns() throws Exception {
         assertEquals( "getWhereForColumns broken with single column", "individualId=?", WorkFlowDB.getWhereForColumns("individualId" ) );
-        assertEquals( "getWhereForColumns broken for multiple columns", "individualId=?, positionId=?", WorkFlowDB.getWhereForColumns("individualId", "positionId" ) );
+        assertEquals( "getWhereForColumns broken for multiple columns", "individualId=? AND positionId=?", WorkFlowDB.getWhereForColumns("individualId", "positionId" ) );
     }
 
     @Test

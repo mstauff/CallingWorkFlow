@@ -2,7 +2,6 @@ package org.lds.community.CallingWorkFlow.domain;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.provider.BaseColumns;
 
 public class CallingBaseRecord implements BaseRecord {
 
@@ -38,13 +37,6 @@ public class CallingBaseRecord implements BaseRecord {
     private String statusName = "";
 
 	/**
-     * Column name for the completed field
-     * <P>Type: INTEGER</P>
-     */
-	public static final String COMPLETED = "completed";
-	private Integer completed = 0;
-
-	/**
      * Column name for the assignedTo field
      * <P>Type: INTEGER</P>
      */
@@ -72,7 +64,6 @@ public class CallingBaseRecord implements BaseRecord {
 	    CallingBaseRecord.ASSIGNED_TO + " INTEGER," +
 	    CallingBaseRecord.DUE_DATE + " INTEGER, " +
 	    CallingBaseRecord.IS_SYNCED + " INTEGER, " +
-		CallingBaseRecord.COMPLETED + " INTEGER, " +
 		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + ") " +
 //		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + "), " +
 //	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
@@ -82,11 +73,10 @@ public class CallingBaseRecord implements BaseRecord {
     static final String[] ALL_KEYS = new String[] {
 		POSITION_ID,
 	    INDIVIDUAL_ID,
-            STATUS_NAME,
+        STATUS_NAME,
 	    ASSIGNED_TO,
         DUE_DATE,
-        IS_SYNCED,
-        COMPLETED
+        IS_SYNCED
     };
 
     public String[] getAllKeys() {
@@ -101,7 +91,6 @@ public class CallingBaseRecord implements BaseRecord {
 	    values.put(ASSIGNED_TO, assignedTo);
         values.put(DUE_DATE, dueDate);
         values.put(IS_SYNCED, isSynced);
-	    values.put(COMPLETED, completed);
         return values;
     }
 
@@ -112,7 +101,6 @@ public class CallingBaseRecord implements BaseRecord {
 	    assignedTo = values.getAsLong(ASSIGNED_TO);
         dueDate = values.getAsLong(DUE_DATE);
         isSynced = values.getAsInteger(IS_SYNCED);
-	    completed = values.getAsInteger(COMPLETED);
     }
 
     public void setContent(Cursor cursor) {
@@ -122,7 +110,6 @@ public class CallingBaseRecord implements BaseRecord {
 	    assignedTo = cursor.getLong(cursor.getColumnIndex(ASSIGNED_TO));
         dueDate = cursor.getLong(cursor.getColumnIndex(DUE_DATE));
         isSynced = cursor.getInt(cursor.getColumnIndex(IS_SYNCED));
-	    completed = cursor.getInt(cursor.getColumnIndex(COMPLETED));
     }
 
     public long getPositionId() {
@@ -157,14 +144,6 @@ public class CallingBaseRecord implements BaseRecord {
         this.assignedTo = assigned_to;
     }
 
-	public boolean getCompleted() {
-        return completed == 1;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed ? 1 : 0;
-    }
-
 	public long getDueDate() {
 		return this.dueDate;
     }
@@ -179,5 +158,17 @@ public class CallingBaseRecord implements BaseRecord {
 
     public void setIsSynced( boolean isSynced ) {
         this.isSynced = isSynced ? 1 : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "CallingBaseRecord{" +
+                "individualId=" + individualId +
+                ", positionId=" + positionId +
+                ", statusName='" + statusName + '\'' +
+                ", assignedTo=" + assignedTo +
+                ", dueDate=" + dueDate +
+                ", isSynced=" + isSynced +
+                '}';
     }
 }
