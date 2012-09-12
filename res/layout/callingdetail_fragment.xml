@@ -19,22 +19,16 @@
     </LinearLayout>
     <LinearLayout android:layout_width="fill_parent"
                   android:layout_height="wrap_content">
-        <TextView android:id="@+id/callingPositionLabel"
+        <AutoCompleteTextView android:id="@+id/callingPosition"
                   android:layout_height="wrap_content"
-                  android:layout_width="wrap_content"
-                  android:text="@string/calling_label" />
-        <EditText android:id="@+id/callingPosition"
-                  android:layout_height="wrap_content"
-                  android:layout_width="fill_parent" />
+                  android:layout_width="fill_parent"
+                  android:hint="@string/calling_label" />
     </LinearLayout>
     <LinearLayout android:layout_width="fill_parent"
                   android:layout_height="wrap_content">
-        <TextView android:id="@+id/nameLabel"
-                  android:layout_height="wrap_content"
-                  android:layout_width="wrap_content"
-                  android:text="@string/name_label" />
-        <EditText android:id="@+id/memberName"
+        <AutoCompleteTextView android:id="@+id/memberName"
                       android:layout_height="wrap_content"
-                      android:layout_width="fill_parent" />
+                      android:layout_width="fill_parent"
+                      android:hint="@string/name_label" />
     </LinearLayout>
 </LinearLayout>
