@@ -1,6 +1,7 @@
 package org.lds.community.CallingWorkFlow.api;
 
 import org.lds.community.CallingWorkFlow.domain.Calling;
+import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 
 import javax.inject.Inject;
@@ -20,6 +21,12 @@ public class CallingManager {
     @Inject
     CwfNetworkUtil networkUtil;
 
+    public void saveCalling(Calling calling) {
+        calling.setIsSynced( false );
+        db.updateCalling( calling );
+        updateCallingOnServer( calling );
+    }
+
     public boolean updateCallingOnServer( Calling calling ) {
         boolean success = false;
         // 1 - make the rest call to update calling
@@ -33,9 +40,7 @@ public class CallingManager {
         }
 
         // return true if was successful, false otherwise
-
         return success;
-
     }
 
     private boolean areCallingsEqual(Calling calling, Calling updatedCalling) {

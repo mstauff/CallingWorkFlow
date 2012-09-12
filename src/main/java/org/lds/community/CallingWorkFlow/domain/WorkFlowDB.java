@@ -107,14 +107,17 @@ public class WorkFlowDB {
 	}
 
 
+    /**
+     * Updates an existing  calling, or adds it new if it isn't in the db.
+     * @param calling
+     * @return
+     */
     public boolean updateCalling( Calling calling ) {
-        int result = 0;
+        long result = 0;
         SQLiteDatabase db = null;
         try {
-            String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
             db = dbHelper.getWritableDatabase();
-            result = db.update(Calling.TABLE_NAME, calling.getContentValues(), whereClause,
-                    new String[]{String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())});
+            result = db.replace(Calling.TABLE_NAME, null, calling.getContentValues());
         } catch (Exception e) {
             Log.w(TAG, "Exception updating calling: " + e.toString() );
         } finally {
