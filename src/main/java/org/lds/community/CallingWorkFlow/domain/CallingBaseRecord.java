@@ -58,16 +58,17 @@ public class CallingBaseRecord implements BaseRecord {
 	private Integer isSynced = 0;
 
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + CallingBaseRecord.TABLE_NAME + " (" +
-	    CallingBaseRecord.POSITION_ID + " INTEGER, " +
-	    CallingBaseRecord.INDIVIDUAL_ID + " INTEGER, " +
+	    CallingBaseRecord.POSITION_ID + " INTEGER NULL, " +
+	    CallingBaseRecord.INDIVIDUAL_ID + " INTEGER NULL, " +
 		CallingBaseRecord.STATUS_NAME + " TEXT, " +
 	    CallingBaseRecord.ASSIGNED_TO + " INTEGER," +
 	    CallingBaseRecord.DUE_DATE + " INTEGER, " +
 	    CallingBaseRecord.IS_SYNCED + " INTEGER, " +
-		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + ") " +
-//		"PRIMARY KEY (" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + "), " +
-//	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
-//		                 PositionBaseRecord.TABLE_NAME + "(" + PositionBaseRecord.POSITION_ID + ") " +
+		"PRIMARY KEY(" + CallingBaseRecord.POSITION_ID + "," + CallingBaseRecord.INDIVIDUAL_ID + "), " +
+	    "FOREIGN KEY(" + CallingBaseRecord.POSITION_ID + ") REFERENCES " +
+		                 PositionBaseRecord.TABLE_NAME + "(" + PositionBaseRecord.POSITION_ID + "), " +
+	    "FOREIGN KEY(" + CallingBaseRecord.INDIVIDUAL_ID + ") REFERENCES " +
+	                     MemberBaseRecord.TABLE_NAME + "(" + MemberBaseRecord.INDIVIDUAL_ID + ") " +
 	    ");";
 
     static final String[] ALL_KEYS = new String[] {

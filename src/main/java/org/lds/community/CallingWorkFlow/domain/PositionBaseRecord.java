@@ -2,7 +2,6 @@ package org.lds.community.CallingWorkFlow.domain;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.provider.BaseColumns;
 
 public class PositionBaseRecord implements BaseRecord {
 
@@ -33,11 +32,7 @@ public class PositionBaseRecord implements BaseRecord {
 
     public static final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS " + PositionBaseRecord.TABLE_NAME + " (" +
 		PositionBaseRecord.POSITION_ID + " INTEGER PRIMARY KEY, " +
-	    PositionBaseRecord.POSITION_NAME + " TEXT " +
-//	    PositionBaseRecord.POSITION_NAME + " TEXT, " +
-//	    "FOREIGN KEY(status_name) REFERENCES " + WorkFlowStatusBaseRecord.TABLE_NAME + "("
-//            + WorkFlowStatusBaseRecord.STATUS_NAME + ") " +
-	    ");";
+	    PositionBaseRecord.POSITION_NAME + " TEXT );";
 
     static final String[] ALL_KEYS = new String[] {
 		POSITION_ID,

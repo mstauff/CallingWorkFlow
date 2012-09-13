@@ -24,11 +24,14 @@ public class WorkFlowDB {
      * The database version
      */
     private static final int DATABASE_VERSION = 2;
-    public static final String CALLING_VIEW_ITEM_JOIN = "SELECT " + "p.*, "
-            + "c.*"
-            + "  FROM " + PositionBaseRecord.TABLE_NAME + " p, "
-            + CallingBaseRecord.TABLE_NAME + " c "
-            + " WHERE p." + PositionBaseRecord.POSITION_ID + "= c." + CallingBaseRecord.POSITION_ID;
+    public static final String CALLING_VIEW_ITEM_JOIN =
+	    "SELECT " + "p.*, " +
+                    "c.*, " +
+                    "w.* " +
+        "  FROM " + PositionBaseRecord.TABLE_NAME + " p, " +
+                    CallingBaseRecord.TABLE_NAME + " c, " +
+                    WorkFlowStatusBaseRecord.TABLE_NAME + " w " +
+        " WHERE p." + PositionBaseRecord.POSITION_ID + " = c." + CallingBaseRecord.POSITION_ID;
 
     private DatabaseHelper dbHelper;
 
@@ -287,11 +290,11 @@ public class WorkFlowDB {
         public void onCreate(SQLiteDatabase db) {
             // todo - setup INDEXES
             this.db = db;
+	        db.execSQL("PRAGMA foreign_keys = ON;");
             db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( PositionBaseRecord.CREATE_SQL );
             db.execSQL( CallingBaseRecord.CREATE_SQL );
-            db.close();
         }
 
         /**
