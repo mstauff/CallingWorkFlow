@@ -26,12 +26,4 @@ public class DetailActivity extends RoboSherlockFragmentActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
-
-    public void saveCalling(View v){
-
-    }
-
-    public void cancelChanges(View v){
-
-    }
 }

@@ -24,14 +24,11 @@ public class WorkFlowDB {
      * The database version
      */
     private static final int DATABASE_VERSION = 2;
-    public static final String CALLING_VIEW_ITEM_JOIN =
-		    "SELECT " + "p.*, " +
-                        "c.*, " +
-				        "w.* " +
-            "  FROM " + PositionBaseRecord.TABLE_NAME + " p, " +
-                        CallingBaseRecord.TABLE_NAME + " c, " +
-				        WorkFlowStatusBaseRecord.TABLE_NAME + " w " +
-            " WHERE p." + PositionBaseRecord.POSITION_ID + " = c." + CallingBaseRecord.POSITION_ID;
+    public static final String CALLING_VIEW_ITEM_JOIN = "SELECT " + "p.*, "
+            + "c.*"
+            + "  FROM " + PositionBaseRecord.TABLE_NAME + " p, "
+            + CallingBaseRecord.TABLE_NAME + " c "
+            + " WHERE p." + PositionBaseRecord.POSITION_ID + "= c." + CallingBaseRecord.POSITION_ID;
 
     private DatabaseHelper dbHelper;
 
@@ -111,14 +108,18 @@ public class WorkFlowDB {
         return callings;
 	}
 
+
+    /**
+     * Updates an existing  calling, or adds it new if it isn't in the db.
+     * @param calling
+     * @return
+     */
     public boolean updateCalling( Calling calling ) {
-        int result = 0;
+        long result = 0;
         SQLiteDatabase db = null;
         try {
-            String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
             db = dbHelper.getWritableDatabase();
-            result = db.update(Calling.TABLE_NAME, calling.getContentValues(), whereClause,
-                    new String[]{String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())});
+            result = db.replace(Calling.TABLE_NAME, null, calling.getContentValues());
         } catch (Exception e) {
             Log.w(TAG, "Exception updating calling: " + e.toString() );
         } finally {
@@ -152,10 +153,7 @@ public class WorkFlowDB {
         SQLiteDatabase db = null;
         try {
             db = dbHelper.getReadableDatabase();
-            String SQL = CALLING_VIEW_ITEM_JOIN +
-		            " AND c." + Calling.IS_SYNCED + "=0" +
-		            " AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + " = c." + CallingBaseRecord.STATUS_NAME;
-
+            String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
             results = db.rawQuery( SQL, null );
             results.moveToFirst();
             while(!results.isAfterLast()) {
@@ -183,9 +181,10 @@ public class WorkFlowDB {
         updateData( Calling.TABLE_NAME, callings );
     }
 
+
     /*
-     * /wardlist
-     */
+      * /wardlist
+      */
 	public List<Member> getWardList() {
         return getData( Member.TABLE_NAME, Member.class );
 	}
@@ -194,7 +193,7 @@ public class WorkFlowDB {
         updateData( Member.TABLE_NAME, memberList );
     }
 
-    /* Generic/helper methods */
+    // generic/helper methods
     private <T extends BaseRecord>List<T> getData(String tableName, Class<T> clazz ) {
         List<T> resultList = new ArrayList<T>( );
         Cursor results = null;
