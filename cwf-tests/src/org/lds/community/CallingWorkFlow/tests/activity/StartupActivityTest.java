@@ -17,12 +17,11 @@ import org.lds.community.CallingWorkFlow.activity.StartupActivity;
 public class StartupActivityTest extends ActivityInstrumentationTestCase2<StartupActivity> {
 
     public StartupActivityTest() {
-        super("org.lds.community.CallingWorkFlow", StartupActivity.class);
+        super(StartupActivity.class);
     }
 
     @Test
     public void testThis() {
         assertTrue( true );
     }
-
 }

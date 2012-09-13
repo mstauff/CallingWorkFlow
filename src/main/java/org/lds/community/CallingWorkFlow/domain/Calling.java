@@ -2,7 +2,6 @@ package org.lds.community.CallingWorkFlow.domain;
 
 public class Calling extends CallingBaseRecord {
 
-
     public Calling() {
     }
 
@@ -13,5 +12,4 @@ public class Calling extends CallingBaseRecord {
         setAssignedTo(assignedTo);
         setIsSynced(synced);
     }
-
 }

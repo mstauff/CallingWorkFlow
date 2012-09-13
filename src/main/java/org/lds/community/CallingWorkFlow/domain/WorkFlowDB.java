@@ -24,23 +24,26 @@ public class WorkFlowDB {
      * The database version
      */
     private static final int DATABASE_VERSION = 2;
-    public static final String CALLING_VIEW_ITEM_JOIN = "SELECT " + "p.*, "
-            + "c.*"
-            + "  FROM " + PositionBaseRecord.TABLE_NAME + " p, "
-            + CallingBaseRecord.TABLE_NAME + " c "
-            + " WHERE p." + PositionBaseRecord.POSITION_ID + "= c." + CallingBaseRecord.POSITION_ID;
+    public static final String CALLING_VIEW_ITEM_JOIN =
+		    "SELECT " + "p.*, " +
+                        "c.*, " +
+				        "w.* " +
+            "  FROM " + PositionBaseRecord.TABLE_NAME + " p, " +
+                        CallingBaseRecord.TABLE_NAME + " c, " +
+				        WorkFlowStatusBaseRecord.TABLE_NAME + " w " +
+            " WHERE p." + PositionBaseRecord.POSITION_ID + " = c." + CallingBaseRecord.POSITION_ID;
 
     private DatabaseHelper dbHelper;
 
     @Inject
     public WorkFlowDB(Context context) {
         dbHelper = new DatabaseHelper( context );
-
     }
 
     public List<WorkFlowStatus> getWorkFlowStatuses() {
         return getData( WorkFlowStatus.TABLE_NAME, WorkFlowStatus.class );
     }
+
     public void updateWorkFlowStatus(List<WorkFlowStatus> statuses) {
         updateData( WorkFlowStatus.TABLE_NAME, statuses );
     }
@@ -81,7 +84,9 @@ public class WorkFlowDB {
 
 	public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
-		String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue;
+		String SQL = CALLING_VIEW_ITEM_JOIN +
+				" AND w." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue +
+				" AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + " = c." + CallingBaseRecord.STATUS_NAME;
 
 		Cursor results = null;
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
@@ -98,14 +103,13 @@ public class WorkFlowDB {
                 results.moveToNext();
             }
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } finally {
             closeCursor(results);
             closeDB( db );
         }
         return callings;
 	}
-
 
     public boolean updateCalling( Calling calling ) {
         int result = 0;
@@ -148,7 +152,10 @@ public class WorkFlowDB {
         SQLiteDatabase db = null;
         try {
             db = dbHelper.getReadableDatabase();
-            String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
+            String SQL = CALLING_VIEW_ITEM_JOIN +
+		            " AND c." + Calling.IS_SYNCED + "=0" +
+		            " AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + " = c." + CallingBaseRecord.STATUS_NAME;
+
             results = db.rawQuery( SQL, null );
             results.moveToFirst();
             while(!results.isAfterLast()) {
@@ -176,10 +183,9 @@ public class WorkFlowDB {
         updateData( Calling.TABLE_NAME, callings );
     }
 
-
     /*
-      * /wardlist
-      */
+     * /wardlist
+     */
 	public List<Member> getWardList() {
         return getData( Member.TABLE_NAME, Member.class );
 	}
@@ -188,7 +194,7 @@ public class WorkFlowDB {
         updateData( Member.TABLE_NAME, memberList );
     }
 
-    // generic/helper methods
+    /* Generic/helper methods */
     private <T extends BaseRecord>List<T> getData(String tableName, Class<T> clazz ) {
         List<T> resultList = new ArrayList<T>( );
         Cursor results = null;
@@ -210,9 +216,8 @@ public class WorkFlowDB {
             closeDB(db);
         }
         return resultList;
-
-
     }
+
     private void updateData( String tableName, List<? extends BaseRecord> data ) {
         SQLiteDatabase db = null;
         try {
@@ -226,13 +231,11 @@ public class WorkFlowDB {
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } finally {
             db.endTransaction();
             closeDB( db );
         }
-
-
     }
 
     private void closeDB(SQLiteDatabase db) {
@@ -303,6 +306,5 @@ public class WorkFlowDB {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             // for now - do nothing
         }
-
     }
 }
