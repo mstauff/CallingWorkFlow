@@ -2,6 +2,7 @@ package org.lds.community.CallingWorkFlow.tests.domain;
 
 import android.content.ContentValues;
 import android.test.AndroidTestCase;
+import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,25 +34,63 @@ public class WorkFlowDBTest extends AndroidTestCase {
     }
 
     @Test
-    public void testSaveCallings() throws Exception {
-        List<CallingBaseRecord> callingList=new ArrayList<CallingBaseRecord>();
-        List<CallingViewItem> callingList2=new ArrayList<CallingViewItem>();
+    public void testAddCallings() throws Exception {
+
+        List<Position> positionList=new ArrayList<Position>();
+        Position position=createPosition(54L,"position1");
+        Position position2=createPosition(53L,"position2");
+        Position position3=createPosition(52L,"position3");
+        positionList.add(position);
+        positionList.add(position2);
+        positionList.add(position3);
+        db.updatePositions(positionList);
 
         Calling cal1=createCalling(52L,true,23132132132L,222222L,111111L,false,"ACTIVE");
         Calling cal2=createCalling(53L,true,122121321l,222222L,555555l,false,"ACTIVE");
         Calling cal3=createCalling(54L,true,2313211132132L,222222L,3333333l,false,"ACTIVE");
-        callingList.add(cal1);
-        callingList.add(cal2);
-        callingList.add(cal3);
-//        db.saveCallings(callingList);
-//        callingList2=db.getCompletedCallings();
-//        assertEquals("Records not stored in db", callingList.size(), callingList2.size());
-        //todo getCompletedCallings does not work
+
+        db.addCalling(cal1);
+        db.addCalling(cal2);
+        db.addCalling(cal3);
+
+        List<CallingViewItem> callingList2=db.getCompletedCallings();
+        assertEquals("Records not stored in db", positionList.size(), callingList2.size());
+    }
+    @Test
+
+    public void testCallingsNotSync() throws Exception {
+
+        Calling cal1=createCalling(52L,true,23132132132L,222222L,111111L,false,"ACTIVE");
+        Calling cal2=createCalling(53L,true,122121321l,222222L,555555l,true,"ACTIVE");
+        Calling cal3=createCalling(54L,true,2313211132132L,222222L,3333333l,false,"ACTIVE");
+        db.addCalling(cal1);
+        db.addCalling(cal2);
+        db.addCalling(cal3);
+
+        List<CallingViewItem> callingList2=db.getCallingsToSync();
+        assertEquals("Record List did not return 2 callings", callingList2.size(), 2);
+        //todo check query. it should return 2 callings
+
+    }
+
+    public void testCallingsPending() throws Exception {
+
+        Calling cal1=createCalling(52L,true,23132132132L,222222L,111111L,false,"ACTIVE");
+        Calling cal2=createCalling(53L,false,122121321l,222222L,555555l,true,"ACTIVE");
+        Calling cal3=createCalling(54L,false,2313211132132L,222222L,3333333l,false,"ACTIVE");
+        db.addCalling(cal1);
+        db.addCalling(cal2);
+        db.addCalling(cal3);
+
+        List<CallingViewItem> callingList2=db.getPendingCallings();
+        assertEquals("Record List did not return 1 calling", callingList2.size(), 2);
+        //todo check query. it should return 2 callings
     }
 
     @Test
-    public void testSavePositions() throws Exception {
-
+    public void testGetPositions() throws Exception {
+        List<Position>  positionList= db.getPositions() ;
+        Assert.assertEquals("",positionList.size(),3);
     }
 
     @Test
@@ -65,13 +104,8 @@ public class WorkFlowDBTest extends AndroidTestCase {
     }
 
     @Test
-    public void testGetCompletedCallings() throws Exception {
-
-    }
-
-    @Test
     public void testGetWardList() throws Exception {
-         List<Member> fromDbMemberList = db.getWardList();
+        List<Member> fromDbMemberList = db.getWardList();
         assertTrue("Records not found in db", fromDbMemberList.size()>=1);
 
     }
@@ -160,6 +194,14 @@ public class WorkFlowDBTest extends AndroidTestCase {
 
         return calling;
 
+    }
+
+    private Position createPosition(Long positionID, String positionName){
+        Position position=new Position();
+        position.setPositionId(positionID);
+        position.setPositionName(positionName);
+
+        return position;
     }
 
 }
