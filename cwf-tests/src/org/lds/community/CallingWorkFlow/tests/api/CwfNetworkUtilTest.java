@@ -1,7 +1,6 @@
 package org.lds.community.CallingWorkFlow.tests.api;
 
 import android.test.AndroidTestCase;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +39,6 @@ public class CwfNetworkUtilTest extends AndroidTestCase {
         for(Calling calling : existingCallings ) {
             networkUtil.updateCalling(calling);
         }
-
     }
 
 
