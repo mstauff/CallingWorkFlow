@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class CallingListFragment extends RoboListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    @Inject
     WorkFlowDB db;
 
     @Inject
@@ -38,7 +39,6 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		db = new WorkFlowDB(this.getActivity());
 		List<CallingViewItem> CallingViewItems = db.getCallings(false);
 		String[] values = new String[CallingViewItems.size()];
 		for(int i=0; i < CallingViewItems.size(); i++) {
