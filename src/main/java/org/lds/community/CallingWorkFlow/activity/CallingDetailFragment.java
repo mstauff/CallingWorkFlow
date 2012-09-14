@@ -6,13 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
+import android.widget.*;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.Position;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockFragment;
 import roboguice.inject.InjectView;
 
@@ -53,9 +52,7 @@ public class CallingDetailFragment extends RoboSherlockFragment {
         AutoCompleteTextView callingField = (AutoCompleteTextView) view.findViewById(R.id.callingPosition);
         List<Position> positions = db.getPositions();
         List<String> positionNames = new ArrayList<String>();
-        for(Position v: positions){
-            positionNames.add(v.getPositionName());
-        }
+        for(Position v: positions) { positionNames.add(v.getPositionName()); }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.autocomplete_textview,positionNames);
         callingField.setAdapter(adapter);
         callingField.setThreshold(1);//Number of required characters for search
@@ -63,12 +60,18 @@ public class CallingDetailFragment extends RoboSherlockFragment {
         AutoCompleteTextView memberField = (AutoCompleteTextView) view.findViewById(R.id.memberName);
         List<Member> members = db.getWardList();
         List<String> memberNames = new ArrayList<String>();
-        for(Member m: members){
-            memberNames.add(m.getFirstName() + " " + m.getLastName());
-        }
+        for(Member m: members) { memberNames.add(m.getFirstName() + " " + m.getLastName()); }
         ArrayAdapter<String> memberAdapter = new ArrayAdapter<String>(getActivity(),R.layout.autocomplete_textview,memberNames);
         memberField.setAdapter(memberAdapter);
         memberField.setThreshold(1);//Number of required characters for search
+
+        Spinner statusSpinner = (Spinner) view.findViewById(R.id.status_spinner);
+        List<WorkFlowStatus> statusList = db.getWorkFlowStatuses();
+        List<CharSequence> statusOptions = new ArrayList<CharSequence>();
+        for(WorkFlowStatus s: statusList) { statusOptions.add(s.getStatusName()); }
+        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_item,statusOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusSpinner.setAdapter(spinnerAdapter);
 
         return view;
     }
@@ -78,7 +81,7 @@ public class CallingDetailFragment extends RoboSherlockFragment {
     }
 
     public void cancelChanges(View v){
-
+        getActivity().onBackPressed();
     }
 
 }
