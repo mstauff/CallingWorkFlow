@@ -49,41 +49,41 @@ public class WorkFlowDB {
     }
 
     public void updatePositions(List<Position> positions) {
-		updateData( Position.TABLE_NAME, positions);
-	}
+        updateData( Position.TABLE_NAME, positions);
+    }
 
     public List<Position> getPositions() {
         return getData( Position.TABLE_NAME, Position.class );
     }
 
-	/*
-	 * /callings/pending/<sinceDate>
-	 */
-	public List<CallingViewItem> getPendingCallings() {
+    /*
+      * /callings/pending/<sinceDate>
+      */
+    public List<CallingViewItem> getPendingCallings() {
         return getCallings( false );
     }
 
-	/*
-	 * /callings/completed/<sinceDate>
-	 */
-	public List<CallingViewItem> getCompletedCallings() {
+    /*
+      * /callings/completed/<sinceDate>
+      */
+    public List<CallingViewItem> getCompletedCallings() {
         return getCallings( true );
-	}
+    }
 
     public boolean addCalling( Calling calling ) {
         long result = -1;
         SQLiteDatabase db = dbHelper.getDb();
-            result = db.insert(Calling.TABLE_NAME, null, calling.getContentValues());
+        result = db.insert(Calling.TABLE_NAME, null, calling.getContentValues());
         return result > 0;
     }
 
-	public List<CallingViewItem> getCallings(boolean completed) {
+    public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
-		String SQL = CALLING_VIEW_ITEM_JOIN +
-				" AND w." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue +
-				" AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + " = c." + CallingBaseRecord.STATUS_NAME;
+        String SQL = CALLING_VIEW_ITEM_JOIN +
+                " AND w." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue +
+                " AND w." + WorkFlowStatusBaseRecord.STATUS_NAME + " = c." + CallingBaseRecord.STATUS_NAME;
 
-		Cursor results = null;
+        Cursor results = null;
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
         try {
             SQLiteDatabase db = dbHelper.getDb();
@@ -102,7 +102,7 @@ public class WorkFlowDB {
             closeCursor(results);
         }
         return callings;
-	}
+    }
 
 
     /**
@@ -111,21 +111,21 @@ public class WorkFlowDB {
      * @return
      */
     public boolean updateCalling( Calling calling ) {
-            SQLiteDatabase db = dbHelper.getDb();
-            long result = db.replace(Calling.TABLE_NAME, null, calling.getContentValues());
+        SQLiteDatabase db = dbHelper.getDb();
+        long result = db.replace(Calling.TABLE_NAME, null, calling.getContentValues());
         return result > 0;
     }
-	/**
-	 * Updates the given callings in the db.
-	 */
-	public void saveCallings(List<Calling> callings) {
+    /**
+     * Updates the given callings in the db.
+     */
+    public void saveCallings(List<Calling> callings) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-            for( Calling calling : callings) {
-                String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
-                String[] whereArgs = {String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())};
-                int result = db.update(CallingBaseRecord.TABLE_NAME, calling.getContentValues(), whereClause, whereArgs);
-                Log.d(TAG, "Updated calling: " + calling.toString() + " Result=" + result );
-            }
+        for( Calling calling : callings) {
+            String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
+            String[] whereArgs = {String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())};
+            int result = db.update(CallingBaseRecord.TABLE_NAME, calling.getContentValues(), whereClause, whereArgs);
+            Log.d(TAG, "Updated calling: " + calling.toString() + " Result=" + result );
+        }
     }
 
     public List<CallingViewItem> getCallingsToSync() {
@@ -164,9 +164,9 @@ public class WorkFlowDB {
     /*
       * /wardlist
       */
-	public List<Member> getWardList() {
+    public List<Member> getWardList() {
         return getData( Member.TABLE_NAME, Member.class );
-	}
+    }
 
     public void updateWardList( List<Member> memberList ) {
         updateData( Member.TABLE_NAME, memberList );
@@ -264,7 +264,7 @@ public class WorkFlowDB {
         public void onCreate(SQLiteDatabase db) {
             // todo - setup INDEXES
             this.db = db;
-	        db.execSQL("PRAGMA foreign_keys = ON;");
+            db.execSQL("PRAGMA foreign_keys = ON;");
             db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( PositionBaseRecord.CREATE_SQL );
