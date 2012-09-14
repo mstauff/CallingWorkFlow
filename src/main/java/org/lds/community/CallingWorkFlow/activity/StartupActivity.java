@@ -21,4 +21,13 @@ public class StartupActivity extends RoboActivity {
 	    Intent intent = new Intent(this, WorkFlowActivity.class);
 	    startActivity(intent);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if( db != null ) {
+            db.closeDB();
+        }
+    }
+
 }

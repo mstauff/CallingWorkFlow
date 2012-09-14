@@ -71,14 +71,9 @@ public class WorkFlowDB {
 	}
 
     public boolean addCalling( Calling calling ) {
-        SQLiteDatabase db = null;
         long result = -1;
-        try {
-            db = dbHelper.getWritableDatabase();
-            result = db.insert( Calling.TABLE_NAME, null, calling.getContentValues() );
-        } finally {
-            closeDB( db );
-        }
+        SQLiteDatabase db = dbHelper.getDb();
+            result = db.insert(Calling.TABLE_NAME, null, calling.getContentValues());
         return result > 0;
     }
 
@@ -90,9 +85,8 @@ public class WorkFlowDB {
 
 		Cursor results = null;
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
-        SQLiteDatabase db = null;
         try {
-            db = dbHelper.getReadableDatabase();
+            SQLiteDatabase db = dbHelper.getDb();
             results = db.rawQuery(SQL, null);
             results.moveToFirst();
 
@@ -106,7 +100,6 @@ public class WorkFlowDB {
             e.printStackTrace();
         } finally {
             closeCursor(results);
-            closeDB( db );
         }
         return callings;
 	}
@@ -118,44 +111,28 @@ public class WorkFlowDB {
      * @return
      */
     public boolean updateCalling( Calling calling ) {
-        long result = 0;
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getWritableDatabase();
-            result = db.replace(Calling.TABLE_NAME, null, calling.getContentValues());
-        } catch (Exception e) {
-            Log.w(TAG, "Exception updating calling: " + e.toString() );
-        } finally {
-            closeDB( db );
-        }
+            SQLiteDatabase db = dbHelper.getDb();
+            long result = db.replace(Calling.TABLE_NAME, null, calling.getContentValues());
         return result > 0;
     }
 	/**
 	 * Updates the given callings in the db.
 	 */
 	public void saveCallings(List<Calling> callings) {
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
             for( Calling calling : callings) {
                 String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
                 String[] whereArgs = {String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())};
                 int result = db.update(CallingBaseRecord.TABLE_NAME, calling.getContentValues(), whereClause, whereArgs);
                 Log.d(TAG, "Updated calling: " + calling.toString() + " Result=" + result );
             }
-        } catch (Exception e) {
-            Log.w(TAG, "Exception saving callings: " + e.toString() );
-        } finally {
-            closeDB( db );
-        }
     }
 
     public List<CallingViewItem> getCallingsToSync() {
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
         Cursor results = null;
-        SQLiteDatabase db = null;
         try {
-            db = dbHelper.getReadableDatabase();
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
             String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
             results = db.rawQuery( SQL, null );
             results.moveToFirst();
@@ -169,7 +146,6 @@ public class WorkFlowDB {
             Log.w( TAG, "Exception getCallingsToSync: " + e.toString() );
         } finally {
             closeCursor(results);
-            closeDB( db );
         }
         return callings;
     }
@@ -200,9 +176,8 @@ public class WorkFlowDB {
     private <T extends BaseRecord>List<T> getData(String tableName, Class<T> clazz ) {
         List<T> resultList = new ArrayList<T>( );
         Cursor results = null;
-        SQLiteDatabase db = null;
         try {
-            db = dbHelper.getReadableDatabase();
+            SQLiteDatabase db = dbHelper.getDb();
             results = db.query(tableName, null, null, null, null, null, null);
             results.moveToFirst();
             while( !results.isAfterLast() ) {
@@ -215,7 +190,6 @@ public class WorkFlowDB {
             Log.w(TAG, "getData() Exception: " + e.toString());
         } finally {
             closeCursor( results );
-            closeDB(db);
         }
         return resultList;
     }
@@ -223,7 +197,7 @@ public class WorkFlowDB {
     private void updateData( String tableName, List<? extends BaseRecord> data ) {
         SQLiteDatabase db = null;
         try {
-            db = dbHelper.getWritableDatabase();
+            db = dbHelper.getDb();
             db.beginTransaction();
             db.delete(tableName, null, null);
             DatabaseUtils.InsertHelper insertHelper = new DatabaseUtils.InsertHelper( db, tableName);
@@ -236,11 +210,11 @@ public class WorkFlowDB {
             e.printStackTrace();
         } finally {
             db.endTransaction();
-            closeDB( db );
         }
     }
 
-    private void closeDB(SQLiteDatabase db) {
+    public void closeDB() {
+        SQLiteDatabase db = dbHelper.getDb();
         if( db != null && db.isOpen() ) {
             db.close();
         }
@@ -295,6 +269,16 @@ public class WorkFlowDB {
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( PositionBaseRecord.CREATE_SQL );
             db.execSQL( CallingBaseRecord.CREATE_SQL );
+        }
+
+        public SQLiteDatabase getDb() {
+            return db;
+        }
+
+        public void close() {
+            if( db != null && db.isOpen() ) {
+                db.close();
+            }
         }
 
         /**
