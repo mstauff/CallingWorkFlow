@@ -34,7 +34,7 @@ public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
             if (tt != null) {
                   tt.setText(o.getPositionName());                            }
             if(bt != null){
-                  bt.setText(o.getFirstName() + " " + o.getLastName() + "( " + o.getStatusName() + ")");
+                  bt.setText(o.getFullName() + " ( " + o.getStatusName() + ")");
             }
         }
         return v;

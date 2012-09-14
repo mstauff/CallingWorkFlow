@@ -106,6 +106,10 @@ public class CallingViewItem {
         this.lastName = lastName;
     }
 
+	public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
     public String getStatusName() {
         return statusName;
     }
