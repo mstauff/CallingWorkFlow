@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lds.community.CallingWorkFlow.InjectedTestRunner;
 import org.lds.community.CallingWorkFlow.domain.Calling;
 import roboguice.test.RobolectricRoboTestRunner;
 
@@ -21,9 +22,10 @@ import static org.junit.Assert.*;
  * Time: 2:41 PM
  * To change this template use File | Settings | File Templates.
  */
-@RunWith(RobolectricRoboTestRunner.class)
+@RunWith(InjectedTestRunner.class)
 public class CwfNetworkUtilTest{
 
+    @Inject
     CwfNetworkUtil networkUtil;
 
 
@@ -31,7 +33,6 @@ public class CwfNetworkUtilTest{
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
-        networkUtil = new CwfNetworkUtil();
         Calling calling = new Calling( 5555, 22, "APPROVED", false, 0, 0, false );
         networkUtil.updateCalling( calling );
         List<Calling> callings = networkUtil.getPendingCallings();
