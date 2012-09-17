@@ -162,7 +162,8 @@ public class CwfNetworkUtil {
         try {
             String url = String.format( CALLING_UPDATE_URL, calling.getIndividualId(), calling.getPositionId(), calling.getStatusName() );
             String jsonResult = executePutJSONRequest(new HttpPut(url));
-            callingResult = JSONUtil.parseCalling(new JSONObject(jsonResult));
+            JSONObject json = new JSONObject(jsonResult);
+            callingResult = JSONUtil.parseCalling(json.getJSONObject(JSONUtil.CALLING_OBJ));
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (JSONException e) {

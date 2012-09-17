@@ -34,6 +34,7 @@ public class JSONUtil {
     public static final String CALLING_POS_ID = "positionId";
     public static final String CALLING_STATUS_NAME = "statusName";
 
+    public static final String CALLING_OBJ = "calling";
 
     public static Member parseMember( JSONObject json ) throws JSONException {
         Member member = new Member();
