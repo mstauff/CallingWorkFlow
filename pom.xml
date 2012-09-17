@@ -18,11 +18,11 @@
         <dbtools.basePackageName>org.lds.community.CallingWorkFlow</dbtools.basePackageName>
     </properties>
 
-<!--
-    <scm>
-        <connection>scm:git:https://${scm.username}:${scm.password}@code.lds.org/git/LDSToolsAndroid</connection>
-    </scm>
--->
+    <!--
+        <scm>
+            <connection>scm:git:https://${scm.username}:${scm.password}@code.lds.org/git/LDSToolsAndroid</connection>
+        </scm>
+    -->
 
     <dependencies>
         <dependency>
@@ -48,10 +48,6 @@
         <!-- java.io.FileNotFoundException: com/google/inject/internal/util/$Finalizer.class -->
         <!-- -->
         <dependency>
-            <groupId>org.roboguice</groupId>
-            <artifactId>roboguice</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.actionbarsherlock</groupId>
             <artifactId>library</artifactId>
             <type>apklib</type>
@@ -65,6 +61,22 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
             <version>4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.roboguice</groupId>
+            <artifactId>roboguice</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pivotallabs</groupId>
+            <artifactId>robolectric</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -89,16 +101,16 @@
         </pluginRepository>
     </pluginRepositories>
 
-<!--
-    <distributionManagement>
-        <repository>
-            <id>ldsmobile.nexus</id>
-            <url>http://www.ldsmobile.org/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>ldsmobile.nexus</id>
-            <url>http://www.ldsmobile.org/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
--->
+    <!--
+        <distributionManagement>
+            <repository>
+                <id>ldsmobile.nexus</id>
+                <url>http://www.ldsmobile.org/nexus/content/repositories/releases</url>
+            </repository>
+            <snapshotRepository>
+                <id>ldsmobile.nexus</id>
+                <url>http://www.ldsmobile.org/nexus/content/repositories/snapshots</url>
+            </snapshotRepository>
+        </distributionManagement>
+    -->
 </project>
