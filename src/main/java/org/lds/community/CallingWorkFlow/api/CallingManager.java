@@ -1,8 +1,10 @@
 package org.lds.community.CallingWorkFlow.api;
 
+import android.content.Context;
 import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import org.lds.community.CallingWorkFlow.task.UpdateCallingTask;
 
 import javax.inject.Inject;
 
@@ -21,10 +23,11 @@ public class CallingManager {
     @Inject
     CwfNetworkUtil networkUtil;
 
-    public void saveCalling(Calling calling) {
+    public void saveCalling(Calling calling, Context context) {
         calling.setIsSynced( false );
         db.updateCalling( calling );
-        updateCallingOnServer( calling );
+        UpdateCallingTask updateCallingTask = new UpdateCallingTask( context );
+        updateCallingTask.execute( calling );
     }
 
     public boolean updateCallingOnServer( Calling calling ) {

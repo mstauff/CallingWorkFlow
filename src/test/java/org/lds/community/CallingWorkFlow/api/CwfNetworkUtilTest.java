@@ -1,14 +1,10 @@
 package org.lds.community.CallingWorkFlow.api;
 
 import com.xtremelabs.robolectric.Robolectric;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lds.community.CallingWorkFlow.InjectedTestRunner;
 import org.lds.community.CallingWorkFlow.domain.Calling;
-import roboguice.test.RobolectricRoboTestRunner;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -33,7 +29,7 @@ public class CwfNetworkUtilTest{
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
-        Calling calling = new Calling( 5555, 22, "APPROVED", false, 0, 0, false );
+        Calling calling = new Calling( 5555, 22, "APPROVED", 0, 0, false );
         networkUtil.updateCalling( calling );
         List<Calling> callings = networkUtil.getPendingCallings();
         boolean found = false;

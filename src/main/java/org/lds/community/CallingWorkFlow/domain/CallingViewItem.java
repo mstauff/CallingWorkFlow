@@ -32,7 +32,7 @@ public class CallingViewItem {
 	}*/
 
     public Calling getCalling() {
-        return new Calling( individualId, positionId, statusName, getCompleted(), assignedTo, dueDate, getIsSynced() );
+        return new Calling( individualId, positionId, statusName, assignedTo, dueDate, getIsSynced() );
     }
     public String getPositionName() {
         return positionName;
