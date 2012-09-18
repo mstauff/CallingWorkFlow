@@ -1,9 +1,11 @@
 package org.lds.community.CallingWorkFlow.Utilities;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import org.junit.Assert;
 import org.lds.community.CallingWorkFlow.domain.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,19 +20,20 @@ import java.util.List;
 
 
 public class TestUtils {
+     Context context;
 
-     WorkFlowDB db;
+     WorkFlowDB db=new WorkFlowDB(context);
 
 
     public  void initializeDb(){
        //create positions, status and member list
-       Member member1=createMemberObj("Joe","Jones",1L) ;
-       Member member2=createMemberObj("James","Peterson",2L) ;
-       Member member3=createMemberObj("Eric","Carrasco",3L) ;
-       Member member4=createMemberObj("Bill","Wiley",4L) ;
-       Member member5=createMemberObj("Steve","Jonas",5L) ;
-       Member member6=createMemberObj("Erika","Jasmin",6L) ;
-       Member member7=createMemberObj("Adam","Peres",7L) ;
+       Member member1=createMemberObj("Joe", "Jones", 1L) ;
+       Member member2=createMemberObj("James", "Peterson", 2L) ;
+       Member member3=createMemberObj("Eric", "Carrasco", 3L) ;
+       Member member4=createMemberObj("Bill", "Wiley", 4L) ;
+       Member member5=createMemberObj("Steve", "Jonas", 5L) ;
+       Member member6=createMemberObj("Erika", "Jasmin", 6L) ;
+       Member member7=createMemberObj("Adam", "Peres", 7L) ;
 
         List<Member> memberList= new ArrayList<Member>();
         memberList.add(member1);
@@ -44,11 +47,11 @@ public class TestUtils {
 
         // add  positions
         List<Position> positionList= new ArrayList<Position>();
-        Position position1=createPositionObj(40L,"RS Secretary") ;
-        Position position2=createPositionObj(41L,"Elder Quorum First Counselor") ;
-        Position position3=createPositionObj(42L,"Elder Quorum Second Counselor") ;
-        Position position4=createPositionObj(43L,"Primary sunBean teacher") ;
-        Position position5=createPositionObj(44L,"Sunday School 14-15 teacher") ;
+        Position position1=createPositionObj(40L, "RS Secretary") ;
+        Position position2=createPositionObj(41L, "Elder Quorum First Counselor") ;
+        Position position3=createPositionObj(42L, "Elder Quorum Second Counselor") ;
+        Position position4=createPositionObj(43L, "Primary sunBean teacher") ;
+        Position position5=createPositionObj(44L, "Sunday School 14-15 teacher") ;
 
         positionList.add(position1);
         positionList.add(position2);
@@ -65,7 +68,6 @@ public class TestUtils {
         statusList.add( status1);
         statusList.add( status2);
         db.updateWorkFlowStatus(statusList);
-
     }
 
     public static Member createMemberObj(String firstName, String lastName, Long individualId){
@@ -74,8 +76,7 @@ public class TestUtils {
         memberObj.setLastName(lastName);
         memberObj.setIndividualId(individualId);
         return memberObj;
-
-    }
+     }
 
     public static Calling createCallingObj(Long positionId, String statusName, Long individualId){
         Calling callingObj=new Calling();
