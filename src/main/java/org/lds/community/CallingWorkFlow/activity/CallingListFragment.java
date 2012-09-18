@@ -8,17 +8,18 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.*;
 import org.lds.community.CallingWorkFlow.Adapter.CallingViewItemAdapter;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 import roboguice.fragment.RoboListFragment;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CallingListFragment extends RoboListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -42,7 +43,27 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 		callingViewItems = db.getCallings(false);
 		this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_1, callingViewItems);
 		setListAdapter(callingViewItemAdapter);
+		ListView listView = getListView();
 
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+				Toast.makeText(getActivity(), "long click", Toast.LENGTH_SHORT).show();
+				//displayStatusPopup();
+				return true;
+			}
+		});
+
+	}
+
+	private void displayStatusPopup() {
+		Spinner statusSpinner = (Spinner) getListView().findViewById(11);
+        List<WorkFlowStatus> statusList = db.getWorkFlowStatuses();
+        List<CharSequence> statusOptions = new ArrayList<CharSequence>();
+        for(WorkFlowStatus s: statusList) { statusOptions.add(s.getStatusName()); }
+        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_item,statusOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusSpinner.setAdapter(spinnerAdapter);
 	}
 
 	@Override
