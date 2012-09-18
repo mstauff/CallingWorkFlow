@@ -25,13 +25,13 @@ public class WorkFlowDB {
      */
     private static final int DATABASE_VERSION = 2;
     public static final String CALLING_VIEW_ITEM_JOIN =
-	    "SELECT " + "p.*, " +
-                    "c.*, " +
-                    "w.* " +
-        "  FROM " + PositionBaseRecord.TABLE_NAME + " p, " +
-                    CallingBaseRecord.TABLE_NAME + " c, " +
-                    WorkFlowStatusBaseRecord.TABLE_NAME + " w " +
-        " WHERE p." + PositionBaseRecord.POSITION_ID + " = c." + CallingBaseRecord.POSITION_ID;
+	    "SELECT " + "p.*, c.*, w.*, m.* " +
+        "  FROM " + Position.TABLE_NAME + " p, " +
+                    Calling.TABLE_NAME + " c, " +
+                    Member.TABLE_NAME + " m, " +
+                    WorkFlowStatus.TABLE_NAME + " w " +
+        " WHERE p." + PositionBaseRecord.POSITION_ID + " = c." + CallingBaseRecord.POSITION_ID +
+        " AND m." + Member.INDIVIDUAL_ID + " = c." + Calling.INDIVIDUAL_ID;
 
     private DatabaseHelper dbHelper;
 
