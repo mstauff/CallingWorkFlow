@@ -1,14 +1,9 @@
 package org.lds.community.CallingWorkFlow.domain;
 
-import android.content.ContentProvider;
-import android.content.ContentValues;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,8 +13,6 @@ import static org.mockito.Mockito.when;
  * To change this template use File | Settings | File Templates.
  */
 public class DomainClassTests {
-
-   public Member memberMock;
 
 
     @Test
@@ -54,6 +47,12 @@ public class DomainClassTests {
         WorkFlowStatus wfStatus=new WorkFlowStatus();
         String[] keyList=wfStatus.getAllKeys();
         Assert.assertTrue("", keyList.length >= 1);
+    }
+
+    @Test
+    public void test4(){
+
+//        EqualsBuilder.e
     }
 
 
