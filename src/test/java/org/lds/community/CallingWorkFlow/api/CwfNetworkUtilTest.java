@@ -2,7 +2,7 @@ package org.lds.community.CallingWorkFlow.api;
 
 import com.xtremelabs.robolectric.Robolectric;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lds.community.CallingWorkFlow.InjectedTestRunner;
@@ -27,10 +27,10 @@ public class CwfNetworkUtilTest{
     @Inject
     CwfNetworkUtil networkUtil;
 
-    TestUtils initDb;
+    TestUtils initDb=new TestUtils();
 
 
-    @BeforeClass
+    @Before
     public void setup(){
        // init db
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
