@@ -7,6 +7,7 @@ import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.task.UpdateCallingTask;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,6 +45,14 @@ public class CallingManager {
 
         // return true if was successful, false otherwise
         return success;
+    }
+
+    public void refreshCallingsFromServer() {
+        List<Calling> allCallings = networkUtil.getCallings();
+        for( Calling calling : allCallings ) {
+            calling.setIsSynced( true );
+        }
+        db.updateCallings( allCallings );
     }
 
     private boolean areCallingsEqual(Calling calling, Calling updatedCalling) {
