@@ -1,5 +1,6 @@
 package org.lds.community.CallingWorkFlow.activity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -17,6 +18,7 @@ import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import roboguice.fragment.RoboListFragment;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.List;
 
 public class CallingListFragment extends RoboListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -27,31 +29,29 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     CwfNetworkUtil networkUtil;
 
 	private CallingViewItemAdapter callingViewItemAdapter;
+	private List<CallingViewItem> callingViewItems;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
     }
+
     private int currentPositionInList = 0;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		List<CallingViewItem> CallingViewItems = db.getCallings(false);
-		this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_1, CallingViewItems);
+		callingViewItems = db.getCallings(false);
+		this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_1, callingViewItems);
 		setListAdapter(callingViewItemAdapter);
-		/*
-		String[] values = new String[CallingViewItems.size()];
-		for(int i=0; i < CallingViewItems.size(); i++) {
-			values[i] = CallingViewItems.get(i).getPositionName();
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-		android.R.layout.simple_list_item_1, values);
-		setListAdapter(adapter);
-		*/
+
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		// Do something with the data
+		CallingViewItem callingViewItem = callingViewItems.get(position);
+		Intent intent = new Intent(getActivity(), DetailActivity.class);
+		intent.putExtra("callingViewItems", (Serializable)callingViewItem);
+
+		startActivity(intent);
 	}
 
     @Override

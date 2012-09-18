@@ -3,7 +3,9 @@ package org.lds.community.CallingWorkFlow.domain;
 import android.database.Cursor;
 import org.lds.community.CallingWorkFlow.api.DBUtil;
 
-public class CallingViewItem {
+import java.io.Serializable;
+
+public class CallingViewItem implements Serializable {
 
     private long positionId = 0;
     private String positionName = "";
