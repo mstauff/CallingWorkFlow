@@ -105,7 +105,6 @@ public class JSONUtilTest {
         Calling calling2=JSONUtil.parseCalling(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":54;" + JSONUtil.CALLING_IND_ID + ":1234567;" + JSONUtil.CALLING_STATUS_NAME + ":ACTIVE" + "}"));
 
         TestUtils.assertEntityEquals(calling1,calling2);
-
 //        Assert.assertEquals(calling1.getPositionId(), calling2.getPositionId());
 //        Assert.assertEquals(calling1.getIndividualId(), calling2.getIndividualId());
 //        Assert.assertEquals(calling1.getStatusName(), calling2.getStatusName());
@@ -118,7 +117,6 @@ public class JSONUtilTest {
         Position position2=JSONUtil.parsePosition(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":4;" + JSONUtil.POSITION_NAME + ":Bishop" + "}"));
 
         TestUtils.assertEntityEquals(position1,position2);
-
 //        Assert.assertEquals(position1.getPositionId(), position2.getPositionId());
 //        Assert.assertEquals(position1.getPositionName(), position2.getPositionName());
 
@@ -155,7 +153,6 @@ public class JSONUtilTest {
         WorkFlowStatus status2=JSONUtil.parseStatus(new JSONObject("{" + JSONUtil.STATUS_COMPLETE + ":true;" + JSONUtil.STATUS_NAME + ":ACTIVE;" + JSONUtil.STATUS_ORDER + ":1" + "}"));
 
         TestUtils.assertEntityEquals(status1,status2);
-
 
 //        Assert.assertEquals(status1.getComplete(), status2.getComplete());
 //        Assert.assertEquals(status1.getSequence(), status2.getSequence());

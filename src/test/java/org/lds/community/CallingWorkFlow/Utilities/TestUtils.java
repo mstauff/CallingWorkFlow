@@ -68,7 +68,6 @@ public class TestUtils {
         statusList.add( status1);
         statusList.add( status2);
         db.updateWorkFlowStatus(statusList);
-
     }
 
     public static Member createMemberObj(String firstName, String lastName, Long individualId){
@@ -77,8 +76,7 @@ public class TestUtils {
         memberObj.setLastName(lastName);
         memberObj.setIndividualId(individualId);
         return memberObj;
-
-    }
+     }
 
     public static Calling createCallingObj(Long positionId, String statusName, Long individualId){
         Calling callingObj=new Calling();
