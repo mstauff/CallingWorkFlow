@@ -1,6 +1,5 @@
 package org.lds.community.CallingWorkFlow.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
@@ -12,9 +11,7 @@ public class DetailActivity extends RoboSherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.callingdetail);
-		Intent intent = getIntent();
-		Bundle bundle = intent.getExtras();
-		callingViewItem = (CallingViewItem)bundle.get("callingViewItems");
+		callingViewItem = (CallingViewItem)getIntent().getSerializableExtra("callingViewItems");
     }
 
     @Override
