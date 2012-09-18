@@ -47,6 +47,7 @@ public class CwfNetworkUtil {
     private static final String WARD_LIST_URL = ROOT + "/wardList";
     private static final String POSITION_LIST_URL = ROOT + "/positionIds";
     private static final String STATUSES_URL = ROOT + "/statuses";
+    private static final String ALL_CALLINGS_URL = ROOT + "/callings";
     private static final String CALLINGS_PENDING_URL = ROOT + "/callings/pending";
     private static final String CALLINGS_COMPLETED_URL = ROOT + "/callings/completed";
     private static final String CALLING_UPDATE_URL = ROOT + "/calling/%d/update?positionId=%d&statusName=%s";
@@ -219,10 +220,19 @@ public class CwfNetworkUtil {
         return getCallings( CallingGroup.COMPLETED );
     }
 
+
+    public List<Calling> getCallings( ) {
+        return getCallings( ALL_CALLINGS_URL );
+    }
+
     private List<Calling> getCallings( CallingGroup callingGroup ) {
+        String url = callingGroup == CallingGroup.PENDING ? CALLINGS_PENDING_URL : CALLINGS_COMPLETED_URL;
+        return getCallings( url );
+    }
+
+    private List<Calling> getCallings( String url ) {
         List<Calling> callingList = new ArrayList<Calling>();
         try {
-            String url = callingGroup == CallingGroup.PENDING ? CALLINGS_PENDING_URL : CALLINGS_COMPLETED_URL;
             String json = executeGetJSONRequest( new HttpGet( url ) );
             callingList = JSONUtil.parseCallings(new JSONArray(json));
         } catch (IOException e) {

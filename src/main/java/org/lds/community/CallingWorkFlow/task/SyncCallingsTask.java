@@ -10,6 +10,7 @@ import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import roboguice.RoboGuice;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,8 +24,8 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
     @Inject
     private WorkFlowDB db;
 
-    private List<String> successes;
-    private List<String> failures;
+    private List<String> successes = new ArrayList<String>();
+    private List<String> failures = new ArrayList<String>();
     private String successString;
     private String failureString;
 
@@ -56,6 +57,12 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
             successOrFailList.add( updateMsg );
             publishProgress( updateMsg );
 
+        }
+
+        if( failures.isEmpty() ) {
+            callingMgr.refreshCallingsFromServer();
+            // todo
+            // publishProgress()
         }
         return null;
     }
