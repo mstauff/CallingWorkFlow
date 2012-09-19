@@ -1,8 +1,11 @@
 package org.lds.community.CallingWorkFlow.task;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.widget.Toast;
+import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.api.ServiceException;
 import org.lds.community.CallingWorkFlow.domain.*;
@@ -11,7 +14,7 @@ import roboguice.util.RoboAsyncTask;
 import javax.inject.Inject;
 import java.util.List;
 
-public class WardListUpdateTask extends RoboAsyncTask{
+public class WardListUpdateTask extends RoboAsyncTask<Void>{
     @Inject
     private SharedPreferences preferences;
 
@@ -21,19 +24,63 @@ public class WardListUpdateTask extends RoboAsyncTask{
     @Inject
     private WorkFlowDB db;
 
+    protected ProgressDialog progressDialog;
+
     boolean forceUpdate;
 
     private ServiceException.ServiceError serviceError = ServiceException.ServiceError.NONE;
     private Handler handler;
 
-    public  WardListUpdateTask(Context context, boolean forceUpdate) {
+    public  WardListUpdateTask(Context context, boolean forceUpdate, ProgressDialog progressDialog) {
         super(context);
         this.forceUpdate = forceUpdate;
+        this.progressDialog = progressDialog;
     }
 
-    protected void onPostExecute() {
+/*
+    @Override
+    protected void onPreExecute() {
+        if( progressDialog != null ) {
+            progressDialog.setMessage( getContext().getString( R.string.pref_sync_all_now_title ) );
+            if( !progressDialog.isShowing() ) {
+                 progressDialog.show();
+            }
+        }
+
+    }
+*/
+
+    @Override
+    protected void onSuccess(Void unused) {
+        // do this in the UI thread if call() succeeds
+        if( progressDialog != null ) {
+            progressDialog.setMessage( getContext().getString( R.string.pref_sync_all_progress_success ) );
+        }
     }
 
+    @Override
+    protected void onException(Exception e) {
+        String errorMsg = getContext().getString( R.string.pref_sync_all_progress_failure );
+        // do this in the UI thread if call() threw an exception
+        if (progressDialog != null && progressDialog.isShowing()){
+            progressDialog.setMessage( errorMsg );
+        } else {
+            Toast.makeText(getContext(), errorMsg , Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onFinally() {
+        // always do this in the UI thread after calling call()
+        if (progressDialog != null && progressDialog.isShowing()){
+            // delay dismissal 2 seconds to allow user time to read error or success
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    progressDialog.dismiss();
+                }}, 2000);
+        }
+    }
     @Override
     public Void call() throws Exception {
         if( forceUpdate || !db.hasData(Member.TABLE_NAME) ) {

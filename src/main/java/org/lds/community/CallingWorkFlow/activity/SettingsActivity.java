@@ -1,5 +1,6 @@
 package org.lds.community.CallingWorkFlow.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.preference.Preference;
 import org.lds.community.CallingWorkFlow.R;
@@ -41,7 +42,7 @@ public class SettingsActivity extends RoboSherlockPreferenceActivity{
     }
 
     public void syncAll() {
-        WardListUpdateTask updateTask = new WardListUpdateTask( this, true );
+        WardListUpdateTask updateTask = new WardListUpdateTask( this, true, ProgressDialog.show( this, "", getString(R.string.pref_sync_all_progress_title) ));
         updateTask.execute();
 
     }

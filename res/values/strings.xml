@@ -23,5 +23,10 @@
     <string name="pref_sync_callings_now_summary">Save any unsaved changes and update from the server</string>
     <string name="pref_sync_all_now_title">Sync unit data</string>
     <string name="pref_sync_all_now_summary">Update your ward list, statuses, and list of standard callings</string>
+    <string name="pref_sync_all_progress_title">Syncing unit data</string>
+    <string name="pref_sync_all_progress_success">Unit data updated</string>
+    <string name="pref_sync_all_progress_failure">Unable to update data. Please try syncing again later</string>
+
     <string name="pref_title">Settings</string>
+
 </resources>
