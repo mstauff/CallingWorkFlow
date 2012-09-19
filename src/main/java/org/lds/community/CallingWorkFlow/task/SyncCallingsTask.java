@@ -1,9 +1,12 @@
 package org.lds.community.CallingWorkFlow.task;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
+import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
@@ -15,14 +18,15 @@ import java.util.List;
 
 
 public class SyncCallingsTask extends AsyncTask<String, String, Void> {
-    @Inject
-    private SharedPreferences preferences;
 
     @Inject
     private CallingManager callingMgr;
 
     @Inject
     private WorkFlowDB db;
+
+    private ProgressDialog progressDialog;
+    private Context context;
 
     private List<String> successes = new ArrayList<String>();
     private List<String> failures = new ArrayList<String>();
@@ -33,6 +37,7 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
     public SyncCallingsTask(Context context) {
         RoboGuice.getInjector( context ).injectMembers(this);
+        this.context = context;
     }
 
     @Override
@@ -56,7 +61,6 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
             updateMsg = String.format( baseMsgString, calling.getFirstName() + " " + calling.getLastName(), calling.getPositionName() );
             successOrFailList.add( updateMsg );
             publishProgress( updateMsg );
-
         }
 
         if( failures.isEmpty() ) {
@@ -67,21 +71,39 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
         return null;
     }
 
-    protected void onProgressUpdate(String updateString) {
+    @Override
+    protected void onProgressUpdate(String... updateString) {
         // print out the string
         Log.d( TAG, "Progress update: " + updateString );
-
+        progressDialog.setMessage( updateString[0] );
     }
 
+    @Override
     protected void onPreExecute() {
         // create the status update area
-
+        if( progressDialog == null ) {
+            progressDialog = ProgressDialog.show( context, context.getString(R.string.pref_sync_callings_now_title),"");
+        }
     }
 
-    protected void onPostExecute() {
-        // todo - show success/complete messages
+    @Override
+    protected void onPostExecute(Void unused) {
         Log.d( TAG, "Post Execute" );
 
+        if( progressDialog != null && progressDialog.isShowing() ) {
+            StringBuilder result = new StringBuilder(context.getString( R.string.calling_update_success_summary, successes.size() ));
+            if( !failures.isEmpty() ) {
+                result.append(context.getString( R.string.calling_update_failure_summary, failures.size() ));
+            }
+
+            progressDialog.setMessage( result.toString() );
+            // delay dismissal 2 seconds to allow user time to read error or success
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    progressDialog.dismiss();
+                }}, 2000);
+        }
     }
 }
 
