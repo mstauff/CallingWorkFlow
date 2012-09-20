@@ -30,8 +30,7 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
     private List<String> successes = new ArrayList<String>();
     private List<String> failures = new ArrayList<String>();
-    private String successString;
-    private String failureString;
+    private boolean noChanges = true;
 
     private static final String TAG = SyncCallingsTask.class.getSimpleName();
 
@@ -42,13 +41,18 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
     @Override
     protected Void doInBackground(String... strings) {
-        successString = strings[0];
-        failureString = strings[1];
+        String successString = strings[0];
+        String failureString = strings[1];
+        String downloadString = strings[2];
 
         List<CallingViewItem> callingsToSync = db.getCallingsToSync();
+        noChanges = callingsToSync.isEmpty();
         String updateMsg = "";
         String baseMsgString;
         List<String> successOrFailList;
+        if( noChanges ) {
+
+        }
         for( CallingViewItem calling : callingsToSync ) {
             boolean success = callingMgr.updateCallingOnServer( calling.getCalling() );
             if( success ) {
@@ -64,9 +68,8 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
         }
 
         if( failures.isEmpty() ) {
+            publishProgress( downloadString );
             callingMgr.refreshCallingsFromServer();
-            // todo
-            // publishProgress()
         }
         return null;
     }
@@ -91,7 +94,8 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
         Log.d( TAG, "Post Execute" );
 
         if( progressDialog != null && progressDialog.isShowing() ) {
-            StringBuilder result = new StringBuilder(context.getString( R.string.calling_update_success_summary, successes.size() ));
+            StringBuilder result = new StringBuilder();
+//            if( (context.getString( R.string.calling_update_success_summary, successes.size() ));
             if( !failures.isEmpty() ) {
                 result.append(context.getString( R.string.calling_update_failure_summary, failures.size() ));
             }

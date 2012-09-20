@@ -48,9 +48,9 @@ public class SettingsActivity extends RoboSherlockPreferenceActivity{
     }
 
     public void syncCallings() {
-        // todo - need to add a progress dialog
         SyncCallingsTask syncTask = new SyncCallingsTask(this);
-        syncTask.execute( getString( R.string.calling_update_success ), getString(R.string.calling_update_failure));
+        syncTask.execute( getString( R.string.calling_update_success ), getString(R.string.calling_update_failure),
+                            getString( R.string.calling_update_download ) );
     }
 
 

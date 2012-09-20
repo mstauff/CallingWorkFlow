@@ -10,7 +10,7 @@ public class PositionBaseRecord implements BaseRecord {
     /**
      * The table name offered by this provider
      */
-    public static final String TABLE_NAME = "positions";
+    public static final String TABLE_NAME = "position";
 
     /**
      * The default sort order for this table
@@ -20,7 +20,7 @@ public class PositionBaseRecord implements BaseRecord {
 	/**
      * Column definitions for the position ID.
      */
-    public static final String POSITION_ID = "positionId";
+    public static final String POSITION_ID = "position_id";
     private long positionId = 0;
 
     /**
