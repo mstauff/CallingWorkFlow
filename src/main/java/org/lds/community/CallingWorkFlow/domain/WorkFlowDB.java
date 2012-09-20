@@ -200,10 +200,11 @@ public class WorkFlowDB {
             db = dbHelper.getDb();
             db.beginTransaction();
             db.delete(tableName, null, null);
-            DatabaseUtils.InsertHelper insertHelper = new DatabaseUtils.InsertHelper( db, tableName);
+//            DatabaseUtils.InsertHelper insertHelper = new DatabaseUtils.InsertHelper( db, tableName);
 
             for( BaseRecord dataRow : data ) {
-                insertHelper.insert( dataRow.getContentValues() );
+//                insertHelper.insert( dataRow.getContentValues() );
+                db.insert( tableName, null, dataRow.getContentValues() );
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {

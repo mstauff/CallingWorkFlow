@@ -34,7 +34,7 @@ public class CwfNetworkUtilTest{
     public void setup(){
 
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
-        initDb.initializeDb();
+//        initDb.initializeDb();
     }
 
     @Test
