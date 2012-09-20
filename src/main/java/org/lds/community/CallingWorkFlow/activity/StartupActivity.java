@@ -16,7 +16,7 @@ public class StartupActivity extends RoboActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-        new WardListUpdateTask(getApplicationContext(), false).execute();
+        new WardListUpdateTask(getApplicationContext(), false, null).execute();
 	    /* We do not have a startup/splash screen yet */
 	    Intent intent = new Intent(this, WorkFlowActivity.class);
 	    startActivity(intent);

@@ -19,9 +19,16 @@
 
     <string name="calling_update_success">Successfully Updated %1$s - %2$s</string>
     <string name="calling_update_failure">Update failed for %1$s - %2$s</string>
+    <string name="calling_update_success_summary">Successfully updated %1$d callings.</string>
+    <string name="calling_update_failure_summary">Unable to update %2$d callings.</string>
     <string name="pref_sync_callings_now_title">Sync Callings</string>
     <string name="pref_sync_callings_now_summary">Save any unsaved changes and update from the server</string>
     <string name="pref_sync_all_now_title">Sync unit data</string>
     <string name="pref_sync_all_now_summary">Update your ward list, statuses, and list of standard callings</string>
+    <string name="pref_sync_all_progress_title">Syncing unit data</string>
+    <string name="pref_sync_all_progress_success">Unit data updated</string>
+    <string name="pref_sync_all_progress_failure">Unable to update data. Please try syncing again later</string>
+
     <string name="pref_title">Settings</string>
+
 </resources>
