@@ -20,55 +20,44 @@ import java.util.List;
 
 
 public class TestUtils {
-     Context context;
 
-     WorkFlowDB db=new WorkFlowDB(context);
-
-
-    public  void initializeDb(){
-       //create positions, status and member list
-       Member member1=createMemberObj("Joe", "Jones", 1L) ;
-       Member member2=createMemberObj("James", "Peterson", 2L) ;
-       Member member3=createMemberObj("Eric", "Carrasco", 3L) ;
-       Member member4=createMemberObj("Bill", "Wiley", 4L) ;
-       Member member5=createMemberObj("Steve", "Jonas", 5L) ;
-       Member member6=createMemberObj("Erika", "Jasmin", 6L) ;
-       Member member7=createMemberObj("Adam", "Peres", 7L) ;
-
+    public static void initMembersDB(){
+        Context context=null;
+        WorkFlowDB db=new WorkFlowDB(context);
         List<Member> memberList= new ArrayList<Member>();
-        memberList.add(member1);
-        memberList.add(member2);
-        memberList.add(member3);
-        memberList.add(member4);
-        memberList.add(member5);
-        memberList.add(member6);
-        memberList.add(member7);
+        memberList.add(createMemberObj("Joe", "Jones", 1111L));
+        memberList.add(createMemberObj("James", "Peterson", 2222L));
+        memberList.add(createMemberObj("Eric", "Bastidas", 3333L) );
+        memberList.add(createMemberObj("Bill", "Wiley", 4444L));
+        memberList.add(createMemberObj("Steve", "Jonas", 5555L));
+        memberList.add(createMemberObj("Erika", "Jasmin", 5556L));
+        memberList.add(createMemberObj("Adam", "Peres", 7777L));
         db.updateWardList(memberList);
 
-        // add  positions
-        List<Position> positionList= new ArrayList<Position>();
-        Position position1=createPositionObj(40L, "RS Secretary") ;
-        Position position2=createPositionObj(41L, "Elder Quorum First Counselor") ;
-        Position position3=createPositionObj(42L, "Elder Quorum Second Counselor") ;
-        Position position4=createPositionObj(43L, "Primary sunBean teacher") ;
-        Position position5=createPositionObj(44L, "Sunday School 14-15 teacher") ;
+    }
 
-        positionList.add(position1);
-        positionList.add(position2);
-        positionList.add(position3);
-        positionList.add(position4);
-        positionList.add(position5);
+    public static void initPositionDB(){
+        Context context=null;
+        WorkFlowDB db=new WorkFlowDB(context);
+        List<Position> positionList= new ArrayList<Position>();
+        positionList.add(createPositionObj(40L, "RS Secretary") );
+        positionList.add(createPositionObj(41L, "Elder Quorum First Counselor"));
+        positionList.add(createPositionObj(42L, "Elder Quorum Second Counselor"));
+        positionList.add(createPositionObj(43L, "Primary sunBean teacher"));
+        positionList.add(createPositionObj(44L, "Sunday School 14-15 teacher"));
         db.updatePositions(positionList);
 
-        // ADDING STATUS
-        List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
+     }
 
-        WorkFlowStatus status1=createStatus(true,"SUBMITTED",null,null,1);
-        WorkFlowStatus status2=createStatus(true,"PENDING",null,null,2);
-        statusList.add( status1);
-        statusList.add( status2);
+    public static void initStatusDB(){
+        Context context=null;
+        WorkFlowDB db=new WorkFlowDB(context);
+        List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
+        statusList.add( createStatus(true,"SUBMITTED",null,null,1));
+        statusList.add( createStatus(true,"PENDING",null,null,2));
         db.updateWorkFlowStatus(statusList);
     }
+
 
     public static Member createMemberObj(String firstName, String lastName, Long individualId){
         Member memberObj=new Member();
@@ -165,6 +154,17 @@ public class TestUtils {
         Assert.assertEquals("getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
 
     }
+
+    public static Boolean assertEntityEqualsBoolean(Member sourceMember,Member resultMember){
+
+        Assert.assertEquals("getStatusName did not match", sourceMember.getFirstName(), resultMember.getFirstName());
+        Assert.assertEquals("getComplete did not match",sourceMember.getLastName(), resultMember.getLastName());
+        Assert.assertEquals("getContentValues did not match",sourceMember.getContentValues(), resultMember.getContentValues());
+        Assert.assertEquals("getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
+
+        return true;
+    }
+
 
     public static int getCallingStatusCountFromList(List<Calling> callingList, String status) {
         int count=0;
