@@ -1,6 +1,5 @@
 package org.lds.community.CallingWorkFlow.api;
 
-import android.content.Context;
 import com.google.inject.Inject;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -13,6 +12,7 @@ import org.lds.community.CallingWorkFlow.domain.Position;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,25 +28,31 @@ public class WorkFlowDBTest {
     @Inject
     WorkFlowDB db;
 
+    List<Member> memberList= new ArrayList<Member>();
+    List<Position> positionList= new ArrayList<Position>();
+    List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
+
     @Before
     public void setup(){
-        Context context=null;
-        db=new WorkFlowDB(context);
 
         Boolean hasDataMember=db.hasData(Member.TABLE_NAME);
         if (hasDataMember==false){
-            TestUtils.initMembersDB();
+            memberList= TestUtils.createMembersDB();
         }
 
         Boolean hasDataPositions=db.hasData(Position.TABLE_NAME);
         if (hasDataPositions==false){
-            TestUtils.initPositionDB();
+            positionList=TestUtils.createPositionDB();
         }
 
         Boolean hasDataStatus=db.hasData(WorkFlowStatus.TABLE_NAME);
         if (hasDataStatus==false){
-            TestUtils.initStatusDB();
+            statusList= TestUtils.createStatusDB();
         }
+        if((hasDataMember==false) && (hasDataPositions==false) && (hasDataStatus==false)){
+           TestUtils.initializeDatabase(db,memberList,positionList,statusList);
+        }
+
     }
 
     @Test

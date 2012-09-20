@@ -1,7 +1,6 @@
 package org.lds.community.CallingWorkFlow.Utilities;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import org.junit.Assert;
 import org.lds.community.CallingWorkFlow.domain.*;
@@ -21,9 +20,7 @@ import java.util.List;
 
 public class TestUtils {
 
-    public static void initMembersDB(){
-        Context context=null;
-        WorkFlowDB db=new WorkFlowDB(context);
+    public static List<Member> createMembersDB(){
         List<Member> memberList= new ArrayList<Member>();
         memberList.add(createMemberObj("Joe", "Jones", 1111L));
         memberList.add(createMemberObj("James", "Peterson", 2222L));
@@ -32,32 +29,32 @@ public class TestUtils {
         memberList.add(createMemberObj("Steve", "Jonas", 5555L));
         memberList.add(createMemberObj("Erika", "Jasmin", 5556L));
         memberList.add(createMemberObj("Adam", "Peres", 7777L));
-        db.updateWardList(memberList);
-
+        return memberList;
     }
 
-    public static void initPositionDB(){
-        Context context=null;
-        WorkFlowDB db=new WorkFlowDB(context);
+    public static List<Position> createPositionDB(){
         List<Position> positionList= new ArrayList<Position>();
         positionList.add(createPositionObj(40L, "RS Secretary") );
         positionList.add(createPositionObj(41L, "Elder Quorum First Counselor"));
         positionList.add(createPositionObj(42L, "Elder Quorum Second Counselor"));
         positionList.add(createPositionObj(43L, "Primary sunBean teacher"));
         positionList.add(createPositionObj(44L, "Sunday School 14-15 teacher"));
-        db.updatePositions(positionList);
+        return positionList;
+    }
 
-     }
-
-    public static void initStatusDB(){
-        Context context=null;
-        WorkFlowDB db=new WorkFlowDB(context);
+    public static List<WorkFlowStatus> createStatusDB(){
         List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
         statusList.add( createStatus(true,"SUBMITTED",null,null,1));
         statusList.add( createStatus(true,"PENDING",null,null,2));
-        db.updateWorkFlowStatus(statusList);
+        return statusList;
     }
 
+    public static void initializeDatabase(WorkFlowDB db, List<Member> memberList,List<Position> positionList,List<WorkFlowStatus> statusList){
+        db.updateWardList( memberList);
+        db.updatePositions(positionList);
+        db.updateWorkFlowStatus(statusList);
+
+    }
 
     public static Member createMemberObj(String firstName, String lastName, Long individualId){
         Member memberObj=new Member();
