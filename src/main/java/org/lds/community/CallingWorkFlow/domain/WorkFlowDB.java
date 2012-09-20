@@ -119,7 +119,7 @@ public class WorkFlowDB {
      * Updates the given callings in the db.
      */
     public void saveCallings(List<Calling> callings) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getDb();
         for( Calling calling : callings) {
             String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
             String[] whereArgs = {String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())};
@@ -132,7 +132,7 @@ public class WorkFlowDB {
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
         Cursor results = null;
         try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            SQLiteDatabase db = dbHelper.getDb();
             String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
             results = db.rawQuery( SQL, null );
             results.moveToFirst();
@@ -210,6 +210,7 @@ public class WorkFlowDB {
             e.printStackTrace();
         } finally {
             db.endTransaction();
+
         }
     }
 
@@ -241,7 +242,7 @@ public class WorkFlowDB {
 
 
     public boolean hasData( String tableName ) {
-        return DatabaseUtils.queryNumEntries( dbHelper.getReadableDatabase(), tableName ) > 0;
+        return DatabaseUtils.queryNumEntries( dbHelper.getDb(), tableName ) > 0;
     }
 
     static class DatabaseHelper extends SQLiteOpenHelper {

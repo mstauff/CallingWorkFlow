@@ -26,6 +26,15 @@ public class WorkFlowDBTest extends AndroidTestCase {
     @Before
     public void setUp() throws Exception {
         db = new WorkFlowDB( getContext() );
+        List<Position> positionList=new ArrayList<Position>();
+        Position position=createPosition(54L,"position1");
+        Position position2=createPosition(53L,"position2");
+        Position position3=createPosition(52L,"position3");
+        positionList.add(position);
+        positionList.add(position2);
+        positionList.add(position3);
+        db.updatePositions(positionList);
+
     }
 
     @After
@@ -36,33 +45,33 @@ public class WorkFlowDBTest extends AndroidTestCase {
     @Test
     public void testAddCallings() throws Exception {
 
-        List<Position> positionList=new ArrayList<Position>();
-        Position position=createPosition(54L,"position1");
-        Position position2=createPosition(53L,"position2");
-        Position position3=createPosition(52L,"position3");
-        positionList.add(position);
-        positionList.add(position2);
-        positionList.add(position3);
-        db.updatePositions(positionList);
+ //        List<Calling> callingList=new ArrayList<Calling>();
 
-        Calling cal1=createCalling(52L,true,23132132132L,222222L,111111L,false,"ACTIVE");
-        Calling cal2=createCalling(53L,true,122121321l,222222L,555555l,false,"ACTIVE");
-        Calling cal3=createCalling(54L,true,2313211132132L,222222L,3333333l,false,"ACTIVE");
+        Calling cal1=createCalling(52L,23132132132L,222222L,111111L,false,"SUBMITTED");
+        Calling cal2=createCalling(53L,122121321l,222222L,555555l,false,"SUBMITTED");
+        Calling cal3=createCalling(54L,2313211132132L,222222L,3333333l,false,"SUBMITTED");
+//        callingList.add(cal1);
+//        callingList.add(cal2);
+//        callingList.add(cal3);
+
+//        db.saveCallings(callingList);
 
         db.addCalling(cal1);
         db.addCalling(cal2);
         db.addCalling(cal3);
 
-        List<CallingViewItem> callingList2=db.getCompletedCallings();
-        assertEquals("Records not stored in db", positionList.size(), callingList2.size());
-    }
-    @Test
+        List<CallingViewItem> callingList2=db.getCallings(false);
+//        List<CallingViewItem> callingList2=db.getPendingCallings();
 
+        assertEquals("Records not stored in db",  callingList2.size(),3);
+    }
+
+    @Test
     public void testCallingsNotSync() throws Exception {
 
-        Calling cal1=createCalling(52L,true,23132132132L,222222L,111111L,false,"ACTIVE");
-        Calling cal2=createCalling(53L,true,122121321l,222222L,555555l,true,"ACTIVE");
-        Calling cal3=createCalling(54L,true,2313211132132L,222222L,3333333l,false,"ACTIVE");
+        Calling cal1=createCalling(52L,23132132132L,222222L,111111L,false,"IS_SYNK");
+        Calling cal2=createCalling(53L,122121321l,222222L,555555l,true,"IS_SYNK");
+        Calling cal3=createCalling(54L,2313211132132L,222222L,3333333l,false,"IS_SYNK");
         db.addCalling(cal1);
         db.addCalling(cal2);
         db.addCalling(cal3);
@@ -73,19 +82,35 @@ public class WorkFlowDBTest extends AndroidTestCase {
 
     }
 
-    public void testCallingsPending() throws Exception {
 
-        Calling cal1=createCalling(52L,true,23132132132L,222222L,111111L,false,"ACTIVE");
-        Calling cal2=createCalling(53L,false,122121321l,222222L,555555l,true,"ACTIVE");
-        Calling cal3=createCalling(54L,false,2313211132132L,222222L,3333333l,false,"ACTIVE");
-        db.addCalling(cal1);
-        db.addCalling(cal2);
-        db.addCalling(cal3);
-
-        List<CallingViewItem> callingList2=db.getPendingCallings();
-        assertEquals("Record List did not return 1 calling", callingList2.size(), 2);
-        //todo check query. it should return 2 callings
-    }
+//    public void testCallingsCompleted() throws Exception {
+//
+//        Calling cal1=createCalling(52L,23132132132L,222222L,111111L,false,"ACTIVE");
+//        Calling cal2=createCalling(53L,122121321l,222222L,555555l,true,"ACTIVE");
+//        Calling cal3=createCalling(54L,2313211132132L,222222L,3333333l,false,"ACTIVE");
+//        db.addCalling(cal1);
+//        db.addCalling(cal2);
+//        db.addCalling(cal3);
+//
+//        List<CallingViewItem> callingList2=db.getCompletedCallings();
+//        assertEquals("Record List did not return 2 callings", callingList2.size(), 2);
+//        //todo check query. it should return 2 callings
+//
+//    }
+//
+//    public void testCallingsPending() throws Exception {
+//
+//        Calling cal1=createCalling(52L,23132132132L,222222L,111111L,false,"ACTIVE");
+//        Calling cal2=createCalling(53L,122121321l,222222L,555555l,true,"ACTIVE");
+//        Calling cal3=createCalling(54L,2313211132132L,222222L,3333333l,false,"ACTIVE");
+//        db.addCalling(cal1);
+//        db.addCalling(cal2);
+//        db.addCalling(cal3);
+//
+//        List<CallingViewItem> callingList2=db.getPendingCallings();
+//        assertEquals("Record List did not return 1 calling", callingList2.size(), 2);
+//        //todo check query. it should return 2 callings
+//    }
 
     @Test
     public void testGetPositions() throws Exception {
@@ -95,11 +120,6 @@ public class WorkFlowDBTest extends AndroidTestCase {
 
     @Test
     public void testGetCallingIds() throws Exception {
-
-    }
-
-    @Test
-    public void testGetPendingCallings() throws Exception {
 
     }
 
@@ -183,7 +203,7 @@ public class WorkFlowDBTest extends AndroidTestCase {
     }
 
     // UTIL METHOD
-    private Calling createCalling(Long positionId,boolean completed,Long dueDate, Long assignedTo,Long individualId, boolean isSync, String status){
+    private Calling createCalling(Long positionId,Long dueDate, Long assignedTo,Long individualId, boolean isSync, String status){
         Calling calling=new Calling();
         calling.setPositionId(positionId);
         calling.setDueDate(dueDate);
@@ -191,7 +211,6 @@ public class WorkFlowDBTest extends AndroidTestCase {
         calling.setIndividualId(individualId);
         calling.setIsSynced(isSync);
         calling.setStatusName(status);
-
         return calling;
 
     }
@@ -200,8 +219,14 @@ public class WorkFlowDBTest extends AndroidTestCase {
         Position position=new Position();
         position.setPositionId(positionID);
         position.setPositionName(positionName);
-
         return position;
+    }
+
+    private WorkFlowStatus createStatus(String name, Boolean completed){
+        WorkFlowStatus wf=new WorkFlowStatus();
+        wf.setComplete(completed);
+        wf.setStatusName(name);
+        return wf;
     }
 
 }
