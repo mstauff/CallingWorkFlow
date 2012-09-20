@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import org.lds.community.CallingWorkFlow.R;
-import org.lds.community.CallingWorkFlow.domain.Member;
-import org.lds.community.CallingWorkFlow.domain.Position;
-import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
-import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
+import org.lds.community.CallingWorkFlow.api.CallingManager;
+import org.lds.community.CallingWorkFlow.domain.*;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockFragment;
 import roboguice.inject.InjectView;
 
@@ -22,10 +20,16 @@ import java.util.List;
 public class CallingDetailFragment extends RoboSherlockFragment {
     @Inject
     WorkFlowDB db;
+    @Inject
+    private CallingManager callingManager;
     @InjectView(value = R.id.saveCallingButton)
     Button saveCallingButton;
     @InjectView(value = R.id.cancelButton)
     Button cancelButton;
+    AutoCompleteTextView positionField;
+    AutoCompleteTextView memberField;
+    Spinner statusSpinner;
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -49,27 +53,23 @@ public class CallingDetailFragment extends RoboSherlockFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = getLayoutInflater( savedInstanceState ).inflate( R.layout.callingdetail_fragment, container );
 
-        AutoCompleteTextView callingField = (AutoCompleteTextView) view.findViewById(R.id.callingPosition);
-        List<Position> positions = db.getPositions();
-        List<String> positionNames = new ArrayList<String>();
-        for(Position v: positions) { positionNames.add(v.getPositionName()); }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.autocomplete_textview,positionNames);
-        callingField.setAdapter(adapter);
-        callingField.setThreshold(1);//Number of required characters for search
+        positionField = (AutoCompleteTextView) view.findViewById(R.id.callingPosition);
+        List<? extends Listable> positionList = db.getPositions();
+        ObjectListAdapter positionAdapter = new ObjectListAdapter(getActivity(),R.layout.autocomplete_textview,positionList);
+        positionField.setAdapter(positionAdapter);
+        positionField.setThreshold(1);//Number of required characters for search
 
-        AutoCompleteTextView memberField = (AutoCompleteTextView) view.findViewById(R.id.memberName);
-        List<Member> members = db.getWardList();
-        List<String> memberNames = new ArrayList<String>();
-        for(Member m: members) { memberNames.add(m.getFirstName() + " " + m.getLastName()); }
-        ArrayAdapter<String> memberAdapter = new ArrayAdapter<String>(getActivity(),R.layout.autocomplete_textview,memberNames);
+        memberField = (AutoCompleteTextView) view.findViewById(R.id.memberName);
+        List<? extends Listable> memberList = db.getWardList();
+        ObjectListAdapter memberAdapter = new ObjectListAdapter(getActivity(),R.layout.autocomplete_textview,memberList);
         memberField.setAdapter(memberAdapter);
         memberField.setThreshold(1);//Number of required characters for search
 
-        Spinner statusSpinner = (Spinner) view.findViewById(R.id.status_spinner);
+        statusSpinner = (Spinner) view.findViewById(R.id.status_spinner);
         List<WorkFlowStatus> statusList = db.getWorkFlowStatuses();
-        List<CharSequence> statusOptions = new ArrayList<CharSequence>();
+        List<String> statusOptions = new ArrayList<String>();
         for(WorkFlowStatus s: statusList) { statusOptions.add(s.getStatusName()); }
-        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_item,statusOptions);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,statusOptions);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(spinnerAdapter);
 
@@ -77,7 +77,13 @@ public class CallingDetailFragment extends RoboSherlockFragment {
     }
 
     public void saveCalling(View v){
-
+        Long memberId = ((Member)memberField.getAdapter().getItem(memberField.getListSelection())).getIndividualId();
+        Long positionId = ((Position)positionField.getAdapter().getItem(positionField.getListSelection())).getPositionId();
+        String statusName = (String) statusSpinner.getSelectedItem();
+        Log.i("temp","***"+positionId+" "+memberId+" "+statusName);
+        //Calling calling = new Calling();
+        //calling
+        //callingManager.saveCalling(calling);
     }
 
     public void cancelChanges(View v){

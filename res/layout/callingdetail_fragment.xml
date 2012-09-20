@@ -17,11 +17,11 @@
                 android:text="@string/cancel_btn_label"
                 android:onClick="cancelChanges" />
     </LinearLayout>
-    <AutoCompleteTextView android:id="@+id/callingPosition"
+    <org.lds.community.CallingWorkFlow.domain.ListableAutoCompleteTextView android:id="@+id/callingPosition"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
               android:hint="@string/calling_label" />
-    <AutoCompleteTextView android:id="@+id/memberName"
+    <org.lds.community.CallingWorkFlow.domain.ListableAutoCompleteTextView android:id="@+id/memberName"
                   android:layout_height="wrap_content"
                   android:layout_width="fill_parent"
                   android:hint="@string/name_label" />

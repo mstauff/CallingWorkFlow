@@ -1,6 +1,6 @@
 package org.lds.community.CallingWorkFlow.domain;
 
-public class Member extends MemberBaseRecord {
+public class Member extends MemberBaseRecord implements Listable{
 
     public Member( String lastName, String firstName, long individualId ) {
         this.setLastName( lastName );
@@ -10,5 +10,9 @@ public class Member extends MemberBaseRecord {
 
     public Member() {
 
+    }
+
+    public String getDisplayString(){
+        return getFirstName()+" "+getLastName();
     }
 }
