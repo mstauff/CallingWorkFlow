@@ -31,6 +31,9 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Inject
     CwfNetworkUtil networkUtil;
 
+	@Inject
+	CallingManager callingManager;
+
 	private CallingViewItemAdapter callingViewItemAdapter;
 	private List<CallingViewItem> callingViewItems;
 
@@ -86,7 +89,6 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 			@Override
 			public void onClick(View v) {
 				String selectedItem = (String)statusSpinner.getSelectedItem();
-				CallingManager callingManager = new CallingManager();
 				CallingViewItem callingViewItem = callingViewItems.get(position);
 				Calling calling = callingViewItem.getCalling();
 				calling.setStatusName(selectedItem);
