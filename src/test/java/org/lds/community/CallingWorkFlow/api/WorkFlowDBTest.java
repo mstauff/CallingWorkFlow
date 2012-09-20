@@ -7,10 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lds.community.CallingWorkFlow.InjectedTestRunner;
 import org.lds.community.CallingWorkFlow.Utilities.TestUtils;
-import org.lds.community.CallingWorkFlow.domain.Member;
-import org.lds.community.CallingWorkFlow.domain.Position;
-import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
-import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
+import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +22,7 @@ import java.util.List;
 @RunWith(InjectedTestRunner.class)
 public class WorkFlowDBTest {
 
-    @Inject
-    WorkFlowDB db;
+    @Inject WorkFlowDB db;
 
     List<Member> memberList= new ArrayList<Member>();
     List<Position> positionList= new ArrayList<Position>();
@@ -58,24 +54,49 @@ public class WorkFlowDBTest {
     @Test
     public void  WardListTest(){
         List<Member> wardList=db.getWardList();
-        Assert.assertEquals("",wardList.size(),7);
+        Assert.assertEquals("",wardList.size(),memberList.size());
 
     }
 
     @Test
     public void positionListTest(){
         List<Position> positionList= db.getPositions();
-        Assert.assertEquals("",positionList.size(),5);
+        Assert.assertEquals("",positionList.size(),positionList.size());
 
     }
 
     @Test
     public void statusListTest(){
         List<WorkFlowStatus> statusList= db.getWorkFlowStatuses();
-        Assert.assertEquals("",statusList.size(),2);
+        Assert.assertEquals("",statusList.size(),statusList.size());
 
     }
 
+    @Test
+    public void updateCallingTest(){
+        List<Calling> callingList=new ArrayList<Calling>();
+
+        db.updateCalling( TestUtils.createCallingObj( 40L, "SET_APART", 1111L ) );
+        db.updateCalling(TestUtils.createCallingObj(41L, "SET_APART", 2222L));
+        db.updateCalling(TestUtils.createCallingObj(42L, "SET_APART", 3333L));
+        db.updateCalling(TestUtils.createCallingObj(43L, "PENDING", 4444L));
+        db.updateCalling(TestUtils.createCallingObj(44L, "PENDING", 5555L));
+        List<CallingViewItem> callingList2=db.getPendingCallings();
 
 
+    }
+
+    @Test
+    public void pendingCallingTest(){
+        List<Calling> callingList=new ArrayList<Calling>();
+
+        callingList.add( TestUtils.createCallingObj( 40L, "SUBMITTED", 1111L ) );
+        callingList.add(TestUtils.createCallingObj(41L, "SUBMITTED", 2222L));
+        callingList.add(TestUtils.createCallingObj(42L, "SUBMITTED", 3333L));
+        callingList.add(TestUtils.createCallingObj(43L, "PENDING", 4444L));
+        callingList.add(TestUtils.createCallingObj(44L, "PENDING", 5555L));
+        db.updateCallings(callingList);
+        List<CallingViewItem> callingList2=db.getPendingCallings();
+
+    }
 }
