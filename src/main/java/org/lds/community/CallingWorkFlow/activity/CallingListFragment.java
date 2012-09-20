@@ -45,7 +45,15 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		callingViewItems = db.getCallings(false);
+		loadListData(null);
+	}
+
+	private void loadListData(List<CallingViewItem> listItems) {
+		if(listItems == null || listItems.size() == 0) {
+			callingViewItems = db.getCallings(false);
+		} else {
+			callingViewItems = listItems;
+		}
 		this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_1, callingViewItems);
 		setListAdapter(callingViewItemAdapter);
 		ListView listView = getListView();
@@ -58,9 +66,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 				return true;
 			}
 		});
-
 	}
-
 	private void displayStatusPopup(final int position) {
 		LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE);
 		final View popupView = layoutInflater.inflate(R.layout.calling_status_popup, null);
@@ -92,8 +98,11 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 				CallingViewItem callingViewItem = callingViewItems.get(position);
 				Calling calling = callingViewItem.getCalling();
 				calling.setStatusName(selectedItem);
+				callingViewItem.setStatusName(selectedItem);
 				callingManager.saveCalling(calling, getActivity());
 				popupWindow.dismiss();
+				callingViewItems.set(position, callingViewItem);
+				loadListData(callingViewItems);
 			}
 		});
 
