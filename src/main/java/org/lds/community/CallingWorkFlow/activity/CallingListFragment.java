@@ -8,18 +8,20 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
 import org.lds.community.CallingWorkFlow.Adapter.CallingViewItemAdapter;
 import org.lds.community.CallingWorkFlow.R;
+import org.lds.community.CallingWorkFlow.api.CallingManager;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
+import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
+import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 import roboguice.fragment.RoboListFragment;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CallingListFragment extends RoboListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -28,6 +30,9 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 
     @Inject
     CwfNetworkUtil networkUtil;
+
+	@Inject
+	CallingManager callingManager;
 
 	private CallingViewItemAdapter callingViewItemAdapter;
 	private List<CallingViewItem> callingViewItems;
@@ -47,25 +52,52 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
-			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-				Toast.makeText(getActivity(), "long click", Toast.LENGTH_SHORT).show();
-				//displayStatusPopup();
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+				//Toast.makeText(getActivity(), "long click", Toast.LENGTH_SHORT).show();
+				displayStatusPopup(position);
 				return true;
 			}
 		});
 
 	}
 
-	private void displayStatusPopup() {
-		/*
-		Spinner statusSpinner = (Spinner) getListView().findViewById(11);
+	private void displayStatusPopup(final int position) {
+		LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE);
+		final View popupView = layoutInflater.inflate(R.layout.calling_status_popup, null);
+
+		final Spinner statusSpinner = (Spinner) popupView.findViewById(R.id.calling_status_spinner);
         List<WorkFlowStatus> statusList = db.getWorkFlowStatuses();
         List<CharSequence> statusOptions = new ArrayList<CharSequence>();
         for(WorkFlowStatus s: statusList) { statusOptions.add(s.getStatusName()); }
-        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_item,statusOptions);
+        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, statusOptions);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(spinnerAdapter);
-        */
+
+		final PopupWindow popupWindow = new PopupWindow(popupView,
+												        LinearLayout.LayoutParams.WRAP_CONTENT,
+												        LinearLayout.LayoutParams.WRAP_CONTENT);
+
+		Button btnDismiss = (Button)popupView.findViewById(R.id.cancelCallingStatusChangeBtn);
+		btnDismiss.setOnClickListener(new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				popupWindow.dismiss();
+			}
+		});
+		Button btnSaveStatus = (Button)popupView.findViewById(R.id.updateCallingStatusBtn);
+		btnSaveStatus.setOnClickListener(new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String selectedItem = (String)statusSpinner.getSelectedItem();
+				CallingViewItem callingViewItem = callingViewItems.get(position);
+				Calling calling = callingViewItem.getCalling();
+				calling.setStatusName(selectedItem);
+				callingManager.saveCalling(calling, getActivity());
+				popupWindow.dismiss();
+			}
+		});
+
+		popupWindow.showAtLocation(getListView(), 1, 0, 0);
 	}
 
 	@Override
