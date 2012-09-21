@@ -48,8 +48,8 @@ public class JSONUtil {
 
     public static List<Member> parseMemberList( JSONArray jsonArray ) throws JSONException {
         List<Member> memberList = new ArrayList<Member>( jsonArray.length() );
-
-        for (int i = 0; i < jsonArray.length(); i++) {
+        final int numJsonObjects = jsonArray.length();
+        for (int i = 0; i < numJsonObjects; i++) {
             memberList.add( parseMember( jsonArray.getJSONObject(i) ) );
         }
 
@@ -59,7 +59,8 @@ public class JSONUtil {
    public static List<Calling> parseCallings( JSONArray jsonArray ) throws JSONException {
         List<Calling> callingList = new ArrayList<Calling>( jsonArray.length() );
 
-        for (int i = 0; i < jsonArray.length(); i++) {
+       final int numJsonObjects = jsonArray.length();
+       for (int i = 0; i < numJsonObjects; i++) {
             callingList.add(parseCalling(jsonArray.getJSONObject(i)));
         }
 
@@ -86,7 +87,8 @@ public class JSONUtil {
     public static List<Position> parsePositionIds(JSONArray jsonArray) throws JSONException {
         List<Position> positionList = new ArrayList<Position>( jsonArray.length() );
 
-        for (int i = 0; i < jsonArray.length(); i++) {
+        final int numJsonObjects = jsonArray.length();
+        for (int i = 0; i < numJsonObjects; i++) {
             positionList.add(parsePosition(jsonArray.getJSONObject(i)));
         }
 
@@ -107,7 +109,8 @@ public class JSONUtil {
     public static List<WorkFlowStatus> parseStatuses(JSONArray jsonArray) throws JSONException {
         List<WorkFlowStatus> statusList = new ArrayList<WorkFlowStatus>( jsonArray.length() );
 
-        for (int i = 0; i < jsonArray.length(); i++) {
+        final int numJsonObjects = jsonArray.length();
+        for (int i = 0; i < numJsonObjects; i++) {
             statusList.add(parseStatus(jsonArray.getJSONObject(i)));
         }
 

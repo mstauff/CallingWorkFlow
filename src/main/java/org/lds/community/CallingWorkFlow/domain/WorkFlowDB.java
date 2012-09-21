@@ -120,9 +120,12 @@ public class WorkFlowDB {
      */
     public void saveCallings(List<Calling> callings) {
         SQLiteDatabase db = dbHelper.getDb();
+        String whereClause;
+        String[] whereArgs = new String[2];
         for( Calling calling : callings) {
-            String whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
-            String[] whereArgs = {String.valueOf(calling.getIndividualId()), String.valueOf(calling.getPositionId())};
+            whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
+            whereArgs[0] = String.valueOf(calling.getIndividualId());
+            whereArgs[1] = String.valueOf(calling.getPositionId());
             int result = db.update(CallingBaseRecord.TABLE_NAME, calling.getContentValues(), whereClause, whereArgs);
             Log.d(TAG, "Updated calling: " + calling.toString() + " Result=" + result );
         }
@@ -253,8 +256,6 @@ public class WorkFlowDB {
 
             /* Calls the super constructor, requesting the default cursor factory. */
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            // todo - does this need to change to have a writeable instance only where necessary?
-            // use readable everywhere else?
             db = super.getWritableDatabase();
         }
 
