@@ -27,7 +27,7 @@ public class TestUtils {
         memberList.add(createMemberObj("Eric", "Bastidas", 3333L) );
         memberList.add(createMemberObj("Bill", "Wiley", 4444L));
         memberList.add(createMemberObj("Steve", "Jonas", 5555L));
-        memberList.add(createMemberObj("Erika", "Jasmin", 5556L));
+        memberList.add(createMemberObj("Erika", "Jasmin", 6666L));
         memberList.add(createMemberObj("Adam", "Peres", 7777L));
         return memberList;
     }
@@ -44,14 +44,29 @@ public class TestUtils {
 
     public static List<WorkFlowStatus> createStatusDB(){
         List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
-        statusList.add( createStatus(true,"SUBMITTED",null,null,1));
-        statusList.add( createStatus(true,"PENDING",null,null,2));
+        statusList.add( createStatus(false,"SUBMITTED",null,null,1));
+        statusList.add( createStatus(false,"PENDING",null,null,2));
+        statusList.add( createStatus(true,"SET_APART",null,null,3));
+
+
         return statusList;
     }
 
     public static void initializeDatabase(WorkFlowDB db, List<Member> memberList,List<Position> positionList,List<WorkFlowStatus> statusList){
+
+        if(memberList==null){
+           memberList = createMembersDB();
+        }
         db.updateWardList( memberList);
+
+        if(positionList==null){
+            positionList = createPositionDB();
+        }
         db.updatePositions(positionList);
+
+        if(statusList==null){
+            statusList = createStatusDB();
+        }
         db.updateWorkFlowStatus(statusList);
 
     }
@@ -64,12 +79,12 @@ public class TestUtils {
         return memberObj;
      }
 
-    public static Calling createCallingObj(Long positionId, String statusName, Long individualId){
+    public static Calling createCallingObj(Long positionId, String statusName, Long individualId, Boolean isSync){
         Calling callingObj=new Calling();
         callingObj.setIndividualId(individualId);
         callingObj.setPositionId(positionId);
         callingObj.setStatusName(statusName);
-        callingObj.setIsSynced(false);
+        callingObj.setIsSynced(isSync);
         callingObj.setAssignedTo(0);
         callingObj.setDueDate(0);
         return callingObj;
