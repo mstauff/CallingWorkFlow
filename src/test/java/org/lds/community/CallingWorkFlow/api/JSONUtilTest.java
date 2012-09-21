@@ -46,11 +46,6 @@ public class JSONUtilTest {
         }
 
         TestUtils.assertEntityEquals(member1,member2);
-
-//        Assert.assertEquals(member1.getFirstName(), member2.getFirstName());
-//        Assert.assertEquals(member1.getLastName(), member2.getLastName());
-//        Assert.assertEquals(member1.getIndividualId(), member2.getIndividualId());
-
     }
 
     @Test
@@ -76,9 +71,9 @@ public class JSONUtilTest {
 
     @Test
     public void testParseCallings() throws Exception {
-        Calling calling1= TestUtils.createCallingObj(4L,"ACTIVE",1L);
-        Calling calling2= TestUtils.createCallingObj(4L,"ACTIVE",2L);
-        Calling calling3= TestUtils.createCallingObj(4L,"ACTIVE",3L);
+        Calling calling1= TestUtils.createCallingObj(4L,"ACTIVE",1L,false);
+        Calling calling2= TestUtils.createCallingObj(4L,"ACTIVE",2L,false);
+        Calling calling3= TestUtils.createCallingObj(4L,"ACTIVE",3L,false);
         JSONArray listSource=new JSONArray();
         listSource.put(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":4;" + JSONUtil.CALLING_STATUS_NAME + ":ACTIVE ;" + JSONUtil.MEMBER_IND_ID + ":1" + "}"));
         listSource.put(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":54;" + JSONUtil.CALLING_STATUS_NAME + ":ACTIVE ;" + JSONUtil.MEMBER_IND_ID + ":2" + "}"));
@@ -91,24 +86,15 @@ public class JSONUtilTest {
         TestUtils.assertEntityEquals(calling1, listResult.get(0));
         TestUtils.assertEntityEquals(calling2, listResult.get(1));
         TestUtils.assertEntityEquals(calling3, listResult.get(2));
-
-//        Assert.assertEquals(calling1.getPositionId(), listResult.get(0).getPositionId());
-//        Assert.assertEquals(calling2.getIndividualId(), listResult.get(1).getIndividualId());
-//        Assert.assertEquals(calling3.getStatusName(), listResult.get(2).getStatusName());
-
     }
 
     @Test
     public void testParseCalling() throws Exception {
  
-        Calling calling1= TestUtils.createCallingObj(54L,"ACTIVE",1234567L);
+        Calling calling1= TestUtils.createCallingObj(54L,"ACTIVE",1234567L,false);
         Calling calling2=JSONUtil.parseCalling(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":54;" + JSONUtil.CALLING_IND_ID + ":1234567;" + JSONUtil.CALLING_STATUS_NAME + ":ACTIVE" + "}"));
 
         TestUtils.assertEntityEquals(calling1,calling2);
-//        Assert.assertEquals(calling1.getPositionId(), calling2.getPositionId());
-//        Assert.assertEquals(calling1.getIndividualId(), calling2.getIndividualId());
-//        Assert.assertEquals(calling1.getStatusName(), calling2.getStatusName());
-
     }
 
     @Test
@@ -117,9 +103,6 @@ public class JSONUtilTest {
         Position position2=JSONUtil.parsePosition(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":4;" + JSONUtil.POSITION_NAME + ":Bishop" + "}"));
 
         TestUtils.assertEntityEquals(position1,position2);
-//        Assert.assertEquals(position1.getPositionId(), position2.getPositionId());
-//        Assert.assertEquals(position1.getPositionName(), position2.getPositionName());
-
     }
 
     @Test
@@ -140,11 +123,6 @@ public class JSONUtilTest {
         TestUtils.assertEntityEquals(position1, listResult.get(0));
         TestUtils.assertEntityEquals(position2, listResult.get(1));
         TestUtils.assertEntityEquals(position3, listResult.get(2));
-
-//        Assert.assertEquals(position1.getPositionId(), listResult.get(0).getPositionId());
-//        Assert.assertEquals(position2.getPositionName(), listResult.get(1).getPositionName());
-//        Assert.assertEquals(position3.getPositionName(), listResult.get(2).getPositionName());
-
     }
 
     @Test
@@ -153,10 +131,6 @@ public class JSONUtilTest {
         WorkFlowStatus status2=JSONUtil.parseStatus(new JSONObject("{" + JSONUtil.STATUS_COMPLETE + ":true;" + JSONUtil.STATUS_NAME + ":ACTIVE;" + JSONUtil.STATUS_ORDER + ":1" + "}"));
 
         TestUtils.assertEntityEquals(status1,status2);
-
-//        Assert.assertEquals(status1.getComplete(), status2.getComplete());
-//        Assert.assertEquals(status1.getSequence(), status2.getSequence());
-//        Assert.assertEquals(status1.getStatusName(), status2.getStatusName());
     }
 
     @Test
@@ -176,12 +150,6 @@ public class JSONUtilTest {
         TestUtils.assertEntityEquals(status1, listResult.get(0));
         TestUtils.assertEntityEquals(status2, listResult.get(1));
         TestUtils.assertEntityEquals(status3, listResult.get(2));
-
-
-//        Assert.assertEquals(status1.getComplete(), listResult.get(0).getComplete());
-//        Assert.assertEquals(status2.getSequence(), listResult.get(1).getSequence());
-//        Assert.assertEquals(status3.getStatusName(), listResult.get(2).getStatusName());
-
     }
 
 }
