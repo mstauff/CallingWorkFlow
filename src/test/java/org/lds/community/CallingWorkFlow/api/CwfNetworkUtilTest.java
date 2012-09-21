@@ -41,8 +41,8 @@ public class CwfNetworkUtilTest{
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
         networkUtil = new CwfNetworkUtil();
-        Calling calling1 = TestUtils.createCallingObj( 22L, "APPROVED", 5555L );
-        Calling calling2 = TestUtils.createCallingObj( 23L, "APPROVED", 5554L );
+        Calling calling1 = TestUtils.createCallingObj( 22L, "APPROVED", 5555L,false );
+        Calling calling2 = TestUtils.createCallingObj( 23L, "APPROVED", 5554L,false );
 
 
         networkUtil.updateCalling( calling1 );
@@ -62,11 +62,11 @@ public class CwfNetworkUtilTest{
         networkUtil = new CwfNetworkUtil();
 
 
-        Calling calling1 = TestUtils.createCallingObj( 22L, "SET_APART", 1L );
-        Calling calling2 = TestUtils.createCallingObj( 23L, "SET_APART", 2L );
-        Calling calling3 = TestUtils.createCallingObj( 24L, "SET_APART", 3L );
-        Calling calling4 = TestUtils.createCallingObj( 25L, "PENDING", 4L );
-        Calling calling5 = TestUtils.createCallingObj( 26L, "PENDING", 5L );
+        Calling calling1 = TestUtils.createCallingObj( 22L, "SET_APART", 1L,false );
+        Calling calling2 = TestUtils.createCallingObj( 23L, "SET_APART", 2L,false );
+        Calling calling3 = TestUtils.createCallingObj( 24L, "SET_APART", 3L,false );
+        Calling calling4 = TestUtils.createCallingObj( 25L, "PENDING", 4L,false );
+        Calling calling5 = TestUtils.createCallingObj( 26L, "PENDING", 5L,false );
 
         networkUtil.updateCalling( calling1 );
         networkUtil.updateCalling( calling2 );
