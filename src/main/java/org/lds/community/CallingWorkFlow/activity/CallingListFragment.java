@@ -95,13 +95,12 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 			@Override
 			public void onClick(View v) {
 				String selectedItem = (String)statusSpinner.getSelectedItem();
-				CallingViewItem callingViewItem = callingViewItems.get(position);
-				Calling calling = callingViewItem.getCalling();
+				CallingViewItem calling = callingViewItems.get(position);
 				calling.setStatusName(selectedItem);
-				callingViewItem.setStatusName(selectedItem);
+				calling.setStatusName(selectedItem);
 				callingManager.saveCalling(calling, getActivity());
 				popupWindow.dismiss();
-				callingViewItems.set(position, callingViewItem);
+				callingViewItems.set(position, calling);
 				loadListData(callingViewItems);
 			}
 		});

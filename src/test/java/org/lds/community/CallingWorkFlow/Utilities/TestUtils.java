@@ -118,8 +118,8 @@ public class TestUtils {
         return found;
     }
 
-    public static Calling getCallingObjectFromList(List<Calling> callingList,Long individualId, long positionID) {
-        Calling calling=new Calling();
+    public static Calling getCallingObjectFromList(List<? extends Calling> callingList,Long individualId, long positionID) {
+        Calling calling = null;
 
         for( Calling c : callingList ) {
             if( c.getIndividualId() == individualId && c.getPositionId() == positionID ) {
@@ -130,14 +130,14 @@ public class TestUtils {
         return calling;
     }
 
-    public static void assertEntityEquals(Calling sourceCalling,Calling resultCalling){
+    public static void assertEntityEquals(Calling sourceCalling, Calling resultCalling, String failMsg){
 
-        Assert.assertEquals("getIndividualId did not match", sourceCalling.getIndividualId(), resultCalling.getIndividualId());
-        Assert.assertEquals("getStatusName did not match",sourceCalling.getStatusName(), resultCalling.getStatusName());
-        Assert.assertEquals("getAssignedToId did not match",sourceCalling.getAssignedToId(), resultCalling.getAssignedToId());
-        Assert.assertEquals("getDueDate did not match",sourceCalling.getDueDate(), resultCalling.getDueDate());
-        Assert.assertEquals("getIsSynced did not match",sourceCalling.getIsSynced(), resultCalling.getIsSynced());
-        Assert.assertEquals("getPositionId did not match",sourceCalling.getPositionId(), resultCalling.getPositionId());
+        Assert.assertEquals( failMsg + " getIndividualId did not match", sourceCalling.getIndividualId(), resultCalling.getIndividualId());
+        Assert.assertEquals(failMsg + " getStatusName did not match",sourceCalling.getStatusName(), resultCalling.getStatusName());
+        Assert.assertEquals(failMsg + " getAssignedToId did not match",sourceCalling.getAssignedToId(), resultCalling.getAssignedToId());
+        Assert.assertEquals(failMsg + " getDueDate did not match",sourceCalling.getDueDate(), resultCalling.getDueDate());
+        Assert.assertEquals(failMsg + " getIsSynced did not match",sourceCalling.getIsSynced(), resultCalling.getIsSynced());
+        Assert.assertEquals(failMsg + " getPositionId did not match",sourceCalling.getPositionId(), resultCalling.getPositionId());
 
     }
 

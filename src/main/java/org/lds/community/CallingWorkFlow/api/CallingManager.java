@@ -55,7 +55,7 @@ public class CallingManager {
         db.updateCallings( allCallings );
     }
 
-    private boolean areCallingsEqual(Calling calling, Calling updatedCalling) {
+    public static boolean areCallingsEqual(Calling calling, Calling updatedCalling) {
         // for now we're just going with same indId & posId - may beef it up later
         return calling != null && updatedCalling != null
                 && calling.getPositionId() == updatedCalling.getPositionId()

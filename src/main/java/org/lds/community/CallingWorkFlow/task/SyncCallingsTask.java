@@ -54,7 +54,7 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
 
         }
         for( CallingViewItem calling : callingsToSync ) {
-            boolean success = callingMgr.updateCallingOnServer( calling.getCalling() );
+            boolean success = callingMgr.updateCallingOnServer( calling );
             if( success ) {
                 baseMsgString = successString;
                 successOrFailList = successes;

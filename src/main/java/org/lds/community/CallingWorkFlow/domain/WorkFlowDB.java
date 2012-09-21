@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class WorkFlowDB {
     /* Used for debugging and logging */
     private static final String TAG = "WorkFlowDB";

@@ -83,9 +83,9 @@ public class JSONUtilTest {
 
         Assert.assertEquals(listSource.length(),listResult.size());
 
-        TestUtils.assertEntityEquals(calling1, listResult.get(0));
-        TestUtils.assertEntityEquals(calling2, listResult.get(1));
-        TestUtils.assertEntityEquals(calling3, listResult.get(2));
+        TestUtils.assertEntityEquals(calling1, listResult.get(0), "");
+        TestUtils.assertEntityEquals(calling2, listResult.get(1), "");
+        TestUtils.assertEntityEquals(calling3, listResult.get(2), "");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class JSONUtilTest {
         Calling calling1= TestUtils.createCallingObj(54L,"ACTIVE",1234567L,false);
         Calling calling2=JSONUtil.parseCalling(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":54;" + JSONUtil.CALLING_IND_ID + ":1234567;" + JSONUtil.CALLING_STATUS_NAME + ":ACTIVE" + "}"));
 
-        TestUtils.assertEntityEquals(calling1,calling2);
+        TestUtils.assertEntityEquals(calling1,calling2, "");
     }
 
     @Test

@@ -5,17 +5,12 @@ import org.lds.community.CallingWorkFlow.api.DBUtil;
 
 import java.io.Serializable;
 
-public class CallingViewItem implements Serializable {
+public class CallingViewItem extends Calling implements Serializable {
 
-    private long positionId = 0;
     private String positionName = "";
-    private long individualId = 0;
     private String firstName = "";
     private String lastName = "";
     private Integer completed = 0;
-    private long assignedTo = 0;
-    private long dueDate = 0;
-    private Integer isSynced = 0;
     private String statusName = "";
 
     CallingViewItem() {}
@@ -33,9 +28,11 @@ public class CallingViewItem implements Serializable {
 		sequence = status.getSequence();
 	}*/
 
+/*
     public Calling getCalling() {
         return new Calling( individualId, positionId, statusName, assignedTo, dueDate, getIsSynced() );
     }
+*/
     public String getPositionName() {
         return positionName;
     }
@@ -44,52 +41,12 @@ public class CallingViewItem implements Serializable {
         this.positionName = positionName;
     }
 
-    public long getPositionId() {
-        return positionId;
-    }
-
-    public void setPositionId(long positionId) {
-        this.positionId = positionId;
-    }
-
-    public long getIndividualId() {
-        return individualId;
-    }
-
-    public void setIndividualId(long individualId) {
-        this.individualId = individualId;
-    }
-
-    public long getAssignedToId() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(long assigned_to) {
-        this.assignedTo = assigned_to;
-    }
-
     public boolean getCompleted() {
         return completed == 1;
     }
 
     public void setCompleted(boolean completed) {
         this.completed = completed ? 1 : 0;
-    }
-
-    public long getDueDate() {
-        return this.dueDate;
-    }
-
-    public void setDueDate(long due_date) {
-        this.dueDate = due_date;
-    }
-
-    public boolean getIsSynced() {
-        return isSynced == 1;
-    }
-
-    public void setIsSynced(boolean isSynced) {
-        this.isSynced = isSynced ? 1 : 0;
     }
 
     public String getFirstName() {
@@ -121,14 +78,11 @@ public class CallingViewItem implements Serializable {
     }
 
     public void setContent(Cursor cursor) {
+        super.setContent(cursor);
         positionName = DBUtil.getDbStringIfPresent(PositionBaseRecord.POSITION_NAME, cursor, "");
-        positionId = DBUtil.getDbLongIfPresent(PositionBaseRecord.POSITION_ID, cursor, -1);
-        individualId = DBUtil.getDbLongIfPresent(CallingBaseRecord.INDIVIDUAL_ID, cursor, -1);
         firstName = DBUtil.getDbStringIfPresent(MemberBaseRecord.FIRST_NAME, cursor, "");
         lastName = DBUtil.getDbStringIfPresent(MemberBaseRecord.LAST_NAME, cursor, "");
         assignedTo = DBUtil.getDbLongIfPresent(CallingBaseRecord.ASSIGNED_TO, cursor, -1);
-        dueDate = DBUtil.getDbLongIfPresent(CallingBaseRecord.DUE_DATE, cursor, 0);
-        isSynced = DBUtil.getDbIntIfPresent(CallingBaseRecord.IS_SYNCED, cursor, 0);
         completed = DBUtil.getDbIntIfPresent(WorkFlowStatusBaseRecord.IS_COMPLETE, cursor, 0);
         statusName = DBUtil.getDbStringIfPresent(WorkFlowStatusBaseRecord.STATUS_NAME, cursor, "");
     }
