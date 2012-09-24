@@ -67,6 +67,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 			}
 		});
 	}
+
 	private void displayStatusPopup(final int position) {
 		LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE);
 		final View popupView = layoutInflater.inflate(R.layout.calling_status_popup, null);
@@ -122,12 +123,20 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         super.onCreateView(inflater, container, savedInstanceState);
 	    return getLayoutInflater( savedInstanceState ).inflate( R.layout.callingworkflow_list, container );
     }
-	/*
 	@Override
 	public void onPause() {
 		super.onPause();
 	}
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        callingViewItems.clear();
+        callingViewItems.addAll(db.getPendingCallings());
+        this.callingViewItemAdapter.notifyDataSetChanged();
+    }
+
+	/*
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

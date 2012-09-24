@@ -11,9 +11,8 @@ public class CallingViewItem extends Calling implements Serializable {
     private String firstName = "";
     private String lastName = "";
     private Integer completed = 0;
-    private String statusName = "";
 
-    CallingViewItem() {}
+    public CallingViewItem() {}
 
 /*	CallingViewItem(CallingBaseRecord calling, PositionBaseRecord position, WorkFlowStatusBaseRecord status) {
 		positionId = calling.getPositionId();
@@ -69,14 +68,6 @@ public class CallingViewItem extends Calling implements Serializable {
         return firstName + " " + lastName;
     }
 
-    public String getStatusName() {
-        return statusName;
-    }
-
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
-    }
-
     public void setContent(Cursor cursor) {
         super.setContent(cursor);
         positionName = DBUtil.getDbStringIfPresent(PositionBaseRecord.POSITION_NAME, cursor, "");
@@ -84,7 +75,6 @@ public class CallingViewItem extends Calling implements Serializable {
         lastName = DBUtil.getDbStringIfPresent(MemberBaseRecord.LAST_NAME, cursor, "");
         assignedTo = DBUtil.getDbLongIfPresent(CallingBaseRecord.ASSIGNED_TO, cursor, -1);
         completed = DBUtil.getDbIntIfPresent(WorkFlowStatusBaseRecord.IS_COMPLETE, cursor, 0);
-        statusName = DBUtil.getDbStringIfPresent(WorkFlowStatusBaseRecord.STATUS_NAME, cursor, "");
     }
 
     // these functions shouldn't be needed since this doesn't map directly to a single db row
