@@ -2,7 +2,6 @@ package org.lds.community.CallingWorkFlow.activity;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,8 @@ public class CallingDetailFragment extends RoboSherlockFragment {
     AutoCompleteTextView memberField;
     Spinner statusSpinner;
     CallingViewItem callingViewItem;
-    Position selectedPosition;
-    Member selectedMember;
+    long selectedPositionId;
+    long selectedMemberId;
     List<WorkFlowStatus> statusList;
 
     @Override
@@ -42,6 +41,8 @@ public class CallingDetailFragment extends RoboSherlockFragment {
             callingViewItem = (CallingViewItem)bundle.get("callingViewItems");
             positionField.setText(callingViewItem.getPositionName());
             memberField.setText(callingViewItem.getFullName());
+            selectedPositionId = callingViewItem.getPositionId();
+            selectedMemberId = callingViewItem.getIndividualId();
             for(WorkFlowStatus s: statusList){
                 if(callingViewItem.getStatusName().equals(s.getStatusName())){
                     statusSpinner.setSelection(statusList.indexOf(s));
@@ -76,7 +77,7 @@ public class CallingDetailFragment extends RoboSherlockFragment {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        selectedPosition = (Position) positionField.getAdapter().getItem(i);
+                        selectedPositionId = ((Position)positionField.getAdapter().getItem(i)).getPositionId();
                     }
                 }
         );
@@ -89,7 +90,7 @@ public class CallingDetailFragment extends RoboSherlockFragment {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        selectedMember = (Member) memberField.getAdapter().getItem(i);
+                        selectedMemberId = ((Member)memberField.getAdapter().getItem(i)).getIndividualId();
                     }
                 }
         );
@@ -106,9 +107,12 @@ public class CallingDetailFragment extends RoboSherlockFragment {
     }
 
     public void saveCalling(View v){
-        if(selectedPosition != null && selectedMember != null){
-            callingViewItem.setPositionId(selectedPosition.getPositionId());
-            callingViewItem.setIndividualId(selectedMember.getIndividualId());
+        if(selectedPositionId != -1 && selectedMemberId != -1){
+            if(callingViewItem == null){
+                callingViewItem = new CallingViewItem();
+            }
+            callingViewItem.setPositionId(selectedPositionId);
+            callingViewItem.setIndividualId(selectedMemberId);
             callingViewItem.setStatusName((String) statusSpinner.getSelectedItem());
             callingManager.saveCalling(callingViewItem,getActivity());
             getActivity().onBackPressed();
