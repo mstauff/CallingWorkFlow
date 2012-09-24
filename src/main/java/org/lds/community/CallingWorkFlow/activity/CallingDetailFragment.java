@@ -107,16 +107,11 @@ public class CallingDetailFragment extends RoboSherlockFragment {
 
     public void saveCalling(View v){
         if(selectedPosition != null && selectedMember != null){
-            String statusName = (String) statusSpinner.getSelectedItem();
-            Long positionId = selectedPosition.getPositionId();
-            Long memberId = selectedMember.getIndividualId();
-            Calling calling = new Calling();
-            calling.setPositionId(memberId);
-            calling.setIndividualId(positionId);
-            calling.setStatusName(statusName);
-            callingManager.saveCalling(calling,getActivity());
-            Log.i("Detail Page","Calling Saved:"+selectedMember.getDisplayString()+
-                    ", "+selectedPosition.getDisplayString()+", "+statusName);
+            callingViewItem.setPositionId(selectedPosition.getPositionId());
+            callingViewItem.setIndividualId(selectedMember.getIndividualId());
+            callingViewItem.setStatusName((String) statusSpinner.getSelectedItem());
+            callingManager.saveCalling(callingViewItem,getActivity());
+            getActivity().onBackPressed();
         }
 
     }
