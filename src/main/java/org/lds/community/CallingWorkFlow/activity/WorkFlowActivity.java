@@ -31,7 +31,7 @@ public class WorkFlowActivity extends RoboSherlockFragmentActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-	    callingListFragment.spinnerInitialized = false;
+//	    callingListFragment.spinnerInitialized = false;
     }
     @Override
 	    public boolean onCreateOptionsMenu(Menu menu) {

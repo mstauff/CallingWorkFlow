@@ -43,12 +43,7 @@ public class CallingDetailFragment extends RoboSherlockFragment {
             memberField.setText(callingViewItem.getFullName());
             selectedPositionId = callingViewItem.getPositionId();
             selectedMemberId = callingViewItem.getIndividualId();
-            for(WorkFlowStatus s: statusList){
-                if(callingViewItem.getStatusName().equals(s.getStatusName())){
-                    statusSpinner.setSelection(statusList.indexOf(s));
-                    break;
-                }
-            }
+            statusSpinner.setSelection(( (ArrayAdapter) statusSpinner.getAdapter()).getPosition( callingViewItem.getStatusName() ));
         }
         saveCallingButton.setOnClickListener(new View.OnClickListener(){
             @Override

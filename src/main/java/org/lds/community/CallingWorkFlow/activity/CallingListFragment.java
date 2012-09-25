@@ -146,21 +146,31 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         super.onCreateView(inflater, container, savedInstanceState);
         return getLayoutInflater(savedInstanceState).inflate(R.layout.callingworkflow_list, container);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        callingViewItems.clear();
+        callingViewItems.addAll(db.getPendingCallings());
+        this.callingViewItemAdapter.notifyDataSetChanged();
+    }
+
 /*
-@Override
-public void onPause() {
-super.onPause();
-}
 
-@Override
-public void onSaveInstanceState(Bundle outState) {
-super.onSaveInstanceState(outState);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 //outState.putInt("LIST_POS", getListView().getFirstVisiblePosition());
-}
+    }
 
-public void selectPosition(int position, long id) {
-currentPositionInList = position;
-}
+    public void selectPosition(int position, long id) {
+        currentPositionInList = position;
+    }
 */
 
     @Override

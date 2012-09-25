@@ -5,7 +5,7 @@ import org.lds.community.CallingWorkFlow.api.DBUtil;
 
 import java.io.Serializable;
 
-public class CallingViewItem extends Calling implements Serializable {
+public class CallingViewItem extends Calling {
 
     private String positionName = "";
     private String firstName = "";
