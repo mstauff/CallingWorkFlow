@@ -36,6 +36,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
+    private boolean spinnerInitialized = false;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
     }
@@ -76,23 +77,25 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         final PopupWindow popupWindow = new PopupWindow(popupView,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-/*
-statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-String selectedItem = (String)statusSpinner.getSelectedItem();
-CallingViewItem callingViewItem = callingViewItems.get(position);
-Calling calling = callingViewItem.getCalling();
-calling.setStatusName(selectedItem);
-callingViewItem.setStatusName(selectedItem);
-callingManager.saveCalling(calling, getActivity());
-popupWindow.dismiss();
-callingViewItems.set(position, callingViewItem);
-loadListData(callingViewItems);
-}
-public void onNothingSelected(AdapterView<?> adapterView) {
-}
-});
-*/
+        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if( spinnerInitialized ) {
+                    String selectedItem = (String) statusSpinner.getSelectedItem();
+                    CallingViewItem callingViewItem = callingViewItems.get(position);
+                    callingViewItem.setStatusName(selectedItem);
+                    callingManager.saveCalling(callingViewItem, getActivity());
+                    popupWindow.dismiss();
+                    spinnerInitialized = false;
+                    callingViewItems.set(position, callingViewItem);
+                    callingViewItemAdapter.notifyDataSetChanged();
+                } else {
+                    spinnerInitialized = true;
+                }
+            }
+
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
         List<WorkFlowStatus> statusList = db.getWorkFlowStatuses();
         List<CharSequence> statusOptions = new ArrayList<CharSequence>();
         for (WorkFlowStatus s : statusList) {
@@ -101,7 +104,9 @@ public void onNothingSelected(AdapterView<?> adapterView) {
         ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, statusOptions);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(spinnerAdapter);
+        statusSpinner.setSelection( spinnerAdapter.getPosition( callingViewItems.get( position ).getStatusName() ));
 
+/*
         Button btnDismiss = (Button) popupView.findViewById(R.id.cancelCallingStatusChangeBtn);
         btnDismiss.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -122,6 +127,7 @@ public void onNothingSelected(AdapterView<?> adapterView) {
                 callingViewItemAdapter.notifyDataSetChanged();
             }
         });
+*/
         popupWindow.showAtLocation(getListView(), 1, 0, 0);
         statusSpinner.performClick();
     }

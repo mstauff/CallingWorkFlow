@@ -10,15 +10,5 @@
                  android:layout_height="wrap_content"
                  android:spinnerMode="dialog" />
 
-    <Button android:id="@+id/updateCallingStatusBtn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/save_btn_label" />
-
-    <Button android:id="@+id/cancelCallingStatusChangeBtn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/cancel_btn_label" />
-
 </LinearLayout>
 

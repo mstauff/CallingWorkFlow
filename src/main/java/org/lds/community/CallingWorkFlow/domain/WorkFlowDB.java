@@ -277,6 +277,9 @@ public class WorkFlowDB {
         }
 
         public SQLiteDatabase getDb() {
+            if (db == null || !db.isOpen()) {
+                db = this.getWritableDatabase();
+            }
             return db;
         }
 
