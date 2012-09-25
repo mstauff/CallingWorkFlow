@@ -8,9 +8,9 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/add_btn_label" />
-    <Button android:id="@+id/removeCallingBtn"
+   <!-- <Button android:id="@+id/removeCallingBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/remove_btn_label"
-            android:onClick="removeCalling" />
+            android:onClick="removeCalling" />-->
 </LinearLayout>
