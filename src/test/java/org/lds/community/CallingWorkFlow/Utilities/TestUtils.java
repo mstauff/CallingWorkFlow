@@ -34,7 +34,8 @@ public class TestUtils {
         memberList.add(createMemberObj("Erika", "Jasmin", 6666L));
         memberList.add(createMemberObj("Adam", "Peres", 7777L));
         if(db!=null){
-            initializeDatabase(db,memberList,null,null);
+            db.updateWardList( memberList);
+
         }
         return memberList;
     }
@@ -47,7 +48,7 @@ public class TestUtils {
         positionList.add(createPositionObj(43L, "Primary sunBean teacher"));
         positionList.add(createPositionObj(44L, "Sunday School 14-15 teacher"));
         if(db!=null){
-            initializeDatabase(db,null,positionList,null);
+            db.updatePositions(positionList);
         }
         return positionList;
     }
@@ -59,28 +60,10 @@ public class TestUtils {
         statusList.add( createStatus(true,"SET_APART",null,null,3));
         statusList.add( createStatus(true,"DECLINED",null,null,4));
         if(db!=null){
-            initializeDatabase(db,null,null,statusList);
+            db.updateWorkFlowStatus(statusList);
+
         }
         return statusList;
-    }
-
-    public static void initializeDatabase(WorkFlowDB db, List<Member> memberList,List<Position> positionList,List<WorkFlowStatus> statusList){
-
-        if(memberList==null){
-           memberList = createMembersDB(null);
-        }
-        db.updateWardList( memberList);
-
-        if(positionList==null){
-            positionList = createPositionDB(null);
-        }
-        db.updatePositions(positionList);
-
-        if(statusList==null){
-            statusList = createStatusDB(null);
-        }
-        db.updateWorkFlowStatus(statusList);
-
     }
 
     public static Member createMemberObj(String firstName, String lastName, Long individualId){
@@ -89,7 +72,7 @@ public class TestUtils {
         memberObj.setLastName(lastName);
         memberObj.setIndividualId(individualId);
         return memberObj;
-     }
+    }
 
     public static Calling createCallingObj(Long positionId, String statusName, Long individualId, Boolean isSync){
         Calling callingObj=new Calling();
@@ -170,7 +153,6 @@ public class TestUtils {
 
         Assert.assertEquals(failMsg + " getPositionName did not match", sourcePosition.getPositionName(), resultPosition.getPositionName());
         Assert.assertEquals(failMsg + " getPositionId did not match",sourcePosition.getPositionId(), resultPosition.getPositionId());
-//        Assert.assertEquals(failMsg + " getContentValues did not match",sourcePosition.getContentValues(), resultPosition.getContentValues());
 
     }
 
@@ -178,7 +160,6 @@ public class TestUtils {
 
         Assert.assertEquals(failMsg + " getStatusName did not match", sourceWfs.getStatusName(), resultWfs.getStatusName());
         Assert.assertEquals(failMsg + " getComplete did not match",sourceWfs.getComplete(), resultWfs.getComplete());
-//        Assert.assertEquals(failMsg + " getContentValues did not match",sourceWfs.getContentValues(), resultWfs.getContentValues());
         Assert.assertEquals(failMsg + " getSequence did not match",sourceWfs.getSequence(), resultWfs.getSequence());
 
     }
@@ -187,7 +168,6 @@ public class TestUtils {
 
         Assert.assertEquals(failMsg + " getStatusName did not match", sourceMember.getFirstName(), resultMember.getFirstName());
         Assert.assertEquals(failMsg + " getComplete did not match",sourceMember.getLastName(), resultMember.getLastName());
-//        Assert.assertEquals(failMsg + " getContentValues did not match",sourceMember.getContentValues(), resultMember.getContentValues());
         Assert.assertEquals(failMsg + " getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
 
     }
@@ -203,7 +183,7 @@ public class TestUtils {
     }
 
 
-    public static int getCallingStatusCountFromList(List<Calling> callingList, String status) {
+    public static int getCallingStatusCountFromList(List<? extends Calling> callingList, String status) {
         int count=0;
 
         for( Calling c : callingList ) {
@@ -214,17 +194,12 @@ public class TestUtils {
         return count;
     }
 
-    public static int getCallingStatusCompletedFromList(List<Calling> callingList, WorkFlowDB db) {
+    public static int getCallingStatusCompletedFromList(List<CallingViewItem> callingList) {
         int count=0;
-        List<WorkFlowStatus>  statusList= createStatusDB(null);
-        for( Calling c : callingList ) {
-            for (WorkFlowStatus w:statusList){
-                if( c.getStatusName().equals(w.getStatusName())){
-                    if( w.getComplete()) {
-                        count++;
-                    }
-                }
-            }
+        for( CallingViewItem c : callingList ) {
+             if( c.getCompleted()) {
+                count++;
+             }
         }
 
         return count;
@@ -246,12 +221,22 @@ public class TestUtils {
     public static List<Calling> convertCViewToCallingList(List<CallingViewItem> callingViewList){
         // converts from CallingViewList object  to Calling object List
         List<Calling> callingList =new ArrayList<Calling>();
-
         for(CallingViewItem c:callingViewList) {
-            Calling calling= callingView_ToCalling(c);
-            callingList.add(calling);
+            callingList.add(c);
         }
         return callingList;
+    }
+
+    public static String getStatus(WorkFlowDB db, Boolean isCompleted){
+        List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
+        String status=null;
+        for( WorkFlowStatus curStatus : statuses ) {
+            if( curStatus.getComplete()==isCompleted ) {
+                status = curStatus.getStatusName();
+                break;
+            }
+        }
+        return status;
     }
 
 }

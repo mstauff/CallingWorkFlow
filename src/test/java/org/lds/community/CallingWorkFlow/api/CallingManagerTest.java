@@ -59,7 +59,6 @@ public class CallingManagerTest {
         List<Member> members = TestUtils.createMembersDB(db);
         List<Position> positions = TestUtils.createPositionDB(db);
         List<WorkFlowStatus> statuses = TestUtils.createStatusDB(db);
-        TestUtils.initializeDatabase( db, members, positions, statuses);
 
         WorkFlowStatus status = null;
         for( WorkFlowStatus curStatus : statuses ) {
