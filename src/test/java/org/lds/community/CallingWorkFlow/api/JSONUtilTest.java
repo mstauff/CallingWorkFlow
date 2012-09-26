@@ -30,7 +30,7 @@ public class JSONUtilTest {
 
     @After
     public void tearDown() throws Exception {
-       // comment for git conflict testing
+       // comment changed
     }
 
     @Test
