@@ -47,7 +47,7 @@ public class CwfNetworkUtilTest{
 
         networkUtil.updateCalling( calling1 );
         List<Calling> callings = networkUtil.getPendingCallings();
-        Assert.assertTrue("Calling wasn't saved", TestUtils.foundCallingFromList(callings, calling1.getIndividualId(), calling1.getPositionId()));
+        Assert.assertTrue("Calling wasn't saved", TestUtils.findCallingFromList(callings, calling1.getIndividualId(), calling1.getPositionId()));
         Calling resultCalling=  TestUtils.getCallingObjectFromList(callings,calling1.getIndividualId(),calling1.getPositionId());
         TestUtils.assertEntityEquals(calling1,resultCalling, "");
 

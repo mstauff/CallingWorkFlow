@@ -19,10 +19,6 @@ import java.util.List;
 
 
 public class TestUtils {
-    public static int SUBMITTED=0;
-    public static int PENDING=1;
-    public static int SET_APART=2;
-    public static int DECLINED=3;
 
     public static List<Member> createMembersDB(WorkFlowDB db){
         List<Member> memberList= new ArrayList<Member>();
@@ -102,7 +98,7 @@ public class TestUtils {
         return statusObj;
     }
 
-    public static boolean foundCallingFromList(List<Calling> callingList, Long individualId, long positionID) {
+    public static boolean findCallingFromList(List<Calling> callingList, Long individualId, long positionID) {
         boolean found = false;
         for( Calling c : callingList ) {
             if( c.getIndividualId() == individualId && c.getPositionId() == positionID ) {
@@ -172,17 +168,6 @@ public class TestUtils {
 
     }
 
-    public static Boolean assertEntityEqualsBoolean(Member sourceMember,Member resultMember, String failMsg){
-
-        Assert.assertEquals(failMsg + " getStatusName did not match", sourceMember.getFirstName(), resultMember.getFirstName());
-        Assert.assertEquals(failMsg + " getComplete did not match",sourceMember.getLastName(), resultMember.getLastName());
-        Assert.assertEquals(failMsg + " getContentValues did not match",sourceMember.getContentValues(), resultMember.getContentValues());
-        Assert.assertEquals(failMsg + " getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
-
-        return true;
-    }
-
-
     public static int getCallingStatusCountFromList(List<? extends Calling> callingList, String status) {
         int count=0;
 
@@ -194,40 +179,7 @@ public class TestUtils {
         return count;
     }
 
-    public static int getCallingStatusCompletedFromList(List<CallingViewItem> callingList) {
-        int count=0;
-        for( CallingViewItem c : callingList ) {
-             if( c.getCompleted()) {
-                count++;
-             }
-        }
-
-        return count;
-    }
-
-    public static Calling callingView_ToCalling(CallingViewItem callingViewItem) {
-        //converts from one object to another
-        Calling calling=new Calling();
-        calling.setIndividualId(callingViewItem.getIndividualId());
-        calling.setDueDate(callingViewItem.getDueDate());
-        calling.setIsSynced(callingViewItem.getIsSynced());
-        calling.setPositionId(callingViewItem.getPositionId());
-        calling.setStatusName(callingViewItem.getStatusName());
-        calling.setAssignedTo(callingViewItem.getAssignedToId());
-
-        return   calling;
-    }
-
-    public static List<Calling> convertCViewToCallingList(List<CallingViewItem> callingViewList){
-        // converts from CallingViewList object  to Calling object List
-        List<Calling> callingList =new ArrayList<Calling>();
-        for(CallingViewItem c:callingViewList) {
-            callingList.add(c);
-        }
-        return callingList;
-    }
-
-    public static String getStatus(WorkFlowDB db, Boolean isCompleted){
+    public static String getStatusName(WorkFlowDB db, Boolean isCompleted){
         List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
         String status=null;
         for( WorkFlowStatus curStatus : statuses ) {
@@ -239,5 +191,16 @@ public class TestUtils {
         return status;
     }
 
+    public static WorkFlowStatus getStatusObj(WorkFlowDB db, Boolean isCompleted){
+        List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
+        WorkFlowStatus status=new WorkFlowStatus();
+        for( WorkFlowStatus curStatus : statuses ) {
+            if( curStatus.getComplete()==isCompleted ) {
+                status = curStatus;
+                break;
+            }
+        }
+        return status;
+    }
 }
 

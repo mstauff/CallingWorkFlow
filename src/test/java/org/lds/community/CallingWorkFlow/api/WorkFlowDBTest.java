@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RunWith(InjectedTestRunner.class)
 public class WorkFlowDBTest {
-    //todo make more complehensible variables for future programer
+
     @Inject WorkFlowDB db;
 
     List<Member> memberMasterDB= new ArrayList<Member>();
@@ -57,7 +57,7 @@ public class WorkFlowDBTest {
         Assert.assertEquals("",positionList.size(),positionMasterDB.size());
         int index=0;
         for(Position p:positionList){
-            TestUtils.assertEntityEquals(p,positionList.get(index),"Entity not equal");
+            TestUtils.assertEntityEquals(p,positionMasterDB.get(index),"Entity not equal");
             index++;
         }
     }
@@ -67,8 +67,8 @@ public class WorkFlowDBTest {
         List<WorkFlowStatus> statusList= db.getWorkFlowStatuses();
         Assert.assertEquals("",statusList.size(),statusMasterDB.size());
         int index=0;
-        for(WorkFlowStatus p:statusList){
-            TestUtils.assertEntityEquals(p,statusList.get(index),"Entity not equal");
+        for(WorkFlowStatus wf:statusList){
+            TestUtils.assertEntityEquals(wf,statusMasterDB.get(index),"Entity not equal");
             index++;
         }
     }
@@ -95,7 +95,7 @@ public class WorkFlowDBTest {
         List<Calling> callingsToUpdate=new ArrayList<Calling>();
         callingsToUpdate.addAll(callingPending);
 
-        callingsToUpdate.get(0).setStatusName(TestUtils.getStatus(db,true));
+        callingsToUpdate.get(0).setStatusName(TestUtils.getStatusName(db,true));
 
         db.updateCallings(callingsToUpdate)  ;
 
@@ -104,26 +104,24 @@ public class WorkFlowDBTest {
         TestUtils.assertEntityEquals(callingsToUpdate.get(0),callingResultObj,"");
     }
 
-//    @Test
-//    public void DuplicateCallingsTest(){
-//        List<Calling> callingList=createCallingList();
-//        db.updateCallings(callingList);
-//        List<CallingViewItem> callingListFromDB=db.getCompletedCallings();
-//        int completedCallings=TestUtils.getCallingStatusCompletedFromList(callingListFromDB, db);
-//
-//        Assert.assertEquals("Did not return the correct Completed callings count",callingListFromDB.size(),completedCallings);
-//
-//        // add duplicate calling to list
-//        List<Calling> callingListDup=new ArrayList<Calling>();
-//        callingListDup.addAll(callingList);
-//        db.updateCallings(callingListDup);
-//
-//        // check if duplicates were saved to db
-//        List<CallingViewItem> callingListFromDB2=db.getCompletedCallings();
-//
-//        int completedCallings2=TestUtils.getCallingStatusCompletedFromList(TestUtils.convertCViewToCallingList(callingListFromDB2), db);
-//        Assert.assertEquals("Did return duplicate callings",callingListFromDB2.size(),completedCallings2);
-//    }
+    @Test
+    public void DuplicateCallingsTest(){
+        List<Calling> callingsSource=createCallingList();
+        db.updateCallings(callingsSource);
+
+        List<CallingViewItem> callingsSourceList=db.getCompletedCallings();
+
+        // add duplicate calling to list
+        List<Calling> callingsDuplicateList=new ArrayList<Calling>();
+        callingsDuplicateList.addAll(callingsSource);
+        callingsDuplicateList.addAll(callingsSource);
+        db.updateCallings(callingsDuplicateList);
+
+        // check if duplicates were saved to db
+        List<CallingViewItem> callingsListFromDBResults=db.getCompletedCallings();
+
+        Assert.assertEquals("Did return duplicate callings",callingsListFromDBResults.size(),callingsSourceList.size());
+    }
 
     // do not delete.  kept for Second round
 //    @Test
@@ -170,15 +168,15 @@ public class WorkFlowDBTest {
     public void addDuplicatePositionToDBTest(){
         // should not add duplicate positions to db
 
-        List<Position> positionListFromDB=db.getPositions();
+        List<Position> positionsFromDBSource=db.getPositions();
 
-        List<Position> positionListDup =new ArrayList<Position>();
-        positionListDup.addAll(positionListFromDB);
+        List<Position> positionDuplicateList =new ArrayList<Position>();
+        positionDuplicateList.addAll(positionsFromDBSource);
 
-        db.updatePositions(positionListDup);
+        db.updatePositions(positionDuplicateList);
 
-        List<Position> positionListResult=db.getPositions();
-        Assert.assertEquals("Duplicate positions added to DB",positionListFromDB.size(), positionListResult.size());
+        List<Position> positionsFromDBResult=db.getPositions();
+        Assert.assertEquals("Duplicate positions added to DB",positionsFromDBResult.size(), positionsFromDBSource.size());
     }
 
     @Test
@@ -199,67 +197,34 @@ public class WorkFlowDBTest {
     @Test
     public void addDuplicateMemberToDBTest(){
         // should not add duplicate members to db
-        List<Member> memberList=db.getWardList() ;
-        List<Member> memberListDup=new ArrayList<Member>() ;
-         memberListDup.addAll(memberList);
-        db.updateWardList(memberListDup);
+        List<Member> membersSource=db.getWardList() ;
+        List<Member> memberDuplicateList=new ArrayList<Member>() ;
+        memberDuplicateList.addAll(membersSource);
+        db.updateWardList(memberDuplicateList);
 
         List<Member> memberListResult=db.getWardList() ;
-        Assert.assertEquals("duplicate members added to db",memberListResult.size(), memberList.size());
+        Assert.assertEquals("duplicate members added to db",memberListResult.size(), membersSource.size());
 
-        for (int i = 0; i < memberList.size(); i++) {
-            TestUtils.assertEntityEquals(memberList.get(i),memberListResult.get(i),"");
+        for (int i = 0; i < membersSource.size(); i++) {
+            TestUtils.assertEntityEquals(membersSource.get(i),memberListResult.get(i),"");
         }
     }
 
 
-//    //------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
     // UTIL METHODS
     private List<Calling> createCallingList(){
 
         List<Calling> cList=new ArrayList<Calling>();
 
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(0).getPositionId(),TestUtils.getStatus(db,false) , memberMasterDB.get(0).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(1).getPositionId(),TestUtils.getStatus(db,false) , memberMasterDB.get(1).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(2).getPositionId(),TestUtils.getStatus(db,false) , memberMasterDB.get(2).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(3).getPositionId(),TestUtils.getStatus(db,false) , memberMasterDB.get(3).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(4).getPositionId(),TestUtils.getStatus(db,false) , memberMasterDB.get(4).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(4).getPositionId(),TestUtils.getStatus(db,true) , memberMasterDB.get(5).getIndividualId(),true));
+        cList.add(TestUtils.createCallingObj(positionMasterDB.get(0).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(0).getIndividualId(),false));
+        cList.add(TestUtils.createCallingObj(positionMasterDB.get(1).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(1).getIndividualId(),false));
+        cList.add(TestUtils.createCallingObj(positionMasterDB.get(2).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(2).getIndividualId(),false));
+        cList.add(TestUtils.createCallingObj(positionMasterDB.get(3).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(3).getIndividualId(),false));
+        cList.add(TestUtils.createCallingObj(positionMasterDB.get(4).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(4).getIndividualId(),false));
+        cList.add(TestUtils.createCallingObj(positionMasterDB.get(4).getPositionId(),TestUtils.getStatusName(db,true) , memberMasterDB.get(5).getIndividualId(),true));
         return cList;
     }
 
-    private List<Calling> createCallingNullList(){
-
-        List<Calling> cList=new ArrayList<Calling>();
-
-        cList.add(TestUtils.createCallingObj(null,statusMasterDB.get(TestUtils.SUBMITTED).getStatusName() ,0L,false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(1).getPositionId(),statusMasterDB.get(TestUtils.SUBMITTED).getStatusName() ,0L,false));
-        return cList;
-    }
-
-    private List<Position> createPositionList(){
-        List<Position> positionList =new ArrayList<Position>();
-
-        positionList.add(TestUtils.createPositionObj(positionMasterDB.get(0).getPositionId(), positionMasterDB.get(0).getPositionName()) );
-        positionList.add(TestUtils.createPositionObj(positionMasterDB.get(1).getPositionId(), positionMasterDB.get(1).getPositionName()) );
-        positionList.add(TestUtils.createPositionObj(positionMasterDB.get(2).getPositionId(), positionMasterDB.get(2).getPositionName()) );
-        positionList.add(TestUtils.createPositionObj(positionMasterDB.get(3).getPositionId(), positionMasterDB.get(3).getPositionName()) );
-        positionList.add(TestUtils.createPositionObj(positionMasterDB.get(4).getPositionId(), positionMasterDB.get(4).getPositionName()) );
-        return positionList;
-    }
-
-    private List<Member> createMemberList(){
-        List<Member> memberList =new ArrayList<Member>();
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(0).getFirstName(), memberMasterDB.get(0).getLastName(),memberMasterDB.get(0).getIndividualId()));
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(1).getFirstName(), memberMasterDB.get(1).getLastName(),memberMasterDB.get(1).getIndividualId()));
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(2).getFirstName(), memberMasterDB.get(2).getLastName(),memberMasterDB.get(2).getIndividualId()));
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(3).getFirstName(), memberMasterDB.get(3).getLastName(),memberMasterDB.get(3).getIndividualId()));
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(4).getFirstName(), memberMasterDB.get(4).getLastName(),memberMasterDB.get(4).getIndividualId()));
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(5).getFirstName(), memberMasterDB.get(5).getLastName(),memberMasterDB.get(5).getIndividualId()));
-        memberList.add(TestUtils.createMemberObj(memberMasterDB.get(6).getFirstName(), memberMasterDB.get(6).getLastName(),memberMasterDB.get(6).getIndividualId()));
-
-        return memberList;
-
-    }
 
 }
