@@ -161,7 +161,7 @@ public class WorkFlowDB {
      *
      * @param callings
      */
-    public void updateCallings(List<Calling> callings) {
+    public void updateCallings(List<? extends Calling> callings) {
         updateData( Calling.TABLE_NAME, callings );
     }
 
