@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.inject.Inject;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.activity.RoboSherlockFragmentActivity;
 
 public class WorkFlowActivity extends RoboSherlockFragmentActivity {
-	@Inject
-	CallingListFragment callingListFragment;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +28,6 @@ public class WorkFlowActivity extends RoboSherlockFragmentActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-	    callingListFragment.spinnerInitialized = false;
     }
     @Override
 	    public boolean onCreateOptionsMenu(Menu menu) {

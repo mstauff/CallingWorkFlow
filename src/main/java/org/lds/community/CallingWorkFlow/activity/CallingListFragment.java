@@ -13,11 +13,11 @@ import org.lds.community.CallingWorkFlow.Adapter.CallingViewItemAdapter;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
-import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 import roboguice.fragment.RoboListFragment;
+import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -34,9 +34,12 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Inject
     CallingManager callingManager;
 
+	@InjectView(value = R.id.addNewCallingBtn)
+	Button newCallingBtn;
+
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
-    private boolean spinnerInitialized = false;
+    protected boolean spinnerInitialized = false;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
     }
@@ -46,6 +49,12 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+	    newCallingBtn.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewCalling( view );
+            }
+        });
         loadListData(null);
     }
 
@@ -62,7 +71,6 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-//Toast.makeText(getActivity(), "long click", Toast.LENGTH_SHORT).show();
                 displayStatusPopup(position);
                 return true;
             }
@@ -106,28 +114,6 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         statusSpinner.setAdapter(spinnerAdapter);
         statusSpinner.setSelection( spinnerAdapter.getPosition( callingViewItems.get( position ).getStatusName() ));
 
-/*
-        Button btnDismiss = (Button) popupView.findViewById(R.id.cancelCallingStatusChangeBtn);
-        btnDismiss.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-        Button btnSaveStatus = (Button) popupView.findViewById(R.id.updateCallingStatusBtn);
-        btnSaveStatus.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String selectedItem = (String) statusSpinner.getSelectedItem();
-                CallingViewItem callingViewItem = callingViewItems.get(position);
-                callingViewItem.setStatusName(selectedItem);
-                callingManager.saveCalling(callingViewItem, getActivity());
-                popupWindow.dismiss();
-                callingViewItems.set(position, callingViewItem);
-                callingViewItemAdapter.notifyDataSetChanged();
-            }
-        });
-*/
         popupWindow.showAtLocation(getListView(), 1, 0, 0);
         statusSpinner.performClick();
     }
@@ -146,22 +132,11 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         super.onCreateView(inflater, container, savedInstanceState);
         return getLayoutInflater(savedInstanceState).inflate(R.layout.callingworkflow_list, container);
     }
-/*
-@Override
-public void onPause() {
-super.onPause();
-}
 
-@Override
-public void onSaveInstanceState(Bundle outState) {
-super.onSaveInstanceState(outState);
-//outState.putInt("LIST_POS", getListView().getFirstVisiblePosition());
-}
-
-public void selectPosition(int position, long id) {
-currentPositionInList = position;
-}
-*/
+	public void addNewCalling(View v){
+		Intent intent = new Intent(getActivity(),DetailActivity.class);
+		startActivity(intent);
+	}
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -176,4 +151,3 @@ currentPositionInList = position;
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
     }
 }
-
