@@ -3,7 +3,9 @@ package org.lds.community.CallingWorkFlow.domain;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-public class CallingBaseRecord implements BaseRecord {
+import java.io.Serializable;
+
+public class CallingBaseRecord implements BaseRecord, Serializable{
 
     public CallingBaseRecord() {}
 
