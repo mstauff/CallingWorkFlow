@@ -27,9 +27,6 @@ public class CwfNetworkUtilTest{
     @Inject
     CwfNetworkUtil networkUtil;
 
-    TestUtils initDb=new TestUtils();
-
-
     @Before
     public void setup(){
 
