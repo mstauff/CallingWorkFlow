@@ -3,6 +3,7 @@ package org.lds.community.CallingWorkFlow.api;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,11 @@ public class JSONUtilTest {
     @Before
     public void setUp() throws Exception {
       // no setup is necessary
+    }
+
+    @After
+    public void tearDown() throws Exception {
+       // comment for git conflict testing
     }
 
     @Test
