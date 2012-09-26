@@ -34,8 +34,8 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Inject
     CallingManager callingManager;
 
-	@InjectView(value = R.id.addNewCallingBtn)
-	Button newCallingBtn;
+    @InjectView(value = R.id.addNewCallingBtn)
+    Button newCallingBtn;
 
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
@@ -49,7 +49,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-	    newCallingBtn.setOnClickListener( new View.OnClickListener() {
+        newCallingBtn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addNewCalling( view );
@@ -133,10 +133,24 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         return getLayoutInflater(savedInstanceState).inflate(R.layout.callingworkflow_list, container);
     }
 
-	public void addNewCalling(View v){
-		Intent intent = new Intent(getActivity(),DetailActivity.class);
-		startActivity(intent);
-	}
+    public void addNewCalling(View v){
+        Intent intent = new Intent(getActivity(),DetailActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        callingViewItems.clear();
+        callingViewItems.addAll(db.getPendingCallings());
+        this.callingViewItemAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
