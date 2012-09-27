@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="content_text">#000000</color>
+    <color name="content_text_inverse">#FFFFFF</color>
+    <color name="table_text">#000000</color>
+    <color name="table_separator">#ffd7d7d7</color>
+    <color name="content_header_text">#ffaa913e</color>
+    <color name="content_header_line">#ffaa913e</color>
+    <color name="list_text">#000000</color>
+    <color name="list_item_line1">#000000</color>
+    <color name="list_item_line2">#525252</color>
+    <color name="list_separator_text">#FFFFFF</color>
+    <color name="list_separator_start">#ff5d5d5d</color>
+    <color name="list_separator_end">#ff3f3e3e</color>
+    <color name="button_area_background">#b5b5b5</color>
+    <color name="blue_background">#ff44536c</color>
+    <color name="white_background">#ffffffff</color>    
+    <color name="black_background">#000000</color>
+    <color name="ldstools_background_start">#ffE9EDED</color>
+    <color name="ldstools_background_end">#ff949696</color>
+    <color name="list_selected_item_background">#7faacaFF</color>
+    <color name="list_header_background">#e3e5e9</color>
+    <color name="nav_list_background">#ff303030</color>
+    <color name="nav_list_line">#ff000000</color>
+</resources>

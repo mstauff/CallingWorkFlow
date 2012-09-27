@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.Sherlock.Light.DarkActionBar.ForceOverflow">
+    </style>
+    <style name="SettingsTheme" parent="Theme.Sherlock">
+    </style>
+
+    <!-- Standard -->
+    <style name="header">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/content_text</item>
+    </style>
+    <style name="header_inverse">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/content_text_inverse</item>
+    </style>
+    <style name="sub_header">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">@color/content_text</item>
+        <item name="android:paddingLeft">5dp</item>
+    </style>
+    <style name="sub_header2">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/content_text</item>
+        <item name="android:paddingLeft">5dp</item>
+    </style>
+    <style name="list_header" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/list_header_background</item>
+    </style>
+
+    <style name="table_separator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/table_separator</item>
+    </style>
+    <style name="data_table">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="content_header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/content_header_text</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingTop">10dp</item>
+    </style>
+    <style name="content_header_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/content_header_line</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+    <style name="data_table_row">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <!--<item name="android:background">@drawable/transparent_button</item>  -->
+    </style>
+    <style name="data_table_row_text" parent="@android:style/TextAppearance.Large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/table_text</item>
+        <item name="android:paddingLeft">6dp</item>
+    </style>
+    <style name="navigation_list">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/nav_list_background</item>
+        <item name="android:divider">@color/nav_list_line</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+    <style name="result_list">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/black_background</item>
+        <item name="android:fastScrollEnabled">true</item>
+    </style>
+    <style name="list_text_item" parent="@android:style/TextAppearance.Large">
+        <item name="android:textColor">@color/list_text</item>
+    </style>
+    <style name="list_text_item2" parent="@android:style/TextAppearance.Medium"/>
+    <style name="list_text_line1_item" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/list_item_line1</item>
+    </style>
+    <style name="list_text_line2_item" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">@color/list_item_line2</item>
+    </style>
+    <!--
+    <style name="list_separator" parent="@android:style/TextAppearance.Small">
+        <item name="android:padding">3dp</item>
+        <item name="android:textColor">@color/list_separator_text</item>
+        <item name="android:background">@drawable/list_separator_gradient</item>
+    </style>
+    <style name="gradient_divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/black_white_gradient</item>
+    </style>
+    <style name="button_back">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">@string/back</item>
+        <item name="android:drawableLeft">@drawable/ic_btn_back</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="button_next">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">@string/next</item>
+        <item name="android:drawableRight">@drawable/ic_btn_next</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    -->
+    <style name="bottom_button_area">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">bottom|center_horizontal</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@color/button_area_background</item>
+    </style>
+    <style name="title1_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+    <style name="title1_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>

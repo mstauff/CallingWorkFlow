@@ -28,6 +28,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Inject
     WorkFlowDB db;
 
+
     @Inject
     CwfNetworkUtil networkUtil;
 
@@ -64,7 +65,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
         } else {
             callingViewItems = listItems;
         }
-        this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_1, callingViewItems);
+        this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_2, callingViewItems);
         setListAdapter(callingViewItemAdapter);
         ListView listView = getListView();
 
