@@ -98,7 +98,7 @@ public class TestUtils {
         return statusObj;
     }
 
-    public static boolean findCallingFromList(List<Calling> callingList, Long individualId, long positionID) {
+    public static boolean isCallingFoundOnList(List<Calling> callingList, Long individualId, long positionID) {
         boolean found = false;
         for( Calling c : callingList ) {
             if( c.getIndividualId() == individualId && c.getPositionId() == positionID ) {
@@ -180,15 +180,11 @@ public class TestUtils {
     }
 
     public static String getStatusName(WorkFlowDB db, Boolean isCompleted){
-        List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
-        String status=null;
-        for( WorkFlowStatus curStatus : statuses ) {
-            if( curStatus.getComplete()==isCompleted ) {
-                status = curStatus.getStatusName();
-                break;
-            }
+        String statusName = getStatusObj(db,isCompleted).getStatusName()  ;
+        if(statusName==null){
+            statusName="NOT_FOUND";
         }
-        return status;
+        return statusName;
     }
 
     public static WorkFlowStatus getStatusObj(WorkFlowDB db, Boolean isCompleted){
@@ -202,5 +198,6 @@ public class TestUtils {
         }
         return status;
     }
+
 }
 

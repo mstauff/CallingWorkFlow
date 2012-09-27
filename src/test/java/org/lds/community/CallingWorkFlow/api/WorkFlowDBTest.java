@@ -11,6 +11,7 @@ import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -210,21 +211,35 @@ public class WorkFlowDBTest {
         }
     }
 
-
     //------------------------------------------------------------------------------------------------------------------
     // UTIL METHODS
     private List<Calling> createCallingList(){
 
         List<Calling> cList=new ArrayList<Calling>();
+        int index=0;
 
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(0).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(0).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(1).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(1).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(2).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(2).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(3).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(3).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(4).getPositionId(),TestUtils.getStatusName(db,false) , memberMasterDB.get(4).getIndividualId(),false));
-        cList.add(TestUtils.createCallingObj(positionMasterDB.get(4).getPositionId(),TestUtils.getStatusName(db,true) , memberMasterDB.get(5).getIndividualId(),true));
+        for(Position p:positionMasterDB){
+            Calling calling=new Calling();
+            if(index==0){
+                calling=TestUtils.createCallingObj(getRandomPositionID(),TestUtils.getStatusName(db,false) , getRandomIndividualId(),false);
+            }else{
+                calling=TestUtils.createCallingObj(getRandomPositionID(),TestUtils.getStatusName(db,true) , getRandomIndividualId(),true);
+            }
+             cList.add(calling);
+            index++;
+        }
         return cList;
     }
 
+    private Long getRandomPositionID(){
+        Random generator = new Random();
+        int r = generator.nextInt(positionMasterDB.size()-1);
+        return  positionMasterDB.get(r).getPositionId();
+    }
 
+    private Long getRandomIndividualId(){
+        Random generator = new Random( );
+        int r = generator.nextInt(memberMasterDB.size()-1);
+        return  memberMasterDB.get(r).getIndividualId();
+    }
 }
