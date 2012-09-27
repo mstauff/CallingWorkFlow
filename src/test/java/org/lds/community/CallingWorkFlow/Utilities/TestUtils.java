@@ -7,6 +7,7 @@ import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,15 +21,17 @@ import java.util.List;
 
 public class TestUtils {
 
+
     public static List<Member> createMembersDB(WorkFlowDB db){
         List<Member> memberList= new ArrayList<Member>();
         memberList.add(createMemberObj("Joe", "Jones", 1111L));
         memberList.add(createMemberObj("James", "Peterson", 2222L));
-        memberList.add(createMemberObj("Eric", "Bastidas", 3333L) );
+        memberList.add(createMemberObj("Eric", "Gonzales", 3333L) );
         memberList.add(createMemberObj("Bill", "Wiley", 4444L));
         memberList.add(createMemberObj("Steve", "Jonas", 5555L));
         memberList.add(createMemberObj("Erika", "Jasmin", 6666L));
         memberList.add(createMemberObj("Adam", "Peres", 7777L));
+        memberList.add(createMemberObj("Mark", "McNelly", 8888L));
         if(db!=null){
             db.updateWardList( memberList);
 
@@ -43,6 +46,13 @@ public class TestUtils {
         positionList.add(createPositionObj(42L, "Elder Quorum Second Counselor"));
         positionList.add(createPositionObj(43L, "Primary sunBean teacher"));
         positionList.add(createPositionObj(44L, "Sunday School 14-15 teacher"));
+        positionList.add(createPositionObj(45L, "Elder Quorum Secretary"));
+        positionList.add(createPositionObj(46L, "Ward Clerk Assistant"));
+        positionList.add(createPositionObj(47L, "RS 1st Counselor"));
+        positionList.add(createPositionObj(48L, "RS 2st Counselor"));
+        positionList.add(createPositionObj(49L, "RS President"));
+        positionList.add(createPositionObj(50L, "Sunday School President"));
+
         if(db!=null){
             db.updatePositions(positionList);
         }
@@ -51,8 +61,8 @@ public class TestUtils {
 
     public static List<WorkFlowStatus> createStatusDB(WorkFlowDB db){
         List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
-        statusList.add( createStatus(false,"SUBMITTED",null,null,1));
-        statusList.add( createStatus(false,"PENDING",null,null,2));
+        statusList.add( createStatus(false,"PENDING",null,null,1));
+        statusList.add( createStatus(false,"SUBMITTED",null,null,2));
         statusList.add( createStatus(true,"SET_APART",null,null,3));
         statusList.add( createStatus(true,"DECLINED",null,null,4));
         if(db!=null){
@@ -199,5 +209,15 @@ public class TestUtils {
         return status;
     }
 
+    public static Long getRandomPositionID(Random generator, List<Position>positionList){
+        int r = generator.nextInt(positionList.size());
+        return  positionList.get(r).getPositionId();
+    }
+
+    public static Long getRandomIndividualId(Random generator, List<Member>memberList){
+
+        int r = generator.nextInt(memberList.size());
+        return  memberList.get(r).getIndividualId();
+    }
 }
 
