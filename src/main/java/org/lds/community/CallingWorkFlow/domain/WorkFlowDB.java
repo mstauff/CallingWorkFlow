@@ -269,11 +269,11 @@ public class WorkFlowDB {
         public void onCreate(SQLiteDatabase db) {
             // todo - setup INDEXES
             this.db = db;
-            db.execSQL("PRAGMA foreign_keys = ON;");
             db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( PositionBaseRecord.CREATE_SQL );
             db.execSQL( CallingBaseRecord.CREATE_SQL );
+	        db.execSQL("PRAGMA foreign_keys = ON;");
         }
 
         public SQLiteDatabase getDb() {
@@ -288,6 +288,15 @@ public class WorkFlowDB {
                 db.close();
             }
         }
+
+	    @Override
+	    public void onOpen(SQLiteDatabase db) {
+	        super.onOpen(db);
+	        if (!db.isReadOnly()) {
+	            /* Enable foreign key constraints */
+	            db.execSQL("PRAGMA foreign_keys=ON;");
+	        }
+	    }
 
         /**
          *
