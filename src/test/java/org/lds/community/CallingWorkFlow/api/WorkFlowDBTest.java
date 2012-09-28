@@ -10,6 +10,7 @@ import org.lds.community.CallingWorkFlow.Utilities.TestUtils;
 import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +25,7 @@ import java.util.Random;
 public class WorkFlowDBTest {
 
     @Inject WorkFlowDB db;
+    Random generator = new Random( );
 
     List<Member> memberMasterDB= new ArrayList<Member>();
     List<Position> positionMasterDB= new ArrayList<Position>();
@@ -77,7 +79,12 @@ public class WorkFlowDBTest {
     @Test
     public void getCompleted_Pending_Sync_CallingsTest(){
 
-        db.updateCallings(createCallingList());
+        List<Calling> callingNotCompletedSource=createCallingList(30,false,false);
+        List<Calling> callingCompletedSource=createCallingList(40,true,true);
+        List<Calling> callingLisSource=new ArrayList<Calling>();
+        callingLisSource.addAll(callingNotCompletedSource);
+        callingLisSource.addAll(callingCompletedSource);
+        db.updateCallings(callingLisSource);
 
         List<CallingViewItem> callingCompleted=db.getCompletedCallings();
         List<CallingViewItem> callingPending=db.getPendingCallings();
@@ -90,7 +97,7 @@ public class WorkFlowDBTest {
 
     @Test
     public void updateCallingsTest(){
-        db.updateCallings(createCallingList());
+        db.updateCallings(createCallingList(5,false,false));
         List<CallingViewItem> callingPending=db.getPendingCallings();
 
         List<Calling> callingsToUpdate=new ArrayList<Calling>();
@@ -107,7 +114,13 @@ public class WorkFlowDBTest {
 
     @Test
     public void DuplicateCallingsTest(){
-        List<Calling> callingsSource=createCallingList();
+
+        List<Calling> callingsNotCompleted=createCallingList(5,false,false);
+        List<Calling> callingsCompleted=createCallingList(5,true,true);
+        List<Calling> callingsSource=new ArrayList<Calling>();
+        callingsSource.addAll(callingsNotCompleted);
+        callingsSource.addAll(callingsCompleted);
+
         db.updateCallings(callingsSource);
 
         List<CallingViewItem> callingsSourceList=db.getCompletedCallings();
@@ -213,33 +226,41 @@ public class WorkFlowDBTest {
 
     //------------------------------------------------------------------------------------------------------------------
     // UTIL METHODS
-    private List<Calling> createCallingList(){
-
+    private List<Calling> createCallingList(int numberOfCallings, Boolean isComplete, Boolean isSync){
+         // create as many callings as the member and position permits
         List<Calling> cList=new ArrayList<Calling>();
-        int index=0;
 
-        for(Position p:positionMasterDB){
-            Calling calling=new Calling();
-            if(index==0){
-                calling=TestUtils.createCallingObj(getRandomPositionID(),TestUtils.getStatusName(db,false) , getRandomIndividualId(),false);
-            }else{
-                calling=TestUtils.createCallingObj(getRandomPositionID(),TestUtils.getStatusName(db,true) , getRandomIndividualId(),true);
+        HashSet hs = new HashSet();
+        Long positionID=0L;
+        Long individualId=0L;
+        Boolean getAnother=true;
+
+        for(int i=0; i < numberOfCallings;i++){
+            while (getAnother==true){
+
+                positionID= TestUtils.getRandomPositionID(generator,positionMasterDB);
+                individualId= TestUtils.getRandomIndividualId(generator,memberMasterDB);
+
+                if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
+                    hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
+
+                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(db,isComplete),individualId,isSync);
+                    cList.add(calling);
+
+                    getAnother=false;
+                }else{
+                    if((positionMasterDB.size() * memberMasterDB.size())==hs.size()) {
+                       getAnother=false;
+
+                    }else{
+                        getAnother=true;
+                    }
+                 }
             }
-             cList.add(calling);
-            index++;
+
+            getAnother=true;
         }
         return cList;
     }
 
-    private Long getRandomPositionID(){
-        Random generator = new Random();
-        int r = generator.nextInt(positionMasterDB.size()-1);
-        return  positionMasterDB.get(r).getPositionId();
-    }
-
-    private Long getRandomIndividualId(){
-        Random generator = new Random( );
-        int r = generator.nextInt(memberMasterDB.size()-1);
-        return  memberMasterDB.get(r).getIndividualId();
-    }
 }
