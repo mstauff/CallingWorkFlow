@@ -21,6 +21,8 @@ import java.util.Random;
 
 public class TestUtils {
 
+    public static Random generator=new Random();
+
 
     public static List<Member> createMembersDB(WorkFlowDB db){
         List<Member> memberList= new ArrayList<Member>();
@@ -209,12 +211,12 @@ public class TestUtils {
         return status;
     }
 
-    public static Long getRandomPositionID(Random generator, List<Position>positionList){
+    public static Long getRandomPositionID(List<Position>positionList){
         int r = generator.nextInt(positionList.size());
         return  positionList.get(r).getPositionId();
     }
 
-    public static Long getRandomIndividualId(Random generator, List<Member>memberList){
+    public static Long getRandomIndividualId(List<Member>memberList){
 
         int r = generator.nextInt(memberList.size());
         return  memberList.get(r).getIndividualId();
