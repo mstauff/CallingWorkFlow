@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CallingDetailFragment extends RoboSherlockFragment {
+
+    public static final String CALLING = "callingViewItem";
+
     @Inject
     WorkFlowDB db;
     @Inject
@@ -38,17 +41,12 @@ public class CallingDetailFragment extends RoboSherlockFragment {
         super.onActivityCreated(savedInstanceState);
         Bundle bundle = getActivity().getIntent().getExtras();
         if(bundle != null){
-            callingViewItem = (CallingViewItem)bundle.get("callingViewItems");
+            callingViewItem = (CallingViewItem)bundle.get(CALLING);
             positionField.setText(callingViewItem.getPositionName());
             memberField.setText(callingViewItem.getFullName());
             selectedPositionId = callingViewItem.getPositionId();
             selectedMemberId = callingViewItem.getIndividualId();
-            for(WorkFlowStatus s: statusList){
-                if(callingViewItem.getStatusName().equals(s.getStatusName())){
-                    statusSpinner.setSelection(statusList.indexOf(s));
-                    break;
-                }
-            }
+            statusSpinner.setSelection(( (ArrayAdapter) statusSpinner.getAdapter()).getPosition( callingViewItem.getStatusName() ));
         }
         saveCallingButton.setOnClickListener(new View.OnClickListener(){
             @Override

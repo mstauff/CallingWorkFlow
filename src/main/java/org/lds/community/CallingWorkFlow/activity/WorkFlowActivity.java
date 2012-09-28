@@ -10,10 +10,11 @@ import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.activity.RoboSherlockFragmentActivity;
 
 public class WorkFlowActivity extends RoboSherlockFragmentActivity {
-	@Override
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		setContentView(R.layout.workflow);
+        setContentView(R.layout.workflow);
     }
 
     @Override

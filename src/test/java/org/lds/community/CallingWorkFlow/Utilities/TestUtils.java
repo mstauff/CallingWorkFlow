@@ -7,6 +7,7 @@ import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,55 +21,55 @@ import java.util.List;
 
 public class TestUtils {
 
-    public static List<Member> createMembersDB(){
+
+    public static List<Member> createMembersDB(WorkFlowDB db){
         List<Member> memberList= new ArrayList<Member>();
         memberList.add(createMemberObj("Joe", "Jones", 1111L));
         memberList.add(createMemberObj("James", "Peterson", 2222L));
-        memberList.add(createMemberObj("Eric", "Bastidas", 3333L) );
+        memberList.add(createMemberObj("Eric", "Gonzales", 3333L) );
         memberList.add(createMemberObj("Bill", "Wiley", 4444L));
         memberList.add(createMemberObj("Steve", "Jonas", 5555L));
         memberList.add(createMemberObj("Erika", "Jasmin", 6666L));
         memberList.add(createMemberObj("Adam", "Peres", 7777L));
+        memberList.add(createMemberObj("Mark", "McNelly", 8888L));
+        if(db!=null){
+            db.updateWardList( memberList);
+
+        }
         return memberList;
     }
 
-    public static List<Position> createPositionDB(){
+    public static List<Position> createPositionDB(WorkFlowDB db){
         List<Position> positionList= new ArrayList<Position>();
         positionList.add(createPositionObj(40L, "RS Secretary") );
         positionList.add(createPositionObj(41L, "Elder Quorum First Counselor"));
         positionList.add(createPositionObj(42L, "Elder Quorum Second Counselor"));
         positionList.add(createPositionObj(43L, "Primary sunBean teacher"));
         positionList.add(createPositionObj(44L, "Sunday School 14-15 teacher"));
+        positionList.add(createPositionObj(45L, "Elder Quorum Secretary"));
+        positionList.add(createPositionObj(46L, "Ward Clerk Assistant"));
+        positionList.add(createPositionObj(47L, "RS 1st Counselor"));
+        positionList.add(createPositionObj(48L, "RS 2st Counselor"));
+        positionList.add(createPositionObj(49L, "RS President"));
+        positionList.add(createPositionObj(50L, "Sunday School President"));
+
+        if(db!=null){
+            db.updatePositions(positionList);
+        }
         return positionList;
     }
 
-    public static List<WorkFlowStatus> createStatusDB(){
+    public static List<WorkFlowStatus> createStatusDB(WorkFlowDB db){
         List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
-        statusList.add( createStatus(false,"SUBMITTED",null,null,1));
-        statusList.add( createStatus(false,"PENDING",null,null,2));
+        statusList.add( createStatus(false,"PENDING",null,null,1));
+        statusList.add( createStatus(false,"SUBMITTED",null,null,2));
         statusList.add( createStatus(true,"SET_APART",null,null,3));
+        statusList.add( createStatus(true,"DECLINED",null,null,4));
+        if(db!=null){
+            db.updateWorkFlowStatus(statusList);
 
-
+        }
         return statusList;
-    }
-
-    public static void initializeDatabase(WorkFlowDB db, List<Member> memberList,List<Position> positionList,List<WorkFlowStatus> statusList){
-
-        if(memberList==null){
-           memberList = createMembersDB();
-        }
-        db.updateWardList( memberList);
-
-        if(positionList==null){
-            positionList = createPositionDB();
-        }
-        db.updatePositions(positionList);
-
-        if(statusList==null){
-            statusList = createStatusDB();
-        }
-        db.updateWorkFlowStatus(statusList);
-
     }
 
     public static Member createMemberObj(String firstName, String lastName, Long individualId){
@@ -77,7 +78,7 @@ public class TestUtils {
         memberObj.setLastName(lastName);
         memberObj.setIndividualId(individualId);
         return memberObj;
-     }
+    }
 
     public static Calling createCallingObj(Long positionId, String statusName, Long individualId, Boolean isSync){
         Calling callingObj=new Calling();
@@ -107,7 +108,7 @@ public class TestUtils {
         return statusObj;
     }
 
-    public static boolean foundCallingFromList(List<Calling> callingList, Long individualId, long positionID) {
+    public static boolean isCallingFoundOnList(List<Calling> callingList, Long individualId, long positionID) {
         boolean found = false;
         for( Calling c : callingList ) {
             if( c.getIndividualId() == individualId && c.getPositionId() == positionID ) {
@@ -130,9 +131,22 @@ public class TestUtils {
         return calling;
     }
 
+    public static Position getPositionObjectFromList(List<? extends Position> positionList,Long PositionId, String name) {
+        Position position = null;
+
+        for( Position p : positionList ) {
+            if( p.getPositionId() == PositionId && p.getPositionName() == name ) {
+                position = p;
+                break;
+            }
+        }
+        return position;
+    }
+
+
     public static void assertEntityEquals(Calling sourceCalling, Calling resultCalling, String failMsg){
 
-        Assert.assertEquals( failMsg + " getIndividualId did not match", sourceCalling.getIndividualId(), resultCalling.getIndividualId());
+        Assert.assertEquals(failMsg + " getIndividualId did not match", sourceCalling.getIndividualId(), resultCalling.getIndividualId());
         Assert.assertEquals(failMsg + " getStatusName did not match",sourceCalling.getStatusName(), resultCalling.getStatusName());
         Assert.assertEquals(failMsg + " getAssignedToId did not match",sourceCalling.getAssignedToId(), resultCalling.getAssignedToId());
         Assert.assertEquals(failMsg + " getDueDate did not match",sourceCalling.getDueDate(), resultCalling.getDueDate());
@@ -141,44 +155,30 @@ public class TestUtils {
 
     }
 
-    public static void assertEntityEquals(Position sourcePosition,Position resultPosition){
+    public static void assertEntityEquals(Position sourcePosition,Position resultPosition, String failMsg){
 
-        Assert.assertEquals("getPositionName did not match", sourcePosition.getPositionName(), resultPosition.getPositionName());
-        Assert.assertEquals("getPositionId did not match",sourcePosition.getPositionId(), resultPosition.getPositionId());
-        Assert.assertEquals("getContentValues did not match",sourcePosition.getContentValues(), resultPosition.getContentValues());
-
-    }
-
-    public static void assertEntityEquals(WorkFlowStatus sourceWfs,WorkFlowStatus resultWfs){
-
-        Assert.assertEquals("getStatusName did not match", sourceWfs.getStatusName(), resultWfs.getStatusName());
-        Assert.assertEquals("getComplete did not match",sourceWfs.getComplete(), resultWfs.getComplete());
-        Assert.assertEquals("getContentValues did not match",sourceWfs.getContentValues(), resultWfs.getContentValues());
-        Assert.assertEquals("getSequence did not match",sourceWfs.getSequence(), resultWfs.getSequence());
+        Assert.assertEquals(failMsg + " getPositionName did not match", sourcePosition.getPositionName(), resultPosition.getPositionName());
+        Assert.assertEquals(failMsg + " getPositionId did not match",sourcePosition.getPositionId(), resultPosition.getPositionId());
 
     }
 
-    public static void assertEntityEquals(Member sourceMember,Member resultMember){
+    public static void assertEntityEquals(WorkFlowStatus sourceWfs,WorkFlowStatus resultWfs, String failMsg){
 
-        Assert.assertEquals("getStatusName did not match", sourceMember.getFirstName(), resultMember.getFirstName());
-        Assert.assertEquals("getComplete did not match",sourceMember.getLastName(), resultMember.getLastName());
-        Assert.assertEquals("getContentValues did not match",sourceMember.getContentValues(), resultMember.getContentValues());
-        Assert.assertEquals("getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
+        Assert.assertEquals(failMsg + " getStatusName did not match", sourceWfs.getStatusName(), resultWfs.getStatusName());
+        Assert.assertEquals(failMsg + " getComplete did not match",sourceWfs.getComplete(), resultWfs.getComplete());
+        Assert.assertEquals(failMsg + " getSequence did not match",sourceWfs.getSequence(), resultWfs.getSequence());
 
     }
 
-    public static Boolean assertEntityEqualsBoolean(Member sourceMember,Member resultMember){
+    public static void assertEntityEquals(Member sourceMember,Member resultMember, String failMsg){
 
-        Assert.assertEquals("getStatusName did not match", sourceMember.getFirstName(), resultMember.getFirstName());
-        Assert.assertEquals("getComplete did not match",sourceMember.getLastName(), resultMember.getLastName());
-        Assert.assertEquals("getContentValues did not match",sourceMember.getContentValues(), resultMember.getContentValues());
-        Assert.assertEquals("getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
+        Assert.assertEquals(failMsg + " getStatusName did not match", sourceMember.getFirstName(), resultMember.getFirstName());
+        Assert.assertEquals(failMsg + " getComplete did not match",sourceMember.getLastName(), resultMember.getLastName());
+        Assert.assertEquals(failMsg + " getSequence did not match",sourceMember.getIndividualId(), resultMember.getIndividualId());
 
-        return true;
     }
 
-
-    public static int getCallingStatusCountFromList(List<Calling> callingList, String status) {
+    public static int getCallingStatusCountFromList(List<? extends Calling> callingList, String status) {
         int count=0;
 
         for( Calling c : callingList ) {
@@ -188,4 +188,36 @@ public class TestUtils {
         }
         return count;
     }
+
+    public static String getStatusName(WorkFlowDB db, Boolean isCompleted){
+        String statusName = getStatusObj(db,isCompleted).getStatusName()  ;
+        if(statusName==null){
+            statusName="NOT_FOUND";
+        }
+        return statusName;
+    }
+
+    public static WorkFlowStatus getStatusObj(WorkFlowDB db, Boolean isCompleted){
+        List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
+        WorkFlowStatus status=new WorkFlowStatus();
+        for( WorkFlowStatus curStatus : statuses ) {
+            if( curStatus.getComplete()==isCompleted ) {
+                status = curStatus;
+                break;
+            }
+        }
+        return status;
+    }
+
+    public static Long getRandomPositionID(Random generator, List<Position>positionList){
+        int r = generator.nextInt(positionList.size());
+        return  positionList.get(r).getPositionId();
+    }
+
+    public static Long getRandomIndividualId(Random generator, List<Member>memberList){
+
+        int r = generator.nextInt(memberList.size());
+        return  memberList.get(r).getIndividualId();
+    }
 }
+

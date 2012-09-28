@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CallingWorkFlow</string>
+    <string name="app_name">Calling WorkFlow</string>
     <string name="select_status_group">Select group of callings</string>
     <string name="add_btn_label">+ New Calling</string>
     <string name="search_label">Search</string>

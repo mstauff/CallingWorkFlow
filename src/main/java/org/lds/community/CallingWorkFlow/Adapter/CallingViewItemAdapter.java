@@ -25,7 +25,7 @@ public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
         View v = convertView;
         if (v == null) {
 			LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.callingworkflow_list, null);
+			v = vi.inflate(R.layout.member_name_status, null);
         }
         CallingViewItem o = items.get(position);
         if (o != null) {
@@ -35,7 +35,7 @@ public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
 				tt.setText(o.getPositionName());
             }
             if(bt != null) {
-				bt.setText(o.getFullName() + " ( " + o.getStatusName() + " )");
+				bt.setText(o.getFullName() + " ( " + o.getStatusName() + " ) ");
             }
         }
         return v;

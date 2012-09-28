@@ -5,16 +5,20 @@
                   android:orientation="vertical"
                   android:id="@+id/workflow_listview_layout">
 
-    <TextView android:id="@+id/calling_name"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
+    <Button android:id="@+id/addNewCallingBtn"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/add_btn_label" />
 
-    <TextView android:id="@+id/member_name_and_status"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
+    <TextView style="@style/content_header_line"/>
 
     <ListView android:id="@android:id/list"
+              style="@style/result_list"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="2dp" />
+              android:layout_height="match_parent"
+              android:fastScrollEnabled="true"
+              android:divider="@drawable/list_separator_gradient"
+              android:dividerHeight="1dp" />
+
 </LinearLayout>
+

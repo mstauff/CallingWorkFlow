@@ -161,7 +161,7 @@ public class WorkFlowDB {
      *
      * @param callings
      */
-    public void updateCallings(List<Calling> callings) {
+    public void updateCallings(List<? extends Calling> callings) {
         updateData( Calling.TABLE_NAME, callings );
     }
 
@@ -246,6 +246,16 @@ public class WorkFlowDB {
         return whereClause.toString();
     }
 
+    /**
+     * This method is only here to allow testing to run sql against the db. Application code should use the
+     * other methods to get the data they need.
+     *
+     * @return
+     */
+    public SQLiteDatabase getDbReference() {
+        return dbHelper.getDb();
+    }
+
 
     public boolean hasData( String tableName ) {
         return DatabaseUtils.queryNumEntries( dbHelper.getDb(), tableName ) > 0;
@@ -269,14 +279,17 @@ public class WorkFlowDB {
         public void onCreate(SQLiteDatabase db) {
             // todo - setup INDEXES
             this.db = db;
-            db.execSQL("PRAGMA foreign_keys = ON;");
             db.execSQL( WorkFlowStatusBaseRecord.CREATE_SQL );
             db.execSQL( MemberBaseRecord.CREATE_SQL );
             db.execSQL( PositionBaseRecord.CREATE_SQL );
             db.execSQL( CallingBaseRecord.CREATE_SQL );
+	        db.execSQL("PRAGMA foreign_keys = ON;");
         }
 
         public SQLiteDatabase getDb() {
+            if (db == null || !db.isOpen()) {
+                db = this.getWritableDatabase();
+            }
             return db;
         }
 
@@ -285,6 +298,15 @@ public class WorkFlowDB {
                 db.close();
             }
         }
+
+	    @Override
+	    public void onOpen(SQLiteDatabase db) {
+	        super.onOpen(db);
+	        if (!db.isReadOnly()) {
+	            /* Enable foreign key constraints */
+	            db.execSQL("PRAGMA foreign_keys=ON;");
+	        }
+	    }
 
         /**
          *

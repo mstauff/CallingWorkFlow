@@ -12,9 +12,7 @@ import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,10 +56,9 @@ public class CallingManagerTest {
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
-        List<Member> members = TestUtils.createMembersDB();
-        List<Position> positions = TestUtils.createPositionDB();
-        List<WorkFlowStatus> statuses = TestUtils.createStatusDB();
-        TestUtils.initializeDatabase( db, members, positions, statuses);
+        List<Member> members = TestUtils.createMembersDB(db);
+        List<Position> positions = TestUtils.createPositionDB(db);
+        List<WorkFlowStatus> statuses = TestUtils.createStatusDB(db);
 
         WorkFlowStatus status = null;
         for( WorkFlowStatus curStatus : statuses ) {

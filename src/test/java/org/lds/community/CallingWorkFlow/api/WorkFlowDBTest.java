@@ -10,7 +10,9 @@ import org.lds.community.CallingWorkFlow.Utilities.TestUtils;
 import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,157 +25,141 @@ import java.util.List;
 public class WorkFlowDBTest {
 
     @Inject WorkFlowDB db;
+    Random generator = new Random( );
 
-    List<Member> memberList= new ArrayList<Member>();
-    List<Position> positionList= new ArrayList<Position>();
-    List<WorkFlowStatus> statusList= new ArrayList<WorkFlowStatus>();
+    List<Member> memberMasterDB= new ArrayList<Member>();
+    List<Position> positionMasterDB= new ArrayList<Position>();
+    List<WorkFlowStatus> statusMasterDB= new ArrayList<WorkFlowStatus>();
+
+    WorkFlowStatus secondChanceStatus=TestUtils.createStatus(false,"SECOND_CHANCE",null,null,6) ;
+    Position newPosition=TestUtils.createPositionObj(1234456789L,"This Position Is New");
+    Member newMember1=TestUtils.createMemberObj("Jose","Riveros", 123456789L);
+    Member newMember2=TestUtils.createMemberObj("Alma","Gonzales",123456999L);
 
     @Before
     public void setup(){
-
-        Boolean hasDataMember=db.hasData(Member.TABLE_NAME);
-        if (hasDataMember==false){
-            memberList= TestUtils.createMembersDB();
-        }
-
-        Boolean hasDataPositions=db.hasData(Position.TABLE_NAME);
-        if (hasDataPositions==false){
-            positionList=TestUtils.createPositionDB();
-        }
-
-        Boolean hasDataStatus=db.hasData(WorkFlowStatus.TABLE_NAME);
-        if (hasDataStatus==false){
-            statusList= TestUtils.createStatusDB();
-        }
-        if((hasDataMember==false) && (hasDataPositions==false) && (hasDataStatus==false)){
-           TestUtils.initializeDatabase(db,memberList,positionList,statusList);
-        }
-
+        memberMasterDB= TestUtils.createMembersDB(db);
+        positionMasterDB=TestUtils.createPositionDB(db);
+        statusMasterDB= TestUtils.createStatusDB(db);
     }
 
     @Test
     public void  WardListTest(){
-        List<Member> wardList=db.getWardList();
-        Assert.assertEquals("",wardList.size(),memberList.size());
+        List<Member> memberList=db.getWardList();
+        Assert.assertEquals("",memberList.size(),memberMasterDB.size());
+        int index=0;
+        for(Member m:memberList){
+            TestUtils.assertEntityEquals(m,memberMasterDB.get(index),"Entity not equal");
+            index++;
+        }
     }
 
     @Test
     public void positionListTest(){
         List<Position> positionList= db.getPositions();
-        Assert.assertEquals("",positionList.size(),positionList.size());
+        Assert.assertEquals("",positionList.size(),positionMasterDB.size());
+        int index=0;
+        for(Position p:positionList){
+            TestUtils.assertEntityEquals(p,positionMasterDB.get(index),"Entity not equal");
+            index++;
+        }
     }
 
     @Test
     public void statusListTest(){
         List<WorkFlowStatus> statusList= db.getWorkFlowStatuses();
-        Assert.assertEquals("",statusList.size(),statusList.size());
+        Assert.assertEquals("",statusList.size(),statusMasterDB.size());
+        int index=0;
+        for(WorkFlowStatus wf:statusList){
+            TestUtils.assertEntityEquals(wf,statusMasterDB.get(index),"Entity not equal");
+            index++;
+        }
     }
 
     @Test
-    public void getCompletedCallingsTest(){
+    public void getCompleted_Pending_Sync_CallingsTest(){
 
-        db.updateCalling( TestUtils.createCallingObj( 40L, "SET_APART", 1111L,false));
-        db.updateCalling(TestUtils.createCallingObj(41L, "SET_APART", 2222L,false));
-        db.updateCalling(TestUtils.createCallingObj(42L, "SET_APART", 3333L,false));
-        db.updateCalling(TestUtils.createCallingObj(43L, "PENDING", 4444L,false));
-        db.updateCalling(TestUtils.createCallingObj(44L, "PENDING", 5555L,false));
-        List<CallingViewItem> callingList2=db.getCompletedCallings();
-        Assert.assertEquals("Did not return 3 callings",callingList2.size(),3);
+        List<Calling> callingNotCompletedSource=createCallingList(30,false,false);
+        List<Calling> callingCompletedSource=createCallingList(40,true,true);
+        List<Calling> callingLisSource=new ArrayList<Calling>();
+        callingLisSource.addAll(callingNotCompletedSource);
+        callingLisSource.addAll(callingCompletedSource);
+        db.updateCallings(callingLisSource);
+
+        List<CallingViewItem> callingCompleted=db.getCompletedCallings();
+        List<CallingViewItem> callingPending=db.getPendingCallings();
+        List<CallingViewItem> callingSync=db.getCallingsToSync();
+
+        Assert.assertTrue("Did not return completed callings",callingCompleted.size()>=1);
+        Assert.assertTrue("Did not return pending callings",callingPending.size()>=1);
+        Assert.assertTrue("Did not return sync callings",callingSync.size()>=1);
     }
 
     @Test
-    public void getCompletedDuplicateCallingsTest(){
-        db.updateCalling(TestUtils.createCallingObj( 40L, "SET_APART", 1111L,false));
-        db.updateCalling(TestUtils.createCallingObj(41L, "SET_APART", 2222L,false));
-        db.updateCalling(TestUtils.createCallingObj(42L, "SET_APART", 3333L,false));
-        db.updateCalling(TestUtils.createCallingObj(43L, "PENDING", 4444L,false));
-        db.updateCalling(TestUtils.createCallingObj(44L, "PENDING", 5555L,false));
+    public void updateCallingsTest(){
+        db.updateCallings(createCallingList(5,false,false));
+        List<CallingViewItem> callingPending=db.getPendingCallings();
 
-        List<CallingViewItem> callingList=db.getCompletedCallings();
-        Assert.assertEquals("Did not return 3 callings",callingList.size(),3);
+        List<Calling> callingsToUpdate=new ArrayList<Calling>();
+        callingsToUpdate.addAll(callingPending);
 
-        db.updateCalling(TestUtils.createCallingObj(40L, "SET_APART", 1111L,false));
-        db.updateCalling(TestUtils.createCallingObj(41L, "SET_APART", 2222L,false));
-        db.updateCalling(TestUtils.createCallingObj(42L, "SET_APART", 3333L,false));
-        db.updateCalling(TestUtils.createCallingObj(43L, "PENDING", 4444L,false));
-        db.updateCalling(TestUtils.createCallingObj(44L, "PENDING", 5555L,false));
+        callingsToUpdate.get(0).setStatusName(TestUtils.getStatusName(db,true));
 
-        List<CallingViewItem> callingList2=db.getCompletedCallings();
+        db.updateCallings(callingsToUpdate)  ;
 
-        Assert.assertEquals("Did return duplicate callings",callingList2.size(),3);
+        List<CallingViewItem> callingUpdatedFromDB=db.getCompletedCallings();
+        Calling callingResultObj= TestUtils.getCallingObjectFromList(callingUpdatedFromDB,callingsToUpdate.get(0).getIndividualId(),callingsToUpdate.get(0).getPositionId());
+        TestUtils.assertEntityEquals(callingsToUpdate.get(0),callingResultObj,"");
     }
 
     @Test
-    public void getPendingCallingsTest(){
-        List<Calling> callingList=new ArrayList<Calling>();
+    public void DuplicateCallingsTest(){
 
-        callingList.add(TestUtils.createCallingObj(40L, "SUBMITTED", 1111L,false));
-        callingList.add(TestUtils.createCallingObj(41L, "SUBMITTED", 2222L,false));
-        callingList.add(TestUtils.createCallingObj(42L, "SUBMITTED", 3333L,false));
-        callingList.add(TestUtils.createCallingObj(43L, "PENDING", 4444L,false));
-        callingList.add(TestUtils.createCallingObj(44L, "PENDING", 5555L,false));
-        callingList.add(TestUtils.createCallingObj(44L, "SET_APART", 6666L,false));
+        List<Calling> callingsNotCompleted=createCallingList(5,false,false);
+        List<Calling> callingsCompleted=createCallingList(5,true,true);
+        List<Calling> callingsSource=new ArrayList<Calling>();
+        callingsSource.addAll(callingsNotCompleted);
+        callingsSource.addAll(callingsCompleted);
 
-        db.updateCallings(callingList);
-        List<CallingViewItem> callingList2=db.getPendingCallings();
-        Assert.assertEquals("Did not return 5 callings",callingList2.size(),5);
+        db.updateCallings(callingsSource);
+
+        List<CallingViewItem> callingsSourceList=db.getCompletedCallings();
+
+        // add duplicate calling to list
+        List<Calling> callingsDuplicateList=new ArrayList<Calling>();
+        callingsDuplicateList.addAll(callingsSource);
+        callingsDuplicateList.addAll(callingsSource);
+        db.updateCallings(callingsDuplicateList);
+
+        // check if duplicates were saved to db
+        List<CallingViewItem> callingsListFromDBResults=db.getCompletedCallings();
+
+        Assert.assertEquals("Did return duplicate callings",callingsListFromDBResults.size(),callingsSourceList.size());
     }
 
+    // do not delete.  kept for Second round
+//    @Test
+//    public void getCallingsNonExistingStatusTest(){
+//
+//        List<Calling> callingList=new ArrayList<Calling>();
+//        List<CallingViewItem> callingList2=new ArrayList<CallingViewItem>();
+//
+//        callingList.add(TestUtils.createCallingObj(40L, "NO_STATUS", 1111L,false));
+//        callingList.add(TestUtils.createCallingObj(41L, "NO_STATUS", 2222L,false));
+//        callingList.add(TestUtils.createCallingObj(42L, "NO_STATUS", 3333L,false));
+//        db.updateCallings(callingList);
+//
+//        callingList2=db.getCallings(false);
+          // todo insert raw query to get result
+//        Assert.assertEquals("Did  return callingS, Should Not",callingList2.size(),0);
+//    }
 
-    @Test
-    public void getCallingsTestTrueFalse(){
-
-        List<Calling> callingList=new ArrayList<Calling>();
-
-        callingList.add(TestUtils.createCallingObj(40L, "SET_APART", 1111L,false));
-        callingList.add(TestUtils.createCallingObj(41L, "SUBMITTED", 2222L,false));
-        callingList.add(TestUtils.createCallingObj(42L, "SUBMITTED", 3333L,false));
-        callingList.add(TestUtils.createCallingObj(43L, "PENDING", 4444L,false));
-        callingList.add(TestUtils.createCallingObj(44L, "PENDING", 5555L,false));
-        callingList.add(TestUtils.createCallingObj(44L, "SET_APART", 6666L,false));
-        db.updateCallings(callingList);
-
-        List<CallingViewItem> callingList2=db.getCallings(true);
-        Assert.assertEquals("Did not return 2 calling",callingList2.size(),2);
-
-        callingList2=db.getCallings(false);
-        Assert.assertEquals("Did not return 4 callings",callingList2.size(),4);
-
-    }
-
-
-    @Test
-    public void getCallingsNonExistingStatusTest(){
-        List<Calling> callingList=new ArrayList<Calling>();
-        List<CallingViewItem> callingList2=new ArrayList<CallingViewItem>();
-
-        callingList.add(TestUtils.createCallingObj(40L, "NO_STATUS", 1111L,false));
-        callingList.add(TestUtils.createCallingObj(41L, "NO_STATUS", 2222L,false));
-        callingList.add(TestUtils.createCallingObj(42L, "NO_STATUS", 3333L,false));
-        db.updateCallings(callingList);
-
-        callingList2=db.getCallings(false);
-        Assert.assertEquals("Did  return callingS, Should Not",callingList2.size(),0);
-    }
-
-    @Test
-    public void getCallingsToSyncTest(){
-        List<Calling> callingList=new ArrayList<Calling>();
-        callingList.add(TestUtils.createCallingObj(40L, "SUBMITTED", 1111L,true));
-        callingList.add(TestUtils.createCallingObj(41L, "APPROVED", 2222L,false));
-        callingList.add(TestUtils.createCallingObj(42L, "SET_APART", 3333L,false));
-        db.updateCallings(callingList);
-
-        List<CallingViewItem> callingList2=db.getCallingsToSync();
-        Assert.assertEquals("Did not return callings ",callingList2.size(),2);
-    }
 
     @Test
     public void addStatusToDBTest(){
 
         List<WorkFlowStatus> statusList=db.getWorkFlowStatuses() ;
-        Assert.assertEquals("",statusList.size(),3);
-        statusList.add( TestUtils.createStatus(true,"DECLINED",null,null,4));
+        statusList.add(secondChanceStatus);
         db.updateWorkFlowStatus(statusList);
 
         List<WorkFlowStatus> statusListNew=db.getWorkFlowStatuses() ;
@@ -182,59 +168,99 @@ public class WorkFlowDBTest {
 
     @Test
     public void addPositionToDBTest(){
-        List<Position> positionList=db.getPositions();
-        positionList.add(TestUtils.createPositionObj(50L,"Primary Secretary"));
+         List<Position> positionList=db.getPositions();
+        positionList.add(newPosition);
         db.updatePositions(positionList);
 
         List<Position> positionListNew=db.getPositions();
         Assert.assertEquals("Did not add position to DB",positionList.size(), positionListNew.size());
+        Position positionResult=TestUtils.getPositionObjectFromList(positionList, newPosition.getPositionId(), newPosition.getPositionName()) ;
+        TestUtils.assertEntityEquals(positionResult,newPosition,"");
     }
 
     @Test
     public void addDuplicatePositionToDBTest(){
         // should not add duplicate positions to db
 
-        List<Position> positionList=db.getPositions();
-        positionList.add(TestUtils.createPositionObj(40L, "RS Secretary") );
-        positionList.add(TestUtils.createPositionObj(41L, "Elder Quorum First Counselor"));
-        positionList.add(TestUtils.createPositionObj(42L, "Elder Quorum Second Counselor"));
-        positionList.add(TestUtils.createPositionObj(43L, "Primary sunBean teacher"));
-        positionList.add(TestUtils.createPositionObj(44L, "Sunday School 14-15 teacher"));
+        List<Position> positionsFromDBSource=db.getPositions();
 
-        db.updatePositions(positionList);
+        List<Position> positionDuplicateList =new ArrayList<Position>();
+        positionDuplicateList.addAll(positionsFromDBSource);
 
-        List<Position> positionListNew=db.getPositions();
-        Assert.assertEquals("Duplicate positions added to DB",positionList.size()-5, positionListNew.size());
+        db.updatePositions(positionDuplicateList);
+
+        List<Position> positionsFromDBResult=db.getPositions();
+        Assert.assertEquals("Duplicate positions added to DB",positionsFromDBResult.size(), positionsFromDBSource.size());
     }
 
     @Test
     public void addMemberToDBTest(){
         List<Member> memberList=db.getWardList() ;
-        memberList.add(TestUtils.createMemberObj("Jose", "Riveros", 14000L));
-        memberList.add(TestUtils.createMemberObj("Alma", "Gonzales", 15000L));
-
+        memberList.add(newMember1);
+        memberList.add(newMember2);
         db.updateWardList(memberList);
 
-        List<Member> memberList2=db.getWardList() ;
-        Assert.assertEquals("Did not add member to DB",memberList.size(), memberList2.size());
+        List<Member> memberListResult=db.getWardList() ;
+        Assert.assertEquals("Did not add member to DB",memberList.size(), memberListResult.size());
 
+        for (int i = 0; i < memberList.size(); i++) {
+            TestUtils.assertEntityEquals(memberList.get(i),memberListResult.get(i),"");
+        }
     }
 
     @Test
     public void addDuplicateMemberToDBTest(){
         // should not add duplicate members to db
-        List<Member> memberList=db.getWardList() ;
-        memberList.add(TestUtils.createMemberObj("Joe", "Jones", 1111L));
-        memberList.add(TestUtils.createMemberObj("James", "Peterson", 2222L));
-        memberList.add(TestUtils.createMemberObj("Eric", "Bastidas", 3333L) );
-        memberList.add(TestUtils.createMemberObj("Bill", "Wiley", 4444L));
-        memberList.add(TestUtils.createMemberObj("Steve", "Jonas", 5555L));
-        memberList.add(TestUtils.createMemberObj("Erika", "Jasmin", 6666L));
-        memberList.add(TestUtils.createMemberObj("Adam", "Peres", 7777L));
-        db.updateWardList(memberList);
+        List<Member> membersSource=db.getWardList() ;
+        List<Member> memberDuplicateList=new ArrayList<Member>() ;
+        memberDuplicateList.addAll(membersSource);
+        db.updateWardList(memberDuplicateList);
 
-        List<Member> memberList2=db.getWardList() ;
-        Assert.assertEquals("duplicate members added to db",memberList.size()-7, memberList2.size());
+        List<Member> memberListResult=db.getWardList() ;
+        Assert.assertEquals("duplicate members added to db",memberListResult.size(), membersSource.size());
 
+        for (int i = 0; i < membersSource.size(); i++) {
+            TestUtils.assertEntityEquals(membersSource.get(i),memberListResult.get(i),"");
+        }
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // UTIL METHODS
+    private List<Calling> createCallingList(int numberOfCallings, Boolean isComplete, Boolean isSync){
+         // create as many callings as the member and position permits
+        List<Calling> cList=new ArrayList<Calling>();
+
+        HashSet hs = new HashSet();
+        Long positionID=0L;
+        Long individualId=0L;
+        Boolean getAnother=true;
+
+        for(int i=0; i < numberOfCallings;i++){
+            while (getAnother==true){
+
+                positionID= TestUtils.getRandomPositionID(generator,positionMasterDB);
+                individualId= TestUtils.getRandomIndividualId(generator,memberMasterDB);
+
+                if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
+                    hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
+
+                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(db,isComplete),individualId,isSync);
+                    cList.add(calling);
+
+                    getAnother=false;
+                }else{
+                    if((positionMasterDB.size() * memberMasterDB.size())==hs.size()) {
+                       getAnother=false;
+
+                    }else{
+                        getAnother=true;
+                    }
+                 }
+            }
+
+            getAnother=true;
+        }
+        return cList;
+    }
+
 }

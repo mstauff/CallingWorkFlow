@@ -3,23 +3,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:layout_margin="20dp"
-              android:background="@android:color/background_light">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
+              android:layout_margin="18dp"
+              android:background="@android:color/background_dark">
         <Spinner android:id="@+id/calling_status_spinner"
                  android:layout_width="fill_parent"
-                 android:layout_height="wrap_content" />
-    </LinearLayout>
-    <Button android:id="@+id/updateCallingStatusBtn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/save_btn_label" />
-
-    <Button android:id="@+id/cancelCallingStatusChangeBtn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/cancel_btn_label" />
+                 android:layout_height="wrap_content"
+                 android:spinnerMode="dialog" />
 
 </LinearLayout>
+

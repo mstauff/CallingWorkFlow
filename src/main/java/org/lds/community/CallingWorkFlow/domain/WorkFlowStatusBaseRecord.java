@@ -60,11 +60,13 @@ public class WorkFlowStatusBaseRecord implements BaseRecord {
     public void setContent(ContentValues values) {
         statusName = values.getAsString(STATUS_NAME);
 	    sequence = values.getAsInteger(SEQUENCE);
+        isComplete = values.getAsInteger(IS_COMPLETE);
     }
 
     public void setContent(Cursor cursor) {
 	    statusName = cursor.getString(cursor.getColumnIndex(STATUS_NAME));
 	    sequence = cursor.getInt(cursor.getColumnIndex(SEQUENCE));
+        isComplete = cursor.getInt(cursor.getColumnIndex(IS_COMPLETE));
     }
 
 	public String getStatusName() {

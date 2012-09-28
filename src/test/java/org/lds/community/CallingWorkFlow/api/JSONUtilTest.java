@@ -30,7 +30,7 @@ public class JSONUtilTest {
 
     @After
     public void tearDown() throws Exception {
-
+       // comment changed
     }
 
     @Test
@@ -45,7 +45,7 @@ public class JSONUtilTest {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        TestUtils.assertEntityEquals(member1,member2);
+        TestUtils.assertEntityEquals(member1,member2,"");
     }
 
     @Test
@@ -102,7 +102,7 @@ public class JSONUtilTest {
         Position position1= TestUtils.createPositionObj(4L,"Bishop");
         Position position2=JSONUtil.parsePosition(new JSONObject("{" + JSONUtil.CALLING_POS_ID + ":4;" + JSONUtil.POSITION_NAME + ":Bishop" + "}"));
 
-        TestUtils.assertEntityEquals(position1,position2);
+        TestUtils.assertEntityEquals(position1,position2,"");
     }
 
     @Test
@@ -120,9 +120,9 @@ public class JSONUtilTest {
 
         Assert.assertEquals(listSource.length(),listResult.size());
 
-        TestUtils.assertEntityEquals(position1, listResult.get(0));
-        TestUtils.assertEntityEquals(position2, listResult.get(1));
-        TestUtils.assertEntityEquals(position3, listResult.get(2));
+        TestUtils.assertEntityEquals(position1, listResult.get(0),"");
+        TestUtils.assertEntityEquals(position2, listResult.get(1),"");
+        TestUtils.assertEntityEquals(position3, listResult.get(2),"");
     }
 
     @Test
@@ -130,7 +130,7 @@ public class JSONUtilTest {
         WorkFlowStatus status1= TestUtils.createStatus(true ,"ACTIVE",null,null,1);
         WorkFlowStatus status2=JSONUtil.parseStatus(new JSONObject("{" + JSONUtil.STATUS_COMPLETE + ":true;" + JSONUtil.STATUS_NAME + ":ACTIVE;" + JSONUtil.STATUS_ORDER + ":1" + "}"));
 
-        TestUtils.assertEntityEquals(status1,status2);
+        TestUtils.assertEntityEquals(status1,status2,"");
     }
 
     @Test
@@ -147,9 +147,9 @@ public class JSONUtilTest {
         List<WorkFlowStatus> listResult= JSONUtil.parseStatuses(listSource);
         Assert.assertEquals(listSource.length(),listResult.size());
 
-        TestUtils.assertEntityEquals(status1, listResult.get(0));
-        TestUtils.assertEntityEquals(status2, listResult.get(1));
-        TestUtils.assertEntityEquals(status3, listResult.get(2));
+        TestUtils.assertEntityEquals(status1, listResult.get(0),"");
+        TestUtils.assertEntityEquals(status2, listResult.get(1),"");
+        TestUtils.assertEntityEquals(status3, listResult.get(2),"");
     }
 
 }
