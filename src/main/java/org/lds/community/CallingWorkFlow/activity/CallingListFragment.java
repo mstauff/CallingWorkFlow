@@ -9,14 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import org.lds.community.CallingWorkFlow.Adapter.CallingViewItemAdapter;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
-import org.lds.community.CallingWorkFlow.domain.Calling;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
+import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockListFragment;
 import roboguice.fragment.RoboListFragment;
 
 import javax.inject.Inject;
@@ -24,7 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallingListFragment extends RoboListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CallingListFragment extends RoboSherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     @Inject
     WorkFlowDB db;
 
@@ -47,6 +50,17 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
 		super.onActivityCreated(savedInstanceState);
 		loadListData(null);
 	}
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater){
+        inflater.inflate(R.menu.calling_list_menu,menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem){
+        return true;
+    }
 
 	private void loadListData(List<CallingViewItem> listItems) {
 		if(listItems == null || listItems.size() == 0) {
@@ -121,7 +135,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-	    return getLayoutInflater( savedInstanceState ).inflate( R.layout.callingworkflow_list, container );
+	    return getLayoutInflater( savedInstanceState ).inflate(R.layout.callingworkflow_list, container);
     }
 	@Override
 	public void onPause() {
