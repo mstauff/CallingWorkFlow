@@ -9,10 +9,10 @@ import org.lds.community.CallingWorkFlow.wigdets.robosherlock.activity.RoboSherl
 
 public class WorkFlowActivity extends RoboSherlockFragmentActivity {
 
-	@Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		setContentView(R.layout.workflow);
+        setContentView(R.layout.workflow);
     }
 
     @Override
@@ -30,19 +30,19 @@ public class WorkFlowActivity extends RoboSherlockFragmentActivity {
         super.onBackPressed();
     }
     @Override
-	    public boolean onCreateOptionsMenu(Menu menu) {
-	        menu.add(Menu.NONE, 0, 0, getString( R.string.pref_title));
-	        return super.onCreateOptionsMenu(menu);
-	    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, 0, 0, getString( R.string.pref_title));
+        return super.onCreateOptionsMenu(menu);
+    }
 
-	    @Override
-	    public boolean onOptionsItemSelected(MenuItem item) {
-	        switch (item.getItemId()) {
-	            case 0:
-	                startActivity(new Intent(this, SettingsActivity.class));
-	                return true;
-	        }
-	        return false;
-	    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+        }
+        return false;
+    }
 
 }

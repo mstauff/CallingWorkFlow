@@ -123,7 +123,7 @@ public class CallingListFragment extends RoboListFragment implements LoaderManag
     public void onListItemClick(ListView l, View v, int position, long id) {
         CallingViewItem callingViewItem = callingViewItems.get(position);
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra("callingViewItems", (Serializable) callingViewItem);
+        intent.putExtra(CallingDetailFragment.CALLING, callingViewItem);
 
         startActivity(intent);
     }

@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CallingDetailFragment extends RoboSherlockFragment {
+
+    public static final String CALLING = "callingViewItem";
+
     @Inject
     WorkFlowDB db;
     @Inject
@@ -38,7 +41,7 @@ public class CallingDetailFragment extends RoboSherlockFragment {
         super.onActivityCreated(savedInstanceState);
         Bundle bundle = getActivity().getIntent().getExtras();
         if(bundle != null){
-            callingViewItem = (CallingViewItem)bundle.get("callingViewItems");
+            callingViewItem = (CallingViewItem)bundle.get(CALLING);
             positionField.setText(callingViewItem.getPositionName());
             memberField.setText(callingViewItem.getFullName());
             selectedPositionId = callingViewItem.getPositionId();
