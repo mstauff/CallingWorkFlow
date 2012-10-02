@@ -61,18 +61,46 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
             }
         });
         loadListData(null);
+        this.setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater){
         inflater.inflate(R.menu.calling_list_menu,menu);
+
+        MenuItem filterSpinner = menu.findItem(R.id.menu_item_filter);
+        String[] filterOptions = getResources().getStringArray(R.array.filters_list);
+        SpinnerAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,filterOptions);
+        Spinner spinnerView = new Spinner(getActivity());
+        spinnerView.setAdapter(adapter);
+        spinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                callingViewItems.clear();
+                switch (i){
+                    case 0:
+                        callingViewItems.addAll(db.getPendingCallings());
+                        break;
+                    case 1:
+                        callingViewItems.addAll(db.getCompletedCallings());
+                        break;
+                }
+                callingViewItemAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        filterSpinner.setActionView(spinnerView);
+
         super.onCreateOptionsMenu(menu,inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem){
-        return true;
-    }
+    //@Override
+    //public boolean onOptionsItemSelected(MenuItem menuItem){
+    //    return true;
+    //}
 
     private void loadListData(List<CallingViewItem> listItems) {
         if (listItems == null || listItems.size() == 0) {
