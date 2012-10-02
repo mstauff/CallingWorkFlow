@@ -246,6 +246,16 @@ public class WorkFlowDB {
         return whereClause.toString();
     }
 
+    /**
+     * This method is only here to allow testing to run sql against the db. Application code should use the
+     * other methods to get the data they need.
+     *
+     * @return
+     */
+    public SQLiteDatabase getDbReference() {
+        return dbHelper.getDb();
+    }
+
 
     public boolean hasData( String tableName ) {
         return DatabaseUtils.queryNumEntries( dbHelper.getDb(), tableName ) > 0;

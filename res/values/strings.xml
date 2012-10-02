@@ -3,6 +3,12 @@
     <string name="app_name">Calling WorkFlow</string>
     <string name="select_status_group">Select group of callings</string>
     <string name="add_btn_label">+ New Calling</string>
+    <string name="search_label">Search</string>
+    <string name="filter_label">Filter</string>
+    <string-array name="filters_list">
+        <item>Pending</item>
+        <item>Completed</item>
+    </string-array>
 
     <string name="save_btn_label">Save</string>
     <string name="clear_btn_label">Clear</string>

@@ -1,5 +1,7 @@
 package org.lds.community.CallingWorkFlow.api;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import com.google.inject.Inject;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -12,7 +14,6 @@ import org.lds.community.CallingWorkFlow.domain.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,7 +26,6 @@ import java.util.Random;
 public class WorkFlowDBTest {
 
     @Inject WorkFlowDB db;
-    Random generator = new Random( );
 
     List<Member> memberMasterDB= new ArrayList<Member>();
     List<Position> positionMasterDB= new ArrayList<Position>();
@@ -36,11 +36,20 @@ public class WorkFlowDBTest {
     Member newMember1=TestUtils.createMemberObj("Jose","Riveros", 123456789L);
     Member newMember2=TestUtils.createMemberObj("Alma","Gonzales",123456999L);
 
+    Calling callingNoStatus=new Calling();
+    Calling callingNoIndividualId=new Calling();
+    Calling callingNoPositionID=new Calling();
+
     @Before
     public void setup(){
         memberMasterDB= TestUtils.createMembersDB(db);
         positionMasterDB=TestUtils.createPositionDB(db);
         statusMasterDB= TestUtils.createStatusDB(db);
+
+        callingNoStatus=TestUtils.createCallingObj(TestUtils.getRandomPositionID(positionMasterDB),"NO_STATUS",TestUtils.getRandomIndividualId(memberMasterDB),false);
+        callingNoIndividualId=TestUtils.createCallingObj(TestUtils.getRandomPositionID(positionMasterDB),TestUtils.getStatusName(db,false),123456789L,false);
+        callingNoPositionID=TestUtils.createCallingObj(99L,TestUtils.getStatusName(db,false),TestUtils.getRandomIndividualId(memberMasterDB),false);
+
     }
 
     @Test
@@ -137,22 +146,31 @@ public class WorkFlowDBTest {
         Assert.assertEquals("Did return duplicate callings",callingsListFromDBResults.size(),callingsSourceList.size());
     }
 
-    // do not delete.  kept for Second round
-//    @Test
-//    public void getCallingsNonExistingStatusTest(){
-//
-//        List<Calling> callingList=new ArrayList<Calling>();
-//        List<CallingViewItem> callingList2=new ArrayList<CallingViewItem>();
-//
-//        callingList.add(TestUtils.createCallingObj(40L, "NO_STATUS", 1111L,false));
-//        callingList.add(TestUtils.createCallingObj(41L, "NO_STATUS", 2222L,false));
-//        callingList.add(TestUtils.createCallingObj(42L, "NO_STATUS", 3333L,false));
-//        db.updateCallings(callingList);
-//
-//        callingList2=db.getCallings(false);
-          // todo insert raw query to get result
-//        Assert.assertEquals("Did  return callingS, Should Not",callingList2.size(),0);
-//    }
+
+    @Test
+    public void getCallingsNonExistingDataTest(){
+
+        List<Calling> callingList=new ArrayList<Calling>();
+
+        callingList.add(callingNoStatus);
+        callingList.add(callingNoIndividualId);
+        callingList.add(callingNoPositionID);
+        db.updateCallings(callingList);
+
+        List<CallingViewItem> callingListFromDB=db.getCallings(false);
+        SQLiteDatabase dbResult=db.getDbReference();
+        String SQL = "SELECT * FROM Calling";
+
+        Cursor results = dbResult.rawQuery( SQL, null );
+        results.moveToFirst();
+        while(!results.isAfterLast()) {
+            CallingViewItem calling = new CallingViewItem();
+            calling.setContent( results );
+            callingListFromDB.add(calling);
+            results.moveToNext();
+        }
+        Assert.assertEquals("Did not return callingS, Should return at least one",callingListFromDB.size(),1);
+    }
 
 
     @Test
@@ -225,7 +243,9 @@ public class WorkFlowDBTest {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    // UTIL METHODS
+    // UTIL METHOD
+    //------------------------------------------------------------------------------------------------------------------
+
     private List<Calling> createCallingList(int numberOfCallings, Boolean isComplete, Boolean isSync){
          // create as many callings as the member and position permits
         List<Calling> cList=new ArrayList<Calling>();
@@ -234,12 +254,13 @@ public class WorkFlowDBTest {
         Long positionID=0L;
         Long individualId=0L;
         Boolean getAnother=true;
+        int maxCallings = Math.min( numberOfCallings, (positionMasterDB.size() * memberMasterDB.size()));
 
-        for(int i=0; i < numberOfCallings;i++){
+        for(int i=0; i < maxCallings;i++){
             while (getAnother==true){
 
-                positionID= TestUtils.getRandomPositionID(generator,positionMasterDB);
-                individualId= TestUtils.getRandomIndividualId(generator,memberMasterDB);
+                positionID= TestUtils.getRandomPositionID(positionMasterDB);
+                individualId= TestUtils.getRandomIndividualId(memberMasterDB);
 
                 if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
                     hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
@@ -249,12 +270,7 @@ public class WorkFlowDBTest {
 
                     getAnother=false;
                 }else{
-                    if((positionMasterDB.size() * memberMasterDB.size())==hs.size()) {
-                       getAnother=false;
-
-                    }else{
-                        getAnother=true;
-                    }
+                    getAnother=true;
                  }
             }
 
