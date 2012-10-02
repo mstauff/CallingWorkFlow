@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical">
-    <LinearLayout android:layout_width="fill_parent"
-                  android:layout_height="wrap_content">
+    <AutoCompleteTextView android:id="@+id/callingPosition"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:hint="@string/calling_label"
+              android:completionThreshold="1" />
+    <AutoCompleteTextView android:id="@+id/memberName"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:hint="@string/name_label"
+              android:completionThreshold="1"/>
+    <Spinner android:id="@+id/status_spinner"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content" />
+    <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true">
         <Button android:id="@+id/saveCallingButton"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/save_btn_label"
-                android:onClick="saveCalling" />
+                android:onClick="saveCalling"/>
         <Button android:id="@+id/cancelButton"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cancel_btn_label"
-                android:onClick="cancelChanges" />
+                android:onClick="cancelChanges"/>
     </LinearLayout>
-    <AutoCompleteTextView android:id="@+id/callingPosition"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              android:hint="@string/calling_label"
-              android:completionThreshold="1"/>
-    <AutoCompleteTextView android:id="@+id/memberName"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              android:hint="@string/name_label"
-              android:completionThreshold="1"/>
-    <Spinner android:id="@+id/status_spinner"
-             android:layout_width="fill_parent"
-             android:layout_height="wrap_content" />
 </LinearLayout>
