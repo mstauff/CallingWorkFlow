@@ -2,9 +2,7 @@ package org.lds.community.CallingWorkFlow.activity;
 
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
@@ -16,7 +14,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallingDetailFragment extends RoboSherlockFragment {
+public class CallingDetailFragment extends RoboSherlockFragment implements View.OnClickListener {
 
     public static final String CALLING = "callingViewItem";
 
@@ -35,6 +33,11 @@ public class CallingDetailFragment extends RoboSherlockFragment {
     long selectedPositionId;
     long selectedMemberId;
     List<WorkFlowStatus> statusList;
+
+    private static final int SWIPE_MIN_DISTANCE = 80;
+    private static final int SWIPE_MAX_OFF_PATH = 100;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 75;
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -101,6 +104,17 @@ public class CallingDetailFragment extends RoboSherlockFragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(spinnerAdapter);
 
+        final GestureDetector gestureDetector = new GestureDetector(new CallingSwipeDetector());
+        View.OnTouchListener gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+
+        view.setOnClickListener( this );
+        view.setOnTouchListener( gestureListener );
+
+
         return view;
     }
 
@@ -120,6 +134,31 @@ public class CallingDetailFragment extends RoboSherlockFragment {
 
     public void cancelChanges(View v){
         getActivity().onBackPressed();
+    }
+
+    @Override
+    public void onClick(View view) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    class CallingSwipeDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+                // right to left swipe
+                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
+
     }
 
 }

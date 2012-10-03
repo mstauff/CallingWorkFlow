@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.lds.community.CallingWorkFlow.InjectedTestRunner;
 import org.lds.community.CallingWorkFlow.Utilities.TestUtils;
 import org.lds.community.CallingWorkFlow.domain.Calling;
+import org.lds.community.CallingWorkFlow.domain.Member;
 import org.lds.community.CallingWorkFlow.domain.Position;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 
@@ -29,69 +30,162 @@ public class CwfNetworkUtilTest{
 
     @Before
     public void setup(){
-
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
-//        initDb.initializeDb();
-    }
-
-    @Test
-    public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
         networkUtil = new CwfNetworkUtil();
+
+    }
+
+    // todo other test is to not use  getFakeHttpLayer and use Robolectric to mock the rest calls
+    // test the json coming back from the server
+
+
+    @Test
+    public void testUpdateCallingTest() throws Exception {
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
         Calling calling1 = TestUtils.createCallingObj( 22L, "APPROVED", 5555L,false );
-        Calling calling2 = TestUtils.createCallingObj( 23L, "APPROVED", 5554L,false );
-
 
         networkUtil.updateCalling( calling1 );
-        List<Calling> callings = networkUtil.getPendingCallings();
-        Assert.assertTrue("Calling wasn't saved", TestUtils.isCallingFoundOnList(callings, calling1.getIndividualId(), calling1.getPositionId()));
-        Calling resultCalling=  TestUtils.getCallingObjectFromList(callings,calling1.getIndividualId(),calling1.getPositionId());
-        TestUtils.assertEntityEquals(calling1,resultCalling, "");
+        List<Calling> callingListFromDB = networkUtil.getPendingCallings();
+        Assert.assertTrue(Robolectric.httpRequestWasMade("http://cwf.jit.su/callings/pending"));
 
-        networkUtil.deleteCalling( calling1 );
-        networkUtil.deleteCalling( calling2 );
+        Calling resultCalling=  TestUtils.getCallingObjectFromList(callingListFromDB,calling1.getIndividualId(),calling1.getPositionId());
+        Assert.assertTrue("Calling wasn't saved", TestUtils.isCallingFoundOnList(callingListFromDB, calling1.getIndividualId(), calling1.getPositionId()));
+
+        TestUtils.assertEntityEquals(calling1,resultCalling, "");
+        networkUtil.deleteCalling(calling1);
 
     }
 
     @Test
-    public void testCallingStatus(){
+    public void testCallingChangeStatusTest(){
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
         networkUtil = new CwfNetworkUtil();
 
+        List<WorkFlowStatus> wfList=networkUtil.getStatuses();
+        List<Member> mList=networkUtil.getWardList();
+        List<Calling> cList=networkUtil.getCallings();
 
-        Calling calling1 = TestUtils.createCallingObj( 22L, "SET_APART", 1L,false );
-        Calling calling2 = TestUtils.createCallingObj( 23L, "SET_APART", 2L,false );
-        Calling calling3 = TestUtils.createCallingObj( 24L, "SET_APART", 3L,false );
-        Calling calling4 = TestUtils.createCallingObj( 25L, "PENDING", 4L,false );
-        Calling calling5 = TestUtils.createCallingObj( 26L, "PENDING", 5L,false );
+        if (!cList.isEmpty()){
+            Calling calling1 = TestUtils.createCallingObj( cList.get(0).getPositionId(), wfList.get(0).getStatusName(), mList.get(0).getIndividualId(),false );
+            networkUtil.updateCalling(calling1);
 
-        networkUtil.updateCalling( calling1 );
-        networkUtil.updateCalling( calling2 );
-        networkUtil.updateCalling( calling3 );
-        networkUtil.updateCalling( calling4 );
-        networkUtil.updateCalling( calling5 );
+            List<Calling> callingPendingList2= networkUtil.getPendingCallings();
+            Calling resultCallingModify=  TestUtils.getCallingObjectFromList(callingPendingList2, calling1.getIndividualId(), calling1.getPositionId());
 
-        List<Calling> callingList= networkUtil.getCompletedCallings();
-        Assert.assertEquals("Did not return 3 SET_APART callings",3, TestUtils.getCallingStatusCountFromList(callingList, "SET_APART"));
-        Assert.assertEquals("Did not return 2 PENDING callings",2, TestUtils.getCallingStatusCountFromList(callingList,"PENDING"));
+            TestUtils.assertEntityEquals(calling1,resultCallingModify,"");
 
-        for(Calling c:callingList){
-            networkUtil.deleteCalling( c );
+            // MODIFY CALLINGS STATUS
+            resultCallingModify.setStatusName( getStatusFromList(wfList,true).getStatusName());
+            networkUtil.updateCalling(resultCallingModify);
+
+            // GET RESULTS
+            List<Calling> callingCompletedList= networkUtil.getPendingCallings();
+            Calling resultCallingCompleted=  TestUtils.getCallingObjectFromList(callingCompletedList, resultCallingModify.getIndividualId(), resultCallingModify.getPositionId());
+
+            TestUtils.assertEntityEquals(resultCallingModify,resultCallingCompleted,"");
+
+            networkUtil.deleteCalling( resultCallingCompleted );
         }
     }
 
-   @Test
-    public void getWorkFlowStatus(){
-       List<WorkFlowStatus> wfList= networkUtil.getStatuses();
-       Assert.assertTrue( "",wfList.size()>=0);
-       //todo need to do something here
-   }
+    @Test
+    public void deleteCallingTest(){
+
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+        Calling calling1 = TestUtils.createCallingObj(22L, "APPROVED", 5555L,false );
+        Calling calling2 = TestUtils.createCallingObj(23L, "APPROVED", 5554L,false );
+        networkUtil.updateCalling( calling1 );
+        networkUtil.updateCalling( calling2 );
+
+        networkUtil.deleteCalling( calling1 );
+
+        List<Calling> callingPendingList= networkUtil.getPendingCallings();
+        Calling resultCallingDeleted=  TestUtils.getCallingObjectFromList(callingPendingList, calling1.getIndividualId(), calling1.getPositionId());
+        Assert.assertTrue("The callings was not deleted",resultCallingDeleted==null);
+
+        networkUtil.deleteCalling( calling2 );
+    }
 
     @Test
-    public void getPositionIds(){
-        List<Position> pList= networkUtil.getPositionIds();
-        Assert.assertTrue( "",pList.size()>=0);
-        //todo need to do something here
+    public void getWorkFlowStatusTest(){
+        try {
+            Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+
+            List<WorkFlowStatus> wfList= networkUtil.getStatuses();
+            Assert.assertTrue( "Status list was empty",wfList.size()>=0);
+
+        } catch (Exception name) {
+            Assert.assertFalse("Exception found:  " + name,false);
+        }
+    }
+
+    @Test
+    public void getPositionIdsTest(){
+        try {
+            Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+            List<Position> pList= networkUtil.getPositionIds();
+            Assert.assertTrue( "The position list was empty",pList.size()>=0);
+        } catch (Exception name) {
+            Assert.assertFalse("Exception found:  " + name,false);
+        }
 
     }
+
+
+    @Test
+    public void getMemberListTest(){
+        try {
+            Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+            List<Member> wardList= networkUtil.getWardList();
+            Assert.assertTrue( "Ward member list was empty",wardList.size()>=0);
+        } catch (Exception name) {
+            Assert.assertFalse("Exception found:  " + name,false);
+        }
+    }
+
+//    @Test
+//    public void test5(){
+//        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+//        ProtocolVersion httpProtocolVersion = new ProtocolVersion("HTTP", 1, 1);
+//        HttpResponse successResponse =   new BasicHttpResponse(httpProtocolVersion, 200, "OK");
+//        Robolectric.addHttpResponseRule("http://cwf.jit.su/wardList", successResponse);
+//
+//
+//        Robolectric.addHttpResponseRule("http://cwf.jit.su/positionIds", successResponse);
+//
+//
+////        Robolectric.setDefaultHttpResponse(200, "OK");
+////        HttpClient httpClient = NetworkUtil.createHttpClient();
+////        String STATUSES_URL =  "/statuses";
+////
+//////        HttpResponse response = httpClient.execute("http://cwf.jit.su" + STATUSES_URL);
+////
+////
+////        Calling calling1 = TestUtils.createCallingObj( 22L, "APPROVED", 5555L,false );
+////        String ROOT = "http://cwf.jit.su";
+//
+//
+////        networkUtil.updateCalling( calling1 );
+//
+//
+//                Robolectric.clearPendingHttpResponses();
+//
+//    }
+
+    // UTIL METHODS
+    private WorkFlowStatus getStatusFromList(List<WorkFlowStatus> statuses, Boolean isCompleted){
+        WorkFlowStatus status=new WorkFlowStatus();
+        for(WorkFlowStatus wf: statuses){
+            if (wf.getComplete()==isCompleted){
+               status= wf;
+               break;
+            }
+        }
+        return status;
+    }
+
+
+
+
+
 }

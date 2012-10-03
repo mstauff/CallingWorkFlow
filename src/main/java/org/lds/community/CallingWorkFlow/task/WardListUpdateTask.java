@@ -2,9 +2,12 @@ package org.lds.community.CallingWorkFlow.task;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
+import org.lds.community.CallingWorkFlow.InternalIntents;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CwfNetworkUtil;
 import org.lds.community.CallingWorkFlow.api.ServiceException;
@@ -83,10 +86,12 @@ public class WardListUpdateTask extends RoboAsyncTask<Void>{
     }
     @Override
     public Void call() throws Exception {
+        boolean dataUpdated = false;
         if( forceUpdate || !db.hasData(Member.TABLE_NAME) ) {
             List<Member> members = networkUtil.getWardList();
             if( !members.isEmpty() ) {
                 db.updateWardList( members );
+                dataUpdated = true;
             }
         }
 
@@ -94,6 +99,7 @@ public class WardListUpdateTask extends RoboAsyncTask<Void>{
             List<Position> positions = networkUtil.getPositionIds();
             if( !positions.isEmpty() ) {
                 db.updatePositions(positions);
+                dataUpdated = true;
             }
         }
 
@@ -101,6 +107,7 @@ public class WardListUpdateTask extends RoboAsyncTask<Void>{
             List<WorkFlowStatus> statuses = networkUtil.getStatuses();
             if( !statuses.isEmpty() ) {
                 db.updateWorkFlowStatus(statuses);
+                dataUpdated = true;
             }
         }
 
@@ -108,9 +115,16 @@ public class WardListUpdateTask extends RoboAsyncTask<Void>{
             List<Calling> callings = networkUtil.getPendingCallings();
             if( !callings.isEmpty() ) {
                 db.updateCallings(callings);
+                dataUpdated = true;
             }
         }
 
+        if (dataUpdated) {
+            Intent intent = new Intent();
+            intent.setAction(InternalIntents.SYNC_COMPLETE);
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance( context );
+            broadcastManager.sendBroadcast( intent );
+        }
         return null;
     }
 }

@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -220,6 +221,42 @@ public class TestUtils {
 
         int r = generator.nextInt(memberList.size());
         return  memberList.get(r).getIndividualId();
+    }
+
+    public static List<Calling> createCallingList(WorkFlowDB db, int numberOfCallings, Boolean isComplete, Boolean isSync){
+        // create as many callings as the member and position permits
+        List<Calling> cList=new ArrayList<Calling>();
+        List<Member> memberMasterDB= new ArrayList<Member>();
+        List<Position> positionMasterDB= new ArrayList<Position>();
+        memberMasterDB=createMembersDB(db);
+        positionMasterDB=createPositionDB(db);
+
+
+        HashSet hs = new HashSet();
+        Long positionID=0L;
+        Long individualId=0L;
+        Boolean getAnother=true;
+        int maxCallings = Math.min( numberOfCallings, (positionMasterDB.size() * memberMasterDB.size()));
+
+        for(int i=0; i < maxCallings;i++){
+            while (getAnother==true){
+                positionID= TestUtils.getRandomPositionID(positionMasterDB);
+                individualId= TestUtils.getRandomIndividualId(memberMasterDB);
+
+                if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
+                    hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
+
+                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(db,isComplete),individualId,isSync);
+                    cList.add(calling);
+
+                    getAnother=false;
+                }else{
+                    getAnother=true;
+                }
+            }
+            getAnother=true;
+        }
+        return cList;
     }
 }
 
