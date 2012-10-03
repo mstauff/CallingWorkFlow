@@ -5,15 +5,18 @@
         android:id="@+id/menu_item_filter"
         android:title="@string/filter_label"
         android:showAsAction="always"
-        android:orderInCategory="0"
         />
     <item
-        android:id="@+id/menu_item_calling_search"
-        android:title="@string/search_label"
-        android:icon="@drawable/action_search"
-        android:showAsAction="always|collapseActionView"
-        android:actionLayout="@layout/actionbar_search"
-        android:orderInCategory="0"
+        android:id="@+id/menu_item_sort"
+        android:title="@string/sort_label"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:showAsAction="always"
+        />
+    <item
+        android:id="@+id/menu_item_add"
+        android:title="@string/add_btn_label"
+        android:icon="@android:drawable/ic_input_add"
+        android:showAsAction="always"
         >
         <menu></menu>
     </item>

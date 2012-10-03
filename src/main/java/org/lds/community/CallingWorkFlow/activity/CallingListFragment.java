@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,9 @@ import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockListFragment;
-import roboguice.fragment.RoboListFragment;
 import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
 
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
+    private boolean alphabetical = true;
     protected boolean spinnerInitialized = false;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -77,7 +77,7 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 callingViewItems.clear();
-                switch (i){
+                switch (i) {
                     case 0:
                         callingViewItems.addAll(db.getPendingCallings());
                         break;
@@ -87,6 +87,7 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
                 }
                 callingViewItemAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -97,10 +98,18 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
         super.onCreateOptionsMenu(menu,inflater);
     }
 
-    //@Override
-    //public boolean onOptionsItemSelected(MenuItem menuItem){
-    //    return true;
-    //}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem){
+        switch (menuItem.getItemId()){
+            case R.id.menu_item_sort:
+                Toast.makeText(getActivity(),"Sort",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_item_add:
+                Toast.makeText(getActivity(),"Add",Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
+    }
 
     private void loadListData(List<CallingViewItem> listItems) {
         if (listItems == null || listItems.size() == 0) {
