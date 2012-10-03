@@ -12,7 +12,6 @@ import org.lds.community.CallingWorkFlow.Utilities.TestUtils;
 import org.lds.community.CallingWorkFlow.domain.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -88,8 +87,8 @@ public class WorkFlowDBTest {
     @Test
     public void getCompleted_Pending_Sync_CallingsTest(){
 
-        List<Calling> callingNotCompletedSource=createCallingList(30,false,false);
-        List<Calling> callingCompletedSource=createCallingList(40,true,true);
+        List<Calling> callingNotCompletedSource=TestUtils.createCallingList(db,30,false,false);
+        List<Calling> callingCompletedSource=TestUtils.createCallingList(db,40,true,true);
         List<Calling> callingLisSource=new ArrayList<Calling>();
         callingLisSource.addAll(callingNotCompletedSource);
         callingLisSource.addAll(callingCompletedSource);
@@ -106,7 +105,7 @@ public class WorkFlowDBTest {
 
     @Test
     public void updateCallingsTest(){
-        db.updateCallings(createCallingList(5,false,false));
+        db.updateCallings(TestUtils.createCallingList(db,5,false,false));
         List<CallingViewItem> callingPending=db.getPendingCallings();
 
         List<Calling> callingsToUpdate=new ArrayList<Calling>();
@@ -124,8 +123,8 @@ public class WorkFlowDBTest {
     @Test
     public void DuplicateCallingsTest(){
 
-        List<Calling> callingsNotCompleted=createCallingList(5,false,false);
-        List<Calling> callingsCompleted=createCallingList(5,true,true);
+        List<Calling> callingsNotCompleted=TestUtils.createCallingList(db,5,false,false);
+        List<Calling> callingsCompleted=TestUtils.createCallingList(db,5,true,true);
         List<Calling> callingsSource=new ArrayList<Calling>();
         callingsSource.addAll(callingsNotCompleted);
         callingsSource.addAll(callingsCompleted);
@@ -175,7 +174,6 @@ public class WorkFlowDBTest {
 
     @Test
     public void addStatusToDBTest(){
-
         List<WorkFlowStatus> statusList=db.getWorkFlowStatuses() ;
         statusList.add(secondChanceStatus);
         db.updateWorkFlowStatus(statusList);
@@ -186,7 +184,7 @@ public class WorkFlowDBTest {
 
     @Test
     public void addPositionToDBTest(){
-         List<Position> positionList=db.getPositions();
+        List<Position> positionList=db.getPositions();
         positionList.add(newPosition);
         db.updatePositions(positionList);
 
@@ -199,7 +197,6 @@ public class WorkFlowDBTest {
     @Test
     public void addDuplicatePositionToDBTest(){
         // should not add duplicate positions to db
-
         List<Position> positionsFromDBSource=db.getPositions();
 
         List<Position> positionDuplicateList =new ArrayList<Position>();
@@ -246,37 +243,5 @@ public class WorkFlowDBTest {
     // UTIL METHOD
     //------------------------------------------------------------------------------------------------------------------
 
-    private List<Calling> createCallingList(int numberOfCallings, Boolean isComplete, Boolean isSync){
-         // create as many callings as the member and position permits
-        List<Calling> cList=new ArrayList<Calling>();
-
-        HashSet hs = new HashSet();
-        Long positionID=0L;
-        Long individualId=0L;
-        Boolean getAnother=true;
-        int maxCallings = Math.min( numberOfCallings, (positionMasterDB.size() * memberMasterDB.size()));
-
-        for(int i=0; i < maxCallings;i++){
-            while (getAnother==true){
-
-                positionID= TestUtils.getRandomPositionID(positionMasterDB);
-                individualId= TestUtils.getRandomIndividualId(memberMasterDB);
-
-                if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
-                    hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
-
-                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(db,isComplete),individualId,isSync);
-                    cList.add(calling);
-
-                    getAnother=false;
-                }else{
-                    getAnother=true;
-                 }
-            }
-
-            getAnother=true;
-        }
-        return cList;
-    }
 
 }
