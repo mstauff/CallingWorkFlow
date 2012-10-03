@@ -212,7 +212,8 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     public void onListItemClick(ListView l, View v, int position, long id) {
         CallingViewItem callingViewItem = callingViewItems.get(position);
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(CallingDetailFragment.CALLING, callingViewItem);
+        intent.putExtra(CallingDetailFragment.CALLING_INDEX, position );
+        callingManager.setCurrentViewCallingList( callingViewItems );
 
         startActivity(intent);
     }

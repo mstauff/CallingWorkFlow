@@ -7,6 +7,7 @@ import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.task.UpdateCallingTask;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ import java.util.List;
  * Time: 12:16 PM
  * To change this template use File | Settings | File Templates.
  */
+@Singleton
 public class CallingManager {
 
     @Inject
@@ -23,6 +25,16 @@ public class CallingManager {
 
     @Inject
     CwfNetworkUtil networkUtil;
+
+    List<CallingViewItem> currentViewCallingList;
+
+    public List<CallingViewItem> getCurrentViewCallingList() {
+        return currentViewCallingList;
+    }
+
+    public void setCurrentViewCallingList(List<CallingViewItem> currentViewCallingList) {
+        this.currentViewCallingList = currentViewCallingList;
+    }
 
     public void saveCalling(Calling calling, Context context) {
         calling.setIsSynced( false );

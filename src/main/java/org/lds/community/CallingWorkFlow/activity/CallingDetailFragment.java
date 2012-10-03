@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CallingDetailFragment extends RoboSherlockFragment implements View.OnClickListener {
 
-    public static final String CALLING = "callingViewItem";
+    public static final String CALLING_INDEX = "selectedCalling";
 
     @Inject
     WorkFlowDB db;
@@ -30,12 +30,14 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
     AutoCompleteTextView memberField;
     Spinner statusSpinner;
     CallingViewItem callingViewItem;
+    private int callingIndex;
     long selectedPositionId;
     long selectedMemberId;
     List<WorkFlowStatus> statusList;
+    List<CallingViewItem> callingList;
 
     private static final int SWIPE_MIN_DISTANCE = 80;
-    private static final int SWIPE_MAX_OFF_PATH = 100;
+    private static final int SWIPE_MAX_OFF_PATH = 300;
     private static final int SWIPE_THRESHOLD_VELOCITY = 75;
 
 
@@ -44,12 +46,12 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
         super.onActivityCreated(savedInstanceState);
         Bundle bundle = getActivity().getIntent().getExtras();
         if(bundle != null){
-            callingViewItem = (CallingViewItem)bundle.get(CALLING);
-            positionField.setText(callingViewItem.getPositionName());
-            memberField.setText(callingViewItem.getFullName());
-            selectedPositionId = callingViewItem.getPositionId();
-            selectedMemberId = callingViewItem.getIndividualId();
-            statusSpinner.setSelection(( (ArrayAdapter) statusSpinner.getAdapter()).getPosition( callingViewItem.getStatusName() ));
+            callingList = callingManager.getCurrentViewCallingList();
+            // make sure that we have a valid index
+            callingIndex = getNextCallingIndex(bundle.getInt(CALLING_INDEX, 0) - 1, callingList);
+
+            callingViewItem = callingList.get( callingIndex );
+            initUIFromCalling(callingViewItem);
         }
         saveCallingButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -63,6 +65,35 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                 cancelChanges(view);
             }
         });
+    }
+
+    /**
+     * returns an index within the size of the list (wrapping back to the start of the list if we've reached the end)
+     *
+     * @param currentCallingIndex
+     * @param callingList
+     * @return
+     */
+    static int getNextCallingIndex(int currentCallingIndex, List<CallingViewItem> callingList) {
+        if( ++currentCallingIndex >= callingList.size() ) {
+            currentCallingIndex = 0;
+        }
+        return currentCallingIndex;
+    }
+
+    static int getPreviousCallingIndex(int currentCallingIndex, List<CallingViewItem> callingList) {
+        if( --currentCallingIndex < 0 ) {
+            currentCallingIndex = callingList.size() -1;
+        }
+        return currentCallingIndex;
+    }
+
+    private void initUIFromCalling(CallingViewItem calling) {
+        positionField.setText(calling.getPositionName());
+        memberField.setText(calling.getFullName());
+        selectedPositionId = calling.getPositionId();
+        selectedMemberId = calling.getIndividualId();
+        statusSpinner.setSelection(( (ArrayAdapter) statusSpinner.getAdapter()).getPosition( calling.getStatusName() ));
     }
 
     @Override
@@ -149,10 +180,14 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                     return false;
                 // right to left swipe
                 if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                    callingIndex = getNextCallingIndex( callingIndex, callingList );
                 }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                    callingIndex = getPreviousCallingIndex( callingIndex, callingList );
                 }
+                callingViewItem = callingList.get( callingIndex );
+                initUIFromCalling( callingViewItem );
             } catch (Exception e) {
                 // nothing
             }
