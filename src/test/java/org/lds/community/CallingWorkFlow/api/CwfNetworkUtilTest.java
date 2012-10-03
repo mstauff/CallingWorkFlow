@@ -1,6 +1,10 @@
 package org.lds.community.CallingWorkFlow.api;
 
 import com.xtremelabs.robolectric.Robolectric;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +17,7 @@ import org.lds.community.CallingWorkFlow.domain.Position;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 /**
@@ -30,8 +35,7 @@ public class CwfNetworkUtilTest{
 
     @Before
     public void setup(){
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
-        networkUtil = new CwfNetworkUtil();
+         networkUtil = new CwfNetworkUtil();
 
     }
 
@@ -46,7 +50,6 @@ public class CwfNetworkUtilTest{
 
         networkUtil.updateCalling( calling1 );
         List<Calling> callingListFromDB = networkUtil.getPendingCallings();
-        Assert.assertTrue(Robolectric.httpRequestWasMade("http://cwf.jit.su/callings/pending"));
 
         Calling resultCalling=  TestUtils.getCallingObjectFromList(callingListFromDB,calling1.getIndividualId(),calling1.getPositionId());
         Assert.assertTrue("Calling wasn't saved", TestUtils.isCallingFoundOnList(callingListFromDB, calling1.getIndividualId(), calling1.getPositionId()));
@@ -128,9 +131,7 @@ public class CwfNetworkUtilTest{
         } catch (Exception name) {
             Assert.assertFalse("Exception found:  " + name,false);
         }
-
     }
-
 
     @Test
     public void getMemberListTest(){
@@ -143,35 +144,69 @@ public class CwfNetworkUtilTest{
         }
     }
 
+    @Test
+    public void getMemberListMockTest() {
+        String json = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222\"}]";
+        httpMockStuff(json);
+
+        List<Member> members = networkUtil.getWardList();
+        Member firstMember = members.get(0);
+        Assert.assertEquals( "last name doesn't match", "Doe", firstMember.getLastName() );
+        Assert.assertEquals( "first name doesn't match", "John", firstMember.getFirstName() );
+        Assert.assertEquals( "individualId doesn't match", "1111",String.valueOf(firstMember.getIndividualId()) );
+    }
+
+
+    @Test
+    public void getPositionListMockTest() {
+        String json = "[{\"positionId\":\"1\",\"positionName\":\"Stake President\"},{\"positionId\":\"4\",\"positionName\":\"Bishop\"}]";
+        httpMockStuff(json);
+
+        List<Position> positionList = networkUtil.getPositionIds();
+        Position firstPosition = positionList.get(0);
+        Assert.assertEquals( "position name doesn't match", "Stake President", firstPosition.getPositionName());
+        Assert.assertEquals( "positionId doesn't match", "1", String.valueOf(firstPosition.getPositionId()));
+
+    }
+
+    @Test
+    public void getStatusListMockTest() {
+        String json = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"2\"}]";
+        httpMockStuff(json);
+
+        List<WorkFlowStatus> statusList = networkUtil.getStatuses();
+        WorkFlowStatus firstStatus = statusList.get(0);
+        Assert.assertEquals( "Status name doesn't match", "SUBMITTED", firstStatus.getStatusName());
+        Assert.assertEquals( "isComplete doesn't match", false, firstStatus.getComplete());
+        Assert.assertEquals( "Sequence doesn't match", "0",String.valueOf(firstStatus.getSequence()));
+
+    }
+
 //    @Test
-//    public void test5(){
-//        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
-//        ProtocolVersion httpProtocolVersion = new ProtocolVersion("HTTP", 1, 1);
-//        HttpResponse successResponse =   new BasicHttpResponse(httpProtocolVersion, 200, "OK");
-//        Robolectric.addHttpResponseRule("http://cwf.jit.su/wardList", successResponse);
+//    public void getCallingsListMockTest(){
+//        String json = "[{\"individualId\":\"1111L\",\"positionId\":\"1L\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0L\",\"synced\":\"false\" }, " +
+//                       "{\"individualId\":\"2222L\",\"positionId\":\"4L\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555L\",\"synced\":\"true\" }   ]";
+//        httpMockStuff(json);
 //
+//        List<Calling> callingList = networkUtil.getCompletedCallings();
+//        Calling firstCalling = callingList.get(0);
 //
-//        Robolectric.addHttpResponseRule("http://cwf.jit.su/positionIds", successResponse);
-//
-//
-////        Robolectric.setDefaultHttpResponse(200, "OK");
-////        HttpClient httpClient = NetworkUtil.createHttpClient();
-////        String STATUSES_URL =  "/statuses";
-////
-//////        HttpResponse response = httpClient.execute("http://cwf.jit.su" + STATUSES_URL);
-////
-////
-////        Calling calling1 = TestUtils.createCallingObj( 22L, "APPROVED", 5555L,false );
-////        String ROOT = "http://cwf.jit.su";
-//
-//
-////        networkUtil.updateCalling( calling1 );
-//
-//
-//                Robolectric.clearPendingHttpResponses();
-//
+//        Assert.assertEquals( "IndividualId doesn't match", "1111", String.valueOf(firstCalling.getIndividualId()));
+//        Assert.assertEquals( "IndividualId doesn't match", "4", String.valueOf(firstCalling.getPositionId()));
+
+//        Assert.assertEquals( "isComplete doesn't match", false, firstStatus.getComplete());
+//        Assert.assertEquals( "Sequence doesn't match", "0",String.valueOf(firstStatus.getSequence()));
+
+//        setIndividualId(individualId);
+//        setPositionId(positionId);
+//        setStatusName(statusName);
+//        setAssignedTo(assignedTo);
+//        setIsSynced(synced);
+
+
 //    }
 
+    //------------------------------------------------------------------------------------------------------------------
     // UTIL METHODS
     private WorkFlowStatus getStatusFromList(List<WorkFlowStatus> statuses, Boolean isCompleted){
         WorkFlowStatus status=new WorkFlowStatus();
@@ -184,8 +219,15 @@ public class CwfNetworkUtilTest{
         return status;
     }
 
+    private void httpMockStuff(String json){
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        HttpResponse res = new DefaultHttpResponseFactory().newHttpResponse(HttpVersion.HTTP_1_1, 200, null);
+        BasicHttpEntity entity1 = new BasicHttpEntity();
+        entity1.setContentType("application/json");
+        entity1.setContent( new ByteArrayInputStream( json.getBytes() ));
+        res.setEntity(entity1);
+        Robolectric.addPendingHttpResponse(res );
 
-
-
+    }
 
 }
