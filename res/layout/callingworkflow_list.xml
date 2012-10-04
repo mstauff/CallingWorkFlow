@@ -5,11 +5,6 @@
                   android:orientation="vertical"
                   android:id="@+id/workflow_listview_layout">
 
-    <Button android:id="@+id/addNewCallingBtn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/add_btn_label" />
-
     <TextView style="@style/content_header_line"/>
 
     <ListView android:id="@android:id/list"
