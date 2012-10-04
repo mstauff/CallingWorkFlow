@@ -50,7 +50,25 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     private SortMode sortMode = SortMode.NAME;
     protected boolean spinnerInitialized = false;
     private Spinner actionBarFilterSpinner;
-    private Comparator<CallingViewItem> nameCompare,positionCompare,statusCompare;
+
+    private static final Comparator<CallingViewItem> nameCompare = new Comparator<CallingViewItem>() {
+        @Override
+        public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
+            return callingViewItem.getFullName().compareToIgnoreCase(callingViewItem1.getFullName());
+        }
+    };
+    private static final Comparator<CallingViewItem> positionCompare = new Comparator<CallingViewItem>() {
+        @Override
+        public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
+            return callingViewItem.getPositionName().compareToIgnoreCase(callingViewItem1.getPositionName());
+        }
+    };
+    private static final Comparator<CallingViewItem> statusCompare = new Comparator<CallingViewItem>() {
+        @Override
+        public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
+            return callingViewItem.getStatusName().compareToIgnoreCase(callingViewItem1.getStatusName());
+        }
+    };
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
     }
@@ -62,25 +80,6 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
         super.onActivityCreated(savedInstanceState);
         loadListData(null, false);
         this.setHasOptionsMenu(true);
-
-        nameCompare = new Comparator<CallingViewItem>() {
-            @Override
-            public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
-                return callingViewItem.getFullName().compareToIgnoreCase(callingViewItem1.getFullName());
-            }
-        };
-        positionCompare = new Comparator<CallingViewItem>() {
-            @Override
-            public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
-                return callingViewItem.getPositionName().compareToIgnoreCase(callingViewItem1.getPositionName());
-            }
-        };
-        statusCompare = new Comparator<CallingViewItem>() {
-            @Override
-            public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
-                return callingViewItem.getStatusName().compareToIgnoreCase(callingViewItem1.getStatusName());
-            }
-        };
 
         syncCompleteReceiver = new RoboBroadcastReceiver() {
             @Override
@@ -138,26 +137,18 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
                 switch (sortMode){
                     case NAME:
                         sortMode = SortMode.CALLING;
-                        messageId = R.string.sort_message_calling;
+                        Toast.makeText(getActivity(),R.string.sort_message_calling,Toast.LENGTH_SHORT).show();
+                        Collections.sort(callingViewItems,positionCompare);
                         break;
                     case CALLING:
                         sortMode = SortMode.STATUS;
-                        messageId = R.string.sort_message_status;
+                        Toast.makeText(getActivity(),R.string.sort_message_status,Toast.LENGTH_SHORT).show();
+                        Collections.sort(callingViewItems,statusCompare);
                         break;
                     default:
                         sortMode = SortMode.NAME;
-                        messageId = R.string.sort_message_name;
-                }
-                Toast.makeText(getActivity(),messageId,Toast.LENGTH_SHORT).show();
-                switch (sortMode){
-                    case NAME:
+                        Toast.makeText(getActivity(),R.string.sort_message_name,Toast.LENGTH_SHORT).show();
                         Collections.sort(callingViewItems,nameCompare);
-                        break;
-                    case CALLING:
-                        Collections.sort(callingViewItems,positionCompare);
-                        break;
-                    case STATUS:
-                        Collections.sort(callingViewItems,statusCompare);
                 }
                 callingViewItemAdapter.notifyDataSetChanged();
                 break;
