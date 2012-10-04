@@ -36,12 +36,7 @@ public class CwfNetworkUtilTest{
     @Before
     public void setup(){
          networkUtil = new CwfNetworkUtil();
-
     }
-
-    // todo other test is to not use  getFakeHttpLayer and use Robolectric to mock the rest calls
-    // test the json coming back from the server
-
 
     @Test
     public void testUpdateCallingTest() throws Exception {
@@ -56,7 +51,6 @@ public class CwfNetworkUtilTest{
 
         TestUtils.assertEntityEquals(calling1,resultCalling, "");
         networkUtil.deleteCalling(calling1);
-
     }
 
     @Test
@@ -166,7 +160,6 @@ public class CwfNetworkUtilTest{
         Position firstPosition = positionList.get(0);
         Assert.assertEquals( "position name doesn't match", "Stake President", firstPosition.getPositionName());
         Assert.assertEquals( "positionId doesn't match", "1", String.valueOf(firstPosition.getPositionId()));
-
     }
 
     @Test
@@ -179,28 +172,25 @@ public class CwfNetworkUtilTest{
         Assert.assertEquals( "Status name doesn't match", "SUBMITTED", firstStatus.getStatusName());
         Assert.assertEquals( "isComplete doesn't match", false, firstStatus.getComplete());
         Assert.assertEquals( "Sequence doesn't match", "0",String.valueOf(firstStatus.getSequence()));
-
     }
 
     @Test
     public void getCallingsListMockTest(){
 
-        String jsonMembers = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111L\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222L\"}]";
-        String jsonPositions = "[{\"positionId\":\"1\",\"positionName\":\"Stake President\"},{\"positionId\":\"4\",\"positionName\":\"Bishop\"}]";
-        String jsonStatus = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"1\"}]";
-        String jsonCallings = "[{\"individualId\":\"1111L\",\"positionId\":\"1L\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0L\",\"synced\":\"false\" }, " +
-                "{\"individualId\":\"2222L\",\"positionId\":\"4L\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555L\",\"synced\":\"true\" }   ]";
+        String jsonCallings = "[{\"individualId\":\"1111\",\"positionId\":\"1\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0\",\"synced\":\"false\" }, " +
+                "{\"individualId\":\"2222\",\"positionId\":\"4\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555\",\"synced\":\"true\" }   ]";
 
-        httpMockStuff(jsonMembers);
-        httpMockStuff(jsonPositions);
-        httpMockStuff(jsonStatus);
         httpMockStuff(jsonCallings);
-
-
         List<Calling> callingList = networkUtil.getCompletedCallings();
-        Calling firstCalling = callingList.get(0);
 
+        Calling firstCalling = callingList.get(0);
+        Assert.assertEquals( "IndividualId doesn't match", "1111", String.valueOf(firstCalling.getIndividualId()));
+        Assert.assertEquals( "StatusName doesn't match", "SUBMITTED", firstCalling.getStatusName());
+        Assert.assertEquals( "PositionId doesn't match", "1",String.valueOf(firstCalling.getPositionId()));
+        Assert.assertEquals( "assignedTo doesn't match", "0",String.valueOf(firstCalling.getAssignedToId()));
+        Assert.assertEquals( "assignedTo doesn't match", false,firstCalling.getIsSynced());
     }
+
 
     //------------------------------------------------------------------------------------------------------------------
     // UTIL METHODS
@@ -223,7 +213,6 @@ public class CwfNetworkUtilTest{
         entity1.setContent( new ByteArrayInputStream( json.getBytes() ));
         res.setEntity(entity1);
         Robolectric.addPendingHttpResponse(res );
-
     }
 
 }
