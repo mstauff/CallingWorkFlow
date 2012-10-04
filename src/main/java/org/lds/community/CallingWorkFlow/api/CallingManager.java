@@ -43,6 +43,18 @@ public class CallingManager {
         updateCallingTask.execute( calling );
     }
 
+    public void saveCallings(List<Calling> callings, Context context) {
+
+    }
+
+    public void deleteCalling(Calling calling, Context context) {
+
+    }
+
+    public void deleteCallings(List<Calling> callings, Context context) {
+
+    }
+
     public boolean updateCallingOnServer( Calling calling ) {
         boolean success = false;
         // 1 - make the rest call to update calling
