@@ -2,13 +2,17 @@
 <resources>
     <string name="app_name">Calling WorkFlow</string>
     <string name="select_status_group">Select group of callings</string>
-    <string name="add_btn_label">+ New Calling</string>
+
+    <string name="add_btn_label">Add Calling</string>
     <string name="filter_label">Filter</string>
     <string name="sort_label">Sort</string>
     <string-array name="filters_list">
         <item>Pending</item>
         <item>Completed</item>
     </string-array>
+    <string name="sort_message_name">Sorting by Member Name</string>
+    <string name="sort_message_calling">Sorting by Calling Position</string>
+    <string name="sort_message_status">Sorting by Calling Status</string>
 
     <string name="save_btn_label">Save</string>
     <string name="clear_btn_label">Clear</string>

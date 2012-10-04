@@ -24,17 +24,17 @@ import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 import org.lds.community.CallingWorkFlow.domain.WorkFlowStatus;
 import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherlockListFragment;
-import roboguice.inject.InjectView;
 import roboguice.receiver.RoboBroadcastReceiver;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CallingListFragment extends RoboSherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     @Inject
     WorkFlowDB db;
-
 
     @Inject
     CwfNetworkUtil networkUtil;
@@ -42,16 +42,15 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     @Inject
     CallingManager callingManager;
 
-    @InjectView(value = R.id.addNewCallingBtn)
-    Button newCallingBtn;
-
     RoboBroadcastReceiver syncCompleteReceiver;
 
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
-    private boolean alphabetical = true;
+    private enum SortMode {NAME,CALLING,STATUS};
+    private SortMode sortMode = SortMode.NAME;
     protected boolean spinnerInitialized = false;
     private Spinner actionBarFilterSpinner;
+    private Comparator<CallingViewItem> nameCompare,positionCompare,statusCompare;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
     }
@@ -61,14 +60,27 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        newCallingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addNewCalling(view);
-            }
-        });
         loadListData(null, false);
         this.setHasOptionsMenu(true);
+
+        nameCompare = new Comparator<CallingViewItem>() {
+            @Override
+            public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
+                return callingViewItem.getFullName().compareToIgnoreCase(callingViewItem1.getFullName());
+            }
+        };
+        positionCompare = new Comparator<CallingViewItem>() {
+            @Override
+            public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
+                return callingViewItem.getPositionName().compareToIgnoreCase(callingViewItem1.getPositionName());
+            }
+        };
+        statusCompare = new Comparator<CallingViewItem>() {
+            @Override
+            public int compare(CallingViewItem callingViewItem, CallingViewItem callingViewItem1) {
+                return callingViewItem.getStatusName().compareToIgnoreCase(callingViewItem1.getStatusName());
+            }
+        };
 
         syncCompleteReceiver = new RoboBroadcastReceiver() {
             @Override
@@ -122,10 +134,36 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     public boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
             case R.id.menu_item_sort:
-                Toast.makeText(getActivity(),"Sort",Toast.LENGTH_SHORT).show();
+                int messageId;
+                switch (sortMode){
+                    case NAME:
+                        sortMode = SortMode.CALLING;
+                        messageId = R.string.sort_message_calling;
+                        break;
+                    case CALLING:
+                        sortMode = SortMode.STATUS;
+                        messageId = R.string.sort_message_status;
+                        break;
+                    default:
+                        sortMode = SortMode.NAME;
+                        messageId = R.string.sort_message_name;
+                }
+                Toast.makeText(getActivity(),messageId,Toast.LENGTH_SHORT).show();
+                switch (sortMode){
+                    case NAME:
+                        Collections.sort(callingViewItems,nameCompare);
+                        break;
+                    case CALLING:
+                        Collections.sort(callingViewItems,positionCompare);
+                        break;
+                    case STATUS:
+                        Collections.sort(callingViewItems,statusCompare);
+                }
+                callingViewItemAdapter.notifyDataSetChanged();
                 break;
             case R.id.menu_item_add:
-                Toast.makeText(getActivity(),"Add",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                startActivity(intent);
                 break;
         }
         return true;
@@ -143,6 +181,16 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
         } else {
             callingViewItems.clear();
             callingViewItems.addAll(showCompleted ? db.getCompletedCallings() : db.getPendingCallings());
+            switch (sortMode){
+                case NAME:
+                    Collections.sort(callingViewItems,nameCompare);
+                    break;
+                case CALLING:
+                    Collections.sort(callingViewItems,positionCompare);
+                    break;
+                case STATUS:
+                    Collections.sort(callingViewItems,statusCompare);
+            }
             this.callingViewItemAdapter.notifyDataSetChanged();
         }
 
@@ -224,16 +272,10 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
         return getLayoutInflater(savedInstanceState).inflate(R.layout.callingworkflow_list, container);
     }
 
-    public void addNewCalling(View v){
-        Intent intent = new Intent(getActivity(),DetailActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public void onPause() {
         super.onPause();
     }
-
 
     @Override
     public void onResume() {
