@@ -171,7 +171,7 @@ public class CwfNetworkUtilTest{
 
     @Test
     public void getStatusListMockTest() {
-        String json = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"2\"}]";
+        String json = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"1\"}]";
         httpMockStuff(json);
 
         List<WorkFlowStatus> statusList = networkUtil.getStatuses();
@@ -182,29 +182,25 @@ public class CwfNetworkUtilTest{
 
     }
 
-//    @Test
-//    public void getCallingsListMockTest(){
-//        String json = "[{\"individualId\":\"1111L\",\"positionId\":\"1L\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0L\",\"synced\":\"false\" }, " +
-//                       "{\"individualId\":\"2222L\",\"positionId\":\"4L\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555L\",\"synced\":\"true\" }   ]";
-//        httpMockStuff(json);
-//
-//        List<Calling> callingList = networkUtil.getCompletedCallings();
-//        Calling firstCalling = callingList.get(0);
-//
-//        Assert.assertEquals( "IndividualId doesn't match", "1111", String.valueOf(firstCalling.getIndividualId()));
-//        Assert.assertEquals( "IndividualId doesn't match", "4", String.valueOf(firstCalling.getPositionId()));
+    @Test
+    public void getCallingsListMockTest(){
 
-//        Assert.assertEquals( "isComplete doesn't match", false, firstStatus.getComplete());
-//        Assert.assertEquals( "Sequence doesn't match", "0",String.valueOf(firstStatus.getSequence()));
+        String jsonMembers = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111L\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222L\"}]";
+        String jsonPositions = "[{\"positionId\":\"1\",\"positionName\":\"Stake President\"},{\"positionId\":\"4\",\"positionName\":\"Bishop\"}]";
+        String jsonStatus = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"1\"}]";
+        String jsonCallings = "[{\"individualId\":\"1111L\",\"positionId\":\"1L\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0L\",\"synced\":\"false\" }, " +
+                "{\"individualId\":\"2222L\",\"positionId\":\"4L\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555L\",\"synced\":\"true\" }   ]";
 
-//        setIndividualId(individualId);
-//        setPositionId(positionId);
-//        setStatusName(statusName);
-//        setAssignedTo(assignedTo);
-//        setIsSynced(synced);
+        httpMockStuff(jsonMembers);
+        httpMockStuff(jsonPositions);
+        httpMockStuff(jsonStatus);
+        httpMockStuff(jsonCallings);
 
 
-//    }
+        List<Calling> callingList = networkUtil.getCompletedCallings();
+        Calling firstCalling = callingList.get(0);
+
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     // UTIL METHODS
