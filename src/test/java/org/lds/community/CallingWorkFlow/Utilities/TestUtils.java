@@ -267,7 +267,7 @@ public class TestUtils {
         return cList;
     }
 
-    public static void httpMockStuff(String json, String url){
+    public static void httpMockJasonResponse(String json, String url){
 
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
         HttpResponse res = new DefaultHttpResponseFactory().newHttpResponse(HttpVersion.HTTP_1_1, 200, null);
