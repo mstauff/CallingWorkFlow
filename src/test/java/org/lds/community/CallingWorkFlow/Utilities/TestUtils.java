@@ -3,13 +3,12 @@ package org.lds.community.CallingWorkFlow.Utilities;
 import android.content.ContentValues;
 import android.database.Cursor;
 import com.xtremelabs.robolectric.Robolectric;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.ProtocolVersion;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.DefaultHttpResponseFactory;
-import org.apache.http.message.BasicHttpResponse;
 import org.junit.Assert;
 import org.lds.community.CallingWorkFlow.domain.*;
 
@@ -285,6 +284,14 @@ public class TestUtils {
         } else {
             Robolectric.addHttpResponseRule(url, res);
         }
+    }
+
+    public static void validateURLRequest(String url){
+
+        HttpRequest request= Robolectric.getSentHttpRequest(0);
+        Assert.assertTrue("The call for " + url + " was not successful",request.getRequestLine().getUri().contentEquals(url));
+        Robolectric.clearPendingHttpResponses();
+
     }
 }
 

@@ -1,10 +1,6 @@
 package org.lds.community.CallingWorkFlow.api;
 
 import com.xtremelabs.robolectric.Robolectric;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.message.BasicHttpResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +26,13 @@ public class CwfNetworkUtilTest{
 
     @Inject
     CwfNetworkUtil networkUtil;
+
+    String jsonCallings = "[{\"individualId\":\"1111\",\"positionId\":\"1\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0\",\"synced\":\"false\" }, " +
+            "{\"individualId\":\"2222\",\"positionId\":\"4\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555\",\"synced\":\"true\" }   ]";
+    String jsonMembers = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222\"}]";
+    String jsonStatuses = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"1\"}]";
+    String jsonPositions = "[{\"positionId\":\"1\",\"positionName\":\"Stake President\"},{\"positionId\":\"4\",\"positionName\":\"Bishop\"}]";
+
 
     @Test
     public void testUpdateCallingTest() throws Exception {
@@ -83,9 +86,7 @@ public class CwfNetworkUtilTest{
 
     @Test
     public void getMemberListMockTest() {
-        String json = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222\"}]";
-        TestUtils.httpMockJSONResponse(json,null);
-
+        TestUtils.httpMockJSONResponse(jsonMembers,null);
         List<Member> members = networkUtil.getWardList();
         Member firstMember = members.get(0);
         Assert.assertEquals( "last name doesn't match", "Doe", firstMember.getLastName() );
@@ -96,22 +97,18 @@ public class CwfNetworkUtilTest{
 
     @Test
     public void getPositionListMockTest() {
-        String json = "[{\"positionId\":\"1\",\"positionName\":\"Stake President\"},{\"positionId\":\"4\",\"positionName\":\"Bishop\"}]";
-        TestUtils.httpMockJSONResponse(json,null);
+        TestUtils.httpMockJSONResponse(jsonPositions,null);
 
         List<Position> positionList = networkUtil.getPositionIds();
         Position firstPosition = positionList.get(0);
         Assert.assertEquals( "position name doesn't match", "Stake President", firstPosition.getPositionName());
         Assert.assertEquals( "positionId doesn't match", "1", String.valueOf(firstPosition.getPositionId()));
         Robolectric.clearPendingHttpResponses();
-
     }
 
     @Test
     public void getStatusListMockTest() {
-        String json = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"1\"}]";
-
-        TestUtils.httpMockJSONResponse(json,null);
+        TestUtils.httpMockJSONResponse(jsonStatuses,null);
 
         List<WorkFlowStatus> statusList = networkUtil.getStatuses();
         WorkFlowStatus firstStatus = statusList.get(0);
@@ -119,14 +116,10 @@ public class CwfNetworkUtilTest{
         Assert.assertEquals( "isComplete doesn't match", false, firstStatus.getComplete());
         Assert.assertEquals( "Sequence doesn't match", "0",String.valueOf(firstStatus.getSequence()));
         Robolectric.clearPendingHttpResponses();
-
     }
 
     @Test
     public void getCallingsListMockTest(){
-
-        String jsonCallings = "[{\"individualId\":\"1111\",\"positionId\":\"1\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0\",\"synced\":\"false\" }, " +
-                "{\"individualId\":\"2222\",\"positionId\":\"4\",\"statusName\":\"SET_APART\", \"assignedTo\":\"55555\",\"synced\":\"true\" }   ]";
 
         TestUtils.httpMockJSONResponse(jsonCallings,null);
         List<Calling> callingList = networkUtil.getCompletedCallings();
@@ -138,34 +131,66 @@ public class CwfNetworkUtilTest{
         Assert.assertEquals( "assignedTo doesn't match", "0",String.valueOf(firstCalling.getAssignedToId()));
         Assert.assertEquals( "assignedTo doesn't match", false,firstCalling.getIsSynced());
         Robolectric.clearPendingHttpResponses();
-
     }
 
     @Test
     public void geHttpWardListTest(){
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
-        String json = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222\"}]";
         String url = CwfNetworkUtil.WARD_LIST_URL;
-        TestUtils.httpMockJSONResponse(json,url);
+        TestUtils.httpMockJSONResponse(jsonMembers,url);
 
         networkUtil.getWardList();
-        HttpRequest request= Robolectric.getSentHttpRequest(0);
-        Assert.assertTrue("The call for " + url + " was not successful",request.getRequestLine().getUri().contentEquals(url));
-        Robolectric.clearPendingHttpResponses();
+        TestUtils.validateURLRequest(url);
     }
 
     @Test
     public void geHttpStatusListTest(){
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
-        ProtocolVersion httpProtocolVersion = new ProtocolVersion("HTTP", 1, 1);
-        String json = "[{\"statusName\":\"SUBMITTED\",\"isComplete\":\"false\",\"sortOrder\":\"0\"},{\"statusName\":\"SET_APART\",\"isComplete\":\"true\",\"sortOrder\":\"1\"}]";
-        TestUtils.httpMockJSONResponse(json,null);
+        String url = CwfNetworkUtil.STATUSES_URL;
+        TestUtils.httpMockJSONResponse(jsonStatuses,url);
 
-        HttpResponse successResponse =  new BasicHttpResponse(httpProtocolVersion, 200,"We got Statuses");
-        Robolectric.addHttpResponseRule("http://cwf.jit.su/statuses", successResponse);
         networkUtil.getStatuses();
-        HttpRequest request= Robolectric.getSentHttpRequest(0);
-        Assert.assertTrue("The call for http://cwf.jit.su/statuses was not successful",request.containsHeader("We got Statuses"));
-        Robolectric.clearPendingHttpResponses();
+        TestUtils.validateURLRequest(url);
     }
+
+    @Test
+    public void geHttpPositionListTest(){
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        String url = CwfNetworkUtil.POSITION_LIST_URL;
+        TestUtils.httpMockJSONResponse(jsonPositions,url);
+
+        networkUtil.getPositionIds();
+        TestUtils.validateURLRequest(url);
+    }
+
+    @Test
+    public void geHttpPendingCallingsListTest(){
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        String url = CwfNetworkUtil.CALLINGS_PENDING_URL;
+        TestUtils.httpMockJSONResponse(jsonCallings,url);
+
+        networkUtil.getPendingCallings();
+        TestUtils.validateURLRequest(url);
+    }
+
+    @Test
+    public void geHttpCompletedCallingsListTest(){
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        String url = CwfNetworkUtil.CALLINGS_COMPLETED_URL;
+        TestUtils.httpMockJSONResponse(jsonCallings,url);
+
+        networkUtil.getCompletedCallings();
+        TestUtils.validateURLRequest(url);
+    }
+
+    @Test
+    public void geHttpAllCallingsListTest(){
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        String url = CwfNetworkUtil.ALL_CALLINGS_URL;
+        TestUtils.httpMockJSONResponse(jsonCallings,url);
+
+        networkUtil.getCallings();
+        TestUtils.validateURLRequest(url);
+    }
+
 }
