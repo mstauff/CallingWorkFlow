@@ -51,20 +51,41 @@ public class SyncCallingsTask extends AsyncTask<String, String, Void> {
         String baseMsgString;
         List<String> successOrFailList;
         if( noChanges ) {
-
-        }
-        for( CallingViewItem calling : callingsToSync ) {
-            boolean success = callingMgr.updateCallingOnServer( calling );
-            if( success ) {
-                baseMsgString = successString;
-                successOrFailList = successes;
-            } else {
-                baseMsgString = failureString;
-                successOrFailList = failures;
+            // todo - need a new string to display here
+        } else {
+            for( CallingViewItem calling : callingsToSync ) {
+                boolean success = callingMgr.updateCallingOnServer( calling );
+                if( success ) {
+                    baseMsgString = successString;
+                    successOrFailList = successes;
+                } else {
+                    baseMsgString = failureString;
+                    successOrFailList = failures;
+                }
+                updateMsg = String.format( baseMsgString, calling.getFirstName() + " " + calling.getLastName(), calling.getPositionName() );
+                successOrFailList.add( updateMsg );
+                publishProgress( updateMsg );
             }
-            updateMsg = String.format( baseMsgString, calling.getFirstName() + " " + calling.getLastName(), calling.getPositionName() );
-            successOrFailList.add( updateMsg );
-            publishProgress( updateMsg );
+        }
+
+        callingsToSync = db.getCallingsToDelete();
+        noChanges = callingsToSync.isEmpty();
+        if( noChanges ) {
+            // todo - display
+        } else {
+            for( CallingViewItem calling : callingsToSync ) {
+                boolean success = callingMgr.deleteCallingOnServer( calling );
+                if( success ) {
+                    baseMsgString = successString;
+                    successOrFailList = successes;
+                } else {
+                    baseMsgString = failureString;
+                    successOrFailList = failures;
+                }
+                updateMsg = String.format( baseMsgString, calling.getFirstName() + " " + calling.getLastName(), calling.getPositionName() );
+                successOrFailList.add( updateMsg );
+                publishProgress( updateMsg );
+            }
         }
 
         if( failures.isEmpty() ) {

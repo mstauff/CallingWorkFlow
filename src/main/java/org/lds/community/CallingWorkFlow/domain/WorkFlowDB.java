@@ -124,8 +124,8 @@ public class WorkFlowDB {
         SQLiteDatabase db = dbHelper.getDb();
         String whereClause;
         String[] whereArgs = new String[2];
+        whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
         for( Calling calling : callings) {
-            whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
             whereArgs[0] = String.valueOf(calling.getIndividualId());
             whereArgs[1] = String.valueOf(calling.getPositionId());
             int result = db.update(CallingBaseRecord.TABLE_NAME, calling.getContentValues(), whereClause, whereArgs);
@@ -133,12 +133,31 @@ public class WorkFlowDB {
         }
     }
 
+    public void deleteCalling(Calling calling) {
+        SQLiteDatabase db = dbHelper.getDb();
+        String whereClause;
+        String[] whereArgs = new String[2];
+        whereClause = getWhereForColumns( Calling.INDIVIDUAL_ID, Calling.POSITION_ID );
+        whereArgs[0] = String.valueOf(calling.getIndividualId());
+        whereArgs[1] = String.valueOf(calling.getPositionId());
+        int result = db.delete(CallingBaseRecord.TABLE_NAME, whereClause, whereArgs);
+        Log.d(TAG, "Deleted calling: " + calling.toString() + " Result=" + result );
+    }
+
     public List<CallingViewItem> getCallingsToSync() {
+        return getCallingsToSync( "c." + Calling.IS_SYNCED + "=0" );
+    }
+
+    public List<CallingViewItem> getCallingsToDelete() {
+        return getCallingsToSync( "c." + Calling.MARKED_FOR_DELETE + "=1" );
+    }
+
+    private List<CallingViewItem> getCallingsToSync( String criteria ) {
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
         Cursor results = null;
         try {
             SQLiteDatabase db = dbHelper.getDb();
-            String SQL = CALLING_VIEW_ITEM_JOIN + " AND c." + Calling.IS_SYNCED + "=0";
+            String SQL = CALLING_VIEW_ITEM_JOIN + " AND " + criteria;
             results = db.rawQuery( SQL, null );
             results.moveToFirst();
             while(!results.isAfterLast()) {

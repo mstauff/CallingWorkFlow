@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 
+import static org.lds.community.CallingWorkFlow.task.UpdateCallingTask.CallingUpdateType;
+
 /**
  * Created with IntelliJ IDEA.
  * User: matts
@@ -37,22 +39,49 @@ public class CallingManager {
     }
 
     public void saveCalling(Calling calling, Context context) {
-        calling.setIsSynced( false );
-        db.updateCalling( calling );
-        UpdateCallingTask updateCallingTask = new UpdateCallingTask( context );
-        updateCallingTask.execute( calling );
+        calling.setIsSynced(false);
+        db.updateCalling(calling);
+        updateInBackground(context, CallingUpdateType.UPDATE, calling);
     }
 
     public void saveCallings(List<Calling> callings, Context context) {
+        for( Calling calling : callings ) {
+            calling.setIsSynced( false );
+            db.updateCalling( calling );
+        }
+        updateInBackground(context, CallingUpdateType.UPDATE, callings.toArray(new Calling[ callings.size() ]));
+    }
 
+    private void updateInBackground(Context context, CallingUpdateType updateType, Calling... callings) {
+        UpdateCallingTask updateCallingTask = new UpdateCallingTask( context, updateType);
+        updateCallingTask.execute( callings );
     }
 
     public void deleteCalling(Calling calling, Context context) {
-
+        calling.setMarkedForDelete( true );
+        db.updateCalling( calling );
+        updateInBackground(context, CallingUpdateType.DELETE, calling);
     }
 
     public void deleteCallings(List<Calling> callings, Context context) {
+        for (Calling calling : callings) {
+            calling.setMarkedForDelete( true );
+            db.updateCalling( calling );
+        }
+        updateInBackground(context, CallingUpdateType.DELETE, callings.toArray(new Calling[ callings.size() ]));
+    }
 
+    public boolean deleteCallingOnServer( Calling calling ) {
+        boolean success = false;
+        // 1 - make the rest call to update calling
+        // 2 - if successful then update isSynce & save to db
+        if( networkUtil.deleteCalling( calling ) ) {
+            db.deleteCalling(calling);
+            success = true;
+        }
+
+        // return true if was successful, false otherwise
+        return success;
     }
 
     public boolean updateCallingOnServer( Calling calling ) {
