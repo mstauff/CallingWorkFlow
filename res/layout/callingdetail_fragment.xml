@@ -31,5 +31,11 @@
                 android:layout_width="wrap_content"
                 android:text="@string/cancel_btn_label"
                 android:onClick="cancelChanges"/>
+        <Button android:id="@+id/deleteCallingButton"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@string/delete_btn_label"
+                android:onClick="deleteCalling"/>
     </LinearLayout>
 </LinearLayout>

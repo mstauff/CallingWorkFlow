@@ -133,7 +133,6 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     public boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
             case R.id.menu_item_sort:
-                int messageId;
                 switch (sortMode){
                     case NAME:
                         sortMode = SortMode.CALLING;
