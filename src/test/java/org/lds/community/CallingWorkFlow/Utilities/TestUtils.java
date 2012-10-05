@@ -2,9 +2,17 @@ package org.lds.community.CallingWorkFlow.Utilities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import com.xtremelabs.robolectric.Robolectric;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.junit.Assert;
 import org.lds.community.CallingWorkFlow.domain.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -192,16 +200,15 @@ public class TestUtils {
         return count;
     }
 
-    public static String getStatusName(WorkFlowDB db, Boolean isCompleted){
-        String statusName = getStatusObj(db,isCompleted).getStatusName()  ;
+    public static String getStatusName(List<WorkFlowStatus> statusList, Boolean isCompleted){
+        String statusName = getStatusObj(statusList,isCompleted).getStatusName()  ;
         if(statusName==null){
             statusName="NOT_FOUND";
         }
         return statusName;
     }
 
-    public static WorkFlowStatus getStatusObj(WorkFlowDB db, Boolean isCompleted){
-        List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
+    public static WorkFlowStatus getStatusObj(List<WorkFlowStatus> statuses, Boolean isCompleted){
         WorkFlowStatus status=new WorkFlowStatus();
         for( WorkFlowStatus curStatus : statuses ) {
             if( curStatus.getComplete()==isCompleted ) {
@@ -226,10 +233,9 @@ public class TestUtils {
     public static List<Calling> createCallingList(WorkFlowDB db, int numberOfCallings, Boolean isComplete, Boolean isSync){
         // create as many callings as the member and position permits
         List<Calling> cList=new ArrayList<Calling>();
-        List<Member> memberMasterDB= new ArrayList<Member>();
-        List<Position> positionMasterDB= new ArrayList<Position>();
-        memberMasterDB=createMembersDB(db);
-        positionMasterDB=createPositionDB(db);
+        List<Member> memberMasterDB=createMembersDB(db);
+        List<Position> positionMasterDB=createPositionDB(db);
+        List<WorkFlowStatus> statusesFromDB=createStatusDB(db);
 
 
         HashSet hs = new HashSet();
@@ -246,7 +252,7 @@ public class TestUtils {
                 if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
                     hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
 
-                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(db,isComplete),individualId,isSync);
+                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(statusesFromDB,isComplete),individualId,isSync);
                     cList.add(calling);
 
                     getAnother=false;
@@ -257,6 +263,35 @@ public class TestUtils {
             getAnother=true;
         }
         return cList;
+    }
+
+    public static void httpMockJSONResponse(String json, String url){
+        httpMockJSONResponse( json, url, HttpGet.METHOD_NAME);
+
+    }
+    public static void httpMockJSONResponse(String json, String url, String method){
+
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        HttpResponse res = new DefaultHttpResponseFactory().newHttpResponse(HttpVersion.HTTP_1_1, 200, null);
+        BasicHttpEntity entity1 = new BasicHttpEntity();
+        entity1.setContentType("application/json");
+        entity1.setContent( new ByteArrayInputStream( json.getBytes() ));
+        res.setEntity(entity1);
+        if(url==null){
+           Robolectric.addPendingHttpResponse(res );
+        }else if( method == null ){
+            Robolectric.addHttpResponseRule(method, url, res);
+        } else {
+            Robolectric.addHttpResponseRule(url, res);
+        }
+    }
+
+    public static void validateURLRequest(String url){
+
+        HttpRequest request= Robolectric.getSentHttpRequest(0);
+        Assert.assertTrue("The call for " + url + " was not successful",request.getRequestLine().getUri().contentEquals(url));
+        Robolectric.clearPendingHttpResponses();
+
     }
 }
 

@@ -18,18 +18,26 @@ public class UpdateCallingTask extends AsyncTask<Calling, Void, Void> {
 
     @Inject
     private CallingManager callingMgr;
+    private CallingUpdateType updateType;
+
+    public enum CallingUpdateType{UPDATE, DELETE};
 
     private static final String TAG = UpdateCallingTask.class.getSimpleName();
 
-    public UpdateCallingTask(Context context) {
+    public UpdateCallingTask(Context context, CallingUpdateType updateType) {
         RoboGuice.getInjector( context ).injectMembers(this);
+        this.updateType = updateType;
     }
 
     @Override
     protected Void doInBackground(Calling... callings) {
 
         for(Calling calling : callings ) {
-            callingMgr.updateCallingOnServer( calling );
+            if( updateType == CallingUpdateType.DELETE ) {
+                callingMgr.deleteCallingOnServer( calling );
+            } else {
+                callingMgr.updateCallingOnServer( calling );
+            }
         }
 
         return null;

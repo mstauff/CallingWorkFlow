@@ -46,8 +46,8 @@ public class WorkFlowDBTest {
         statusMasterDB= TestUtils.createStatusDB(db);
 
         callingNoStatus=TestUtils.createCallingObj(TestUtils.getRandomPositionID(positionMasterDB),"NO_STATUS",TestUtils.getRandomIndividualId(memberMasterDB),false);
-        callingNoIndividualId=TestUtils.createCallingObj(TestUtils.getRandomPositionID(positionMasterDB),TestUtils.getStatusName(db,false),123456789L,false);
-        callingNoPositionID=TestUtils.createCallingObj(99L,TestUtils.getStatusName(db,false),TestUtils.getRandomIndividualId(memberMasterDB),false);
+        callingNoIndividualId=TestUtils.createCallingObj(TestUtils.getRandomPositionID(positionMasterDB),TestUtils.getStatusName(statusMasterDB,false),123456789L,false);
+        callingNoPositionID=TestUtils.createCallingObj(99L,TestUtils.getStatusName(statusMasterDB,false),TestUtils.getRandomIndividualId(memberMasterDB),false);
 
     }
 
@@ -111,7 +111,7 @@ public class WorkFlowDBTest {
         List<Calling> callingsToUpdate=new ArrayList<Calling>();
         callingsToUpdate.addAll(callingPending);
 
-        callingsToUpdate.get(0).setStatusName(TestUtils.getStatusName(db,true));
+        callingsToUpdate.get(0).setStatusName(TestUtils.getStatusName(statusMasterDB,true));
 
         db.updateCallings(callingsToUpdate)  ;
 

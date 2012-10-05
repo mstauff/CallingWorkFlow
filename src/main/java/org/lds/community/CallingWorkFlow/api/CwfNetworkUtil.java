@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -43,15 +44,15 @@ public class CwfNetworkUtil {
     @Inject
     private SharedPreferences preferences;
 
-    private static final String ROOT = "http://cwf.jit.su";
-    private static final String WARD_LIST_URL = ROOT + "/wardList";
-    private static final String POSITION_LIST_URL = ROOT + "/positionIds";
-    private static final String STATUSES_URL = ROOT + "/statuses";
-    private static final String ALL_CALLINGS_URL = ROOT + "/callings";
-    private static final String CALLINGS_PENDING_URL = ROOT + "/callings/pending";
-    private static final String CALLINGS_COMPLETED_URL = ROOT + "/callings/completed";
-    private static final String CALLING_UPDATE_URL = ROOT + "/calling/%d/update?positionId=%d&statusName=%s";
-    private static final String CALLING_DELETE_URL = ROOT + "/calling/%d/?positionId=%d";
+    public static final String ROOT = "http://cwf.jit.su";
+    public static final String WARD_LIST_URL = ROOT + "/wardList";
+    public static final String POSITION_LIST_URL = ROOT + "/positionIds";
+    public static final String STATUSES_URL = ROOT + "/statuses";
+    public static final String ALL_CALLINGS_URL = ROOT + "/callings";
+    public static final String CALLINGS_PENDING_URL = ROOT + "/callings/pending";
+    public static final String CALLINGS_COMPLETED_URL = ROOT + "/callings/completed";
+    public static final String CALLING_UPDATE_URL = ROOT + "/calling/%d/update?positionId=%d&statusName=%s";
+    public static final String CALLING_DELETE_URL = ROOT + "/calling/%d/?positionId=%d";
 
     public CwfNetworkUtil() {
     }
@@ -106,25 +107,20 @@ public class CwfNetworkUtil {
     private String executeDeleteJSONRequest(HttpDelete deleteMethod) throws IOException {
         Log.i(TAG, "executeDeleteJSONRequest() putting to: " + deleteMethod.getURI().toString());
         StringBuilder builder = new StringBuilder();
-        try {
-            HttpResponse response = getHttpClient().execute(deleteMethod);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                Log.e(TAG, "executeDeleteJSONRequest() : Error Delete data to " + deleteMethod.getURI() + ". Response=" + response);
+        HttpResponse response = getHttpClient().execute(deleteMethod);
+        StatusLine statusLine = response.getStatusLine();
+        int statusCode = statusLine.getStatusCode();
+        if (statusCode == 200) {
+            HttpEntity entity = response.getEntity();
+            InputStream content = entity.getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            Log.e(TAG, "executeDeleteJSONRequest() : Error Delete data to " + deleteMethod.getURI() + ". Response=" + response);
+            throw new HttpResponseException( statusCode, "Error returned from server on delete operation" );
         }
         Log.i(TAG, "executeDeleteJSONRequest(). Response=" + builder.toString());
         return builder.toString();
@@ -148,14 +144,16 @@ public class CwfNetworkUtil {
         return response;
     }
 
-    public void deleteCalling( Calling calling ) {
+    public boolean deleteCalling( Calling calling ) {
+        boolean success = false;
         try {
             String url = String.format( CALLING_DELETE_URL, calling.getIndividualId(), calling.getPositionId());
             executeDeleteJSONRequest(new HttpDelete(url));
+            success = true;
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            Log.w( TAG, "Network Error while trying to report deleted calling to server" + e );
         }
-
+        return success;
     }
 
     public Calling updateCalling( Calling calling ) {

@@ -1,9 +1,14 @@
 package org.lds.community.CallingWorkFlow.activity;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.api.CallingManager;
 import org.lds.community.CallingWorkFlow.domain.*;
@@ -26,6 +31,8 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
     Button saveCallingButton;
     @InjectView(value = R.id.cancelButton)
     Button cancelButton;
+    @InjectView(value = R.id.deleteCallingButton)
+    Button deleteButton;
     AutoCompleteTextView positionField;
     AutoCompleteTextView memberField;
     Spinner statusSpinner;
@@ -65,6 +72,13 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                 cancelChanges(view);
             }
         });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteCalling(view);
+            }
+        });
+        this.setHasOptionsMenu(true);
     }
 
     /**
@@ -165,6 +179,32 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
 
     public void cancelChanges(View v){
         getActivity().onBackPressed();
+    }
+
+    public void deleteCalling(View v){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+        alertBuilder.setMessage(R.string.confirmation_message);
+        alertBuilder.setCancelable(false);
+        alertBuilder.setPositiveButton(R.string.delete_btn_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                callingManager.deleteCalling(callingViewItem, getActivity());
+                getActivity().onBackPressed();
+            }
+        });
+        alertBuilder.setNegativeButton(R.string.cancel_btn_label,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        alertBuilder.create().show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
+        inflater.inflate(R.menu.calling_detail_menu,menu);
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
     @Override
