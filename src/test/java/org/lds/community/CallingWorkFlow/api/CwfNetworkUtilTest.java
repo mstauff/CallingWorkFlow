@@ -144,15 +144,13 @@ public class CwfNetworkUtilTest{
     @Test
     public void geHttpWardListTest(){
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
-        ProtocolVersion httpProtocolVersion = new ProtocolVersion("HTTP", 1, 1);
         String json = "[{\"lastName\":\"Doe\",\"firstName\":\"John\",\"individualId\":\"1111\"},{\"lastName\":\"Doe\",\"firstName\":\"Jane\",\"individualId\":\"2222\"}]";
-        TestUtils.httpMockJSONResponse(json,null);
+        String url = CwfNetworkUtil.WARD_LIST_URL;
+        TestUtils.httpMockJSONResponse(json,url);
 
-        HttpResponse successResponse =  new BasicHttpResponse(httpProtocolVersion, 200,"We got WardList");
-        Robolectric.addHttpResponseRule("http://cwf.jit.su/wardList", successResponse);
         networkUtil.getWardList();
         HttpRequest request= Robolectric.getSentHttpRequest(0);
-        Assert.assertTrue("The call for http://cwf.jit.su/wardList was not successful",request.containsHeader("We got WardList"));
+        Assert.assertTrue("The call for " + url + " was not successful",request.getRequestLine().getUri().contentEquals(url));
         Robolectric.clearPendingHttpResponses();
     }
 

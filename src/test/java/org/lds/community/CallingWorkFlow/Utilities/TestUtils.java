@@ -6,6 +6,7 @@ import com.xtremelabs.robolectric.Robolectric;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.message.BasicHttpResponse;
@@ -200,16 +201,15 @@ public class TestUtils {
         return count;
     }
 
-    public static String getStatusName(WorkFlowDB db, Boolean isCompleted){
-        String statusName = getStatusObj(db,isCompleted).getStatusName()  ;
+    public static String getStatusName(List<WorkFlowStatus> statusList, Boolean isCompleted){
+        String statusName = getStatusObj(statusList,isCompleted).getStatusName()  ;
         if(statusName==null){
             statusName="NOT_FOUND";
         }
         return statusName;
     }
 
-    public static WorkFlowStatus getStatusObj(WorkFlowDB db, Boolean isCompleted){
-        List<WorkFlowStatus> statuses=db.getWorkFlowStatuses();
+    public static WorkFlowStatus getStatusObj(List<WorkFlowStatus> statuses, Boolean isCompleted){
         WorkFlowStatus status=new WorkFlowStatus();
         for( WorkFlowStatus curStatus : statuses ) {
             if( curStatus.getComplete()==isCompleted ) {
@@ -234,10 +234,9 @@ public class TestUtils {
     public static List<Calling> createCallingList(WorkFlowDB db, int numberOfCallings, Boolean isComplete, Boolean isSync){
         // create as many callings as the member and position permits
         List<Calling> cList=new ArrayList<Calling>();
-        List<Member> memberMasterDB= new ArrayList<Member>();
-        List<Position> positionMasterDB= new ArrayList<Position>();
-        memberMasterDB=createMembersDB(db);
-        positionMasterDB=createPositionDB(db);
+        List<Member> memberMasterDB=createMembersDB(db);
+        List<Position> positionMasterDB=createPositionDB(db);
+        List<WorkFlowStatus> statusesFromDB=createStatusDB(db);
 
 
         HashSet hs = new HashSet();
@@ -254,7 +253,7 @@ public class TestUtils {
                 if (!hs.contains(String.valueOf(positionID) + " " + String.valueOf(individualId))){
                     hs.add(String.valueOf(positionID) + " " + String.valueOf(individualId)) ;
 
-                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(db,isComplete),individualId,isSync);
+                    Calling calling=TestUtils.createCallingObj( positionID,TestUtils.getStatusName(statusesFromDB,isComplete),individualId,isSync);
                     cList.add(calling);
 
                     getAnother=false;
@@ -268,6 +267,10 @@ public class TestUtils {
     }
 
     public static void httpMockJSONResponse(String json, String url){
+        httpMockJSONResponse( json, url, HttpGet.METHOD_NAME);
+
+    }
+    public static void httpMockJSONResponse(String json, String url, String method){
 
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
         HttpResponse res = new DefaultHttpResponseFactory().newHttpResponse(HttpVersion.HTTP_1_1, 200, null);
@@ -277,10 +280,10 @@ public class TestUtils {
         res.setEntity(entity1);
         if(url==null){
            Robolectric.addPendingHttpResponse(res );
-        }else{
-            ProtocolVersion httpProtocolVersion = new ProtocolVersion("HTTP", 1, 1);
-            HttpResponse successResponse =  new BasicHttpResponse(httpProtocolVersion, 200,"Call was Successful");
-            Robolectric.addHttpResponseRule(url, successResponse);
+        }else if( method == null ){
+            Robolectric.addHttpResponseRule(method, url, res);
+        } else {
+            Robolectric.addHttpResponseRule(url, res);
         }
     }
 }

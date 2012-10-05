@@ -43,15 +43,15 @@ public class CwfNetworkUtil {
     @Inject
     private SharedPreferences preferences;
 
-    private static final String ROOT = "http://cwf.jit.su";
-    private static final String WARD_LIST_URL = ROOT + "/wardList";
-    private static final String POSITION_LIST_URL = ROOT + "/positionIds";
-    private static final String STATUSES_URL = ROOT + "/statuses";
-    private static final String ALL_CALLINGS_URL = ROOT + "/callings";
-    private static final String CALLINGS_PENDING_URL = ROOT + "/callings/pending";
-    private static final String CALLINGS_COMPLETED_URL = ROOT + "/callings/completed";
-    private static final String CALLING_UPDATE_URL = ROOT + "/calling/%d/update?positionId=%d&statusName=%s";
-    private static final String CALLING_DELETE_URL = ROOT + "/calling/%d/?positionId=%d";
+    public static final String ROOT = "http://cwf.jit.su";
+    public static final String WARD_LIST_URL = ROOT + "/wardList";
+    public static final String POSITION_LIST_URL = ROOT + "/positionIds";
+    public static final String STATUSES_URL = ROOT + "/statuses";
+    public static final String ALL_CALLINGS_URL = ROOT + "/callings";
+    public static final String CALLINGS_PENDING_URL = ROOT + "/callings/pending";
+    public static final String CALLINGS_COMPLETED_URL = ROOT + "/callings/completed";
+    public static final String CALLING_UPDATE_URL = ROOT + "/calling/%d/update?positionId=%d&statusName=%s";
+    public static final String CALLING_DELETE_URL = ROOT + "/calling/%d/?positionId=%d";
 
     public CwfNetworkUtil() {
     }
@@ -148,14 +148,16 @@ public class CwfNetworkUtil {
         return response;
     }
 
-    public void deleteCalling( Calling calling ) {
+    public boolean deleteCalling( Calling calling ) {
+        boolean success = false;
         try {
             String url = String.format( CALLING_DELETE_URL, calling.getIndividualId(), calling.getPositionId());
             executeDeleteJSONRequest(new HttpDelete(url));
+            success = true;
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
+        return success;
     }
 
     public Calling updateCalling( Calling calling ) {
