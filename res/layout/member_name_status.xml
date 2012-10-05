@@ -12,19 +12,19 @@
               android:layout_marginRight="6sp"
               android:layout_alignParentRight="true" />
 
-        <TextView android:id="@+id/calling_name"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textSize="7pt"
-                  android:textStyle="bold"
-                  android:textColor="#ffffff" />
+    <TextView android:id="@+id/calling_name"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="7pt"
+              android:textStyle="bold"
+              android:textColor="#ffffff" />
 
-        <TextView android:id="@+id/member_name_and_status"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textSize="6pt"
-                  android:textColor="#ffffff"
-                  android:layout_marginLeft="5dp"
-                  android:layout_marginBottom="5dp"
-                  android:layout_below="@+id/calling_name" />
+    <TextView android:id="@+id/member_name_and_status"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="6pt"
+              android:textColor="#ffffff"
+              android:layout_marginLeft="5dp"
+              android:layout_marginBottom="5dp"
+              android:layout_below="@+id/calling_name" />
 </RelativeLayout>
