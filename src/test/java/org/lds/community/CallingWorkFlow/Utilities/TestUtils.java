@@ -2,9 +2,17 @@ package org.lds.community.CallingWorkFlow.Utilities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import com.xtremelabs.robolectric.Robolectric;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.impl.DefaultHttpResponseFactory;
+import org.apache.http.message.BasicHttpResponse;
 import org.junit.Assert;
 import org.lds.community.CallingWorkFlow.domain.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -257,6 +265,23 @@ public class TestUtils {
             getAnother=true;
         }
         return cList;
+    }
+
+    public static void httpMockStuff(String json, String url){
+
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        HttpResponse res = new DefaultHttpResponseFactory().newHttpResponse(HttpVersion.HTTP_1_1, 200, null);
+        BasicHttpEntity entity1 = new BasicHttpEntity();
+        entity1.setContentType("application/json");
+        entity1.setContent( new ByteArrayInputStream( json.getBytes() ));
+        res.setEntity(entity1);
+        if(url==null){
+           Robolectric.addPendingHttpResponse(res );
+        }else{
+            ProtocolVersion httpProtocolVersion = new ProtocolVersion("HTTP", 1, 1);
+            HttpResponse successResponse =  new BasicHttpResponse(httpProtocolVersion, 200,"Call was Successful");
+            Robolectric.addHttpResponseRule(url, successResponse);
+        }
     }
 }
 
