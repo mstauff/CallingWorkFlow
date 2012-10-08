@@ -39,9 +39,13 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
     CallingViewItem callingViewItem;
     private int callingIndex;
     long selectedPositionId;
+    String selectedPositionName;
     long selectedMemberId;
+    String selectedMemberName;
     List<WorkFlowStatus> statusList;
     List<CallingViewItem> callingList;
+    List<Position> positionList;
+    List<Member> memberList;
 
     private static final int SWIPE_MIN_DISTANCE = 80;
     private static final int SWIPE_MAX_OFF_PATH = 300;
@@ -78,7 +82,6 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                 deleteCalling(view);
             }
         });
-        this.setHasOptionsMenu(true);
     }
 
     /**
@@ -106,7 +109,9 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
         positionField.setText(calling.getPositionName());
         memberField.setText(calling.getFullName());
         selectedPositionId = calling.getPositionId();
+        selectedPositionName = calling.getPositionName();
         selectedMemberId = calling.getIndividualId();
+        selectedMemberName = calling.getFullName();
         statusSpinner.setSelection(( (ArrayAdapter) statusSpinner.getAdapter()).getPosition( calling.getStatusName() ));
     }
 
@@ -116,7 +121,7 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
         View view = getLayoutInflater( savedInstanceState ).inflate( R.layout.callingdetail_fragment, container );
 
         positionField = (AutoCompleteTextView) view.findViewById(R.id.callingPosition);
-        List<? extends Listable> positionList = db.getPositions();
+        positionList = db.getPositions();
         ObjectListAdapter positionAdapter = new ObjectListAdapter(getActivity(),R.layout.autocomplete_textview,positionList);
         positionField.setAdapter(positionAdapter);
         positionField.setOnItemClickListener(
@@ -124,12 +129,35 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         selectedPositionId = ((Position)positionField.getAdapter().getItem(i)).getPositionId();
+                        selectedPositionName = ((Position)positionField.getAdapter().getItem(i)).getPositionName();
                     }
                 }
         );
+        positionField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    return;
+                }
+                if(selectedPositionName == null || !selectedPositionName.equals(positionField.getText())){
+                    for(Position p: positionList){
+                        if(p.getPositionName().equalsIgnoreCase(positionField.getText().toString())){
+                            selectedPositionId = p.getPositionId();
+                            selectedPositionName = p.getPositionName();
+                            break;
+                        }
+                    }
+                    if(selectedPositionName != null){
+                        positionField.setText(selectedPositionName);
+                    } else {
+                        positionField.setText("");
+                    }
+                }
+            }
+        });
 
         memberField = (AutoCompleteTextView) view.findViewById(R.id.memberName);
-        List<? extends Listable> memberList = db.getWardList();
+        memberList = db.getWardList();
         ObjectListAdapter memberAdapter = new ObjectListAdapter(getActivity(),R.layout.autocomplete_textview,memberList);
         memberField.setAdapter(memberAdapter);
         memberField.setOnItemClickListener(
@@ -137,9 +165,32 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         selectedMemberId = ((Member)memberField.getAdapter().getItem(i)).getIndividualId();
+                        selectedMemberName = ((Member)memberField.getAdapter().getItem(i)).getDisplayString();
                     }
                 }
         );
+        memberField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    return;
+                }
+                if(selectedMemberName == null || !selectedMemberName.equals(memberField.getText())){
+                    for(Member m: memberList){
+                        if(m.getDisplayString().equalsIgnoreCase(memberField.getText().toString())){
+                            selectedMemberId = m.getIndividualId();
+                            selectedMemberName = m.getDisplayString();
+                            break;
+                        }
+                    }
+                    if(selectedMemberName != null){
+                        memberField.setText(selectedMemberName);
+                    } else {
+                        memberField.setText("");
+                    }
+                }
+            }
+        });
 
         statusSpinner = (Spinner) view.findViewById(R.id.status_spinner);
         statusList = db.getWorkFlowStatuses();
@@ -199,12 +250,6 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
             }
         });
         alertBuilder.create().show();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
-        inflater.inflate(R.menu.calling_detail_menu,menu);
-        super.onCreateOptionsMenu(menu,inflater);
     }
 
     @Override
