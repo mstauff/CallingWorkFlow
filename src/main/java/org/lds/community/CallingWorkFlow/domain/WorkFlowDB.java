@@ -83,7 +83,8 @@ public class WorkFlowDB {
     public List<CallingViewItem> getCallings(boolean completed) {
         String completedDbValue = completed ? "1" : "0";
         String SQL = CALLING_VIEW_ITEM_JOIN +
-                " AND w." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue;
+                " AND w." + WorkFlowStatusBaseRecord.IS_COMPLETE + "=" + completedDbValue +
+                " AND c." + Calling.MARKED_FOR_DELETE + "=0";
 
         Cursor results = null;
         List<CallingViewItem> callings = new ArrayList<CallingViewItem>();
