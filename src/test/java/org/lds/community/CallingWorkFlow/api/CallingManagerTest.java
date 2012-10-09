@@ -105,7 +105,15 @@ public class CallingManagerTest {
         assertNull("Calling was not removed from the db", callingToDelete);
     }
 
-    @Test
+    private void eraseCallingsOnServer() throws Exception {
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+
+        List<Calling> callings = networkUtil.getCallings();
+        manager.deleteCallings( callings, context );
+
+    }
+
+//    @Test
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
@@ -127,7 +135,7 @@ public class CallingManagerTest {
         networkUtil.deleteCalling( calling );
     }
 
-    @Test
+//    @Test
     public void testUpdateCallingList(){
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
@@ -153,7 +161,7 @@ public class CallingManagerTest {
         manager.deleteCallings(callingListModify, context);
     }
 
-    @Test
+//    @Test
     public void syncCallingsTest(){
 
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
