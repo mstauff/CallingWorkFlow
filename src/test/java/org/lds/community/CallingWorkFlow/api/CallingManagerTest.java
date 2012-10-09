@@ -109,25 +109,15 @@ public class CallingManagerTest {
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
-        List<Member> members = TestUtils.createMembersDB(db);
-        List<Position> positions = TestUtils.createPositionDB(db);
-        List<WorkFlowStatus> statuses = TestUtils.createStatusDB(db);
+        List<Calling> callingList=TestUtils.createCallingList(db,1,false,false);
+        Calling calling = callingList.get(0);
 
-        WorkFlowStatus status = null;
-        for( WorkFlowStatus curStatus : statuses ) {
-            if( !curStatus.getComplete() ) {
-                status = curStatus;
-                break;
-            }
-        }
-        assertNotNull("No pending statuses in the list, cannot continue", status);
-
-        Calling calling = new Calling( members.get(0).getIndividualId(), positions.get(0).getPositionId(),
-                status.getStatusName(), 0, 0, false );
         manager.saveCalling( calling, context );
         List<CallingViewItem> callings = db.getPendingCallings();
         Calling callingFromList = TestUtils.getCallingObjectFromList( callings, calling.getIndividualId(), calling.getPositionId() );
+
         assertNotNull( "Calling was not retrieved from the db", callingFromList );
+
         TestUtils.assertEntityEquals(calling, callingFromList, "Calling was not saved in db");
         Thread.sleep( 2000 );
         callings = db.getPendingCallings();
@@ -136,4 +126,5 @@ public class CallingManagerTest {
 
         networkUtil.deleteCalling( calling );
     }
+
 }

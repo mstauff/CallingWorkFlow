@@ -17,25 +17,32 @@
     <Spinner android:id="@+id/status_spinner"
              android:layout_width="match_parent"
              android:layout_height="wrap_content" />
-    <LinearLayout
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent" >
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_alignParentBottom="true">
-        <Button android:id="@+id/saveCallingButton"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/save_btn_label"
-                android:onClick="saveCalling"/>
-        <Button android:id="@+id/cancelButton"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/cancel_btn_label"
-                android:onClick="cancelChanges"/>
-        <Button android:id="@+id/deleteCallingButton"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:gravity="center_vertical|right"
-                android:text="@string/delete_btn_label"
-                android:onClick="deleteCalling"/>
-    </LinearLayout>
+            android:layout_width="wrap_content">
+            <Button android:id="@+id/saveCallingButton"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/save_btn_label"
+                    android:onClick="saveCalling"/>
+            <Button android:id="@+id/cancelButton"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/cancel_btn_label"
+                    android:onClick="cancelChanges"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true">
+            <Button android:id="@+id/deleteCallingButton"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/delete_btn_label"
+                    android:onClick="deleteCalling"/>
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
