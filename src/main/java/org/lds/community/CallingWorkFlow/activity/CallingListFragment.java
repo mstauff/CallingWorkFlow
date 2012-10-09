@@ -27,10 +27,7 @@ import org.lds.community.CallingWorkFlow.wigdets.robosherlock.fragment.RoboSherl
 import roboguice.receiver.RoboBroadcastReceiver;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class CallingListFragment extends RoboSherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     @Inject
@@ -46,6 +43,7 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
 
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
+	public List<Integer> removalItems;
     private enum SortMode {NAME,CALLING,STATUS};
     private SortMode sortMode = SortMode.NAME;
     protected boolean spinnerInitialized = false;
@@ -289,4 +287,32 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
     }
+
+	public View initializeMenu(int position, boolean checked, View v) {
+			Menu menu = (Menu) v.findViewById(R.id.bottom_menu_list);
+			if(menu != null) {
+				menu.setGroupVisible(R.id.bottom_menu_list_group, (removalItems.size() > 0));
+			}
+			if(checked) {
+				removeItem(removalItems, position);
+			} else {
+				safeAddCalling(removalItems, position);
+			}
+			return v;
+		}
+
+		private void safeAddCalling(List<Integer> indexes, Integer position) {
+			removeItem(indexes, position);
+			indexes.add(position);
+		}
+
+		public void removeItem(List<Integer> indexes, Integer position) {
+			Iterator iterator = indexes.iterator();
+			while(iterator.hasNext()) {
+				if(iterator.next().equals(position)) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
 }

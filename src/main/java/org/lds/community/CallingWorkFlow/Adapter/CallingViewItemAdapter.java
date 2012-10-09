@@ -5,13 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import org.lds.community.CallingWorkFlow.R;
+import org.lds.community.CallingWorkFlow.activity.CallingListFragment;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
+
+	@Inject
+	CallingListFragment callingListFragment;
 
     private List<CallingViewItem> items;
 
@@ -21,7 +28,7 @@ public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
 			LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -37,6 +44,12 @@ public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
             if(bt != null) {
 				bt.setText(o.getFullName() + " ( " + o.getStatusName() + " ) ");
             }
+	        final CheckBox checkBox = (CheckBox) v.findViewById(R.id.calling_checkbox);
+	        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			        callingListFragment.initializeMenu(position, isChecked, convertView);
+		        }
+	        });
         }
         return v;
     }

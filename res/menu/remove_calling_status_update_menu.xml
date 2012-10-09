@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/bottom_menu_list"
+      android:layout_alignParentBottom="true">
+
+    <group android:id="@+id/bottom_menu_list_group"
+           android:visible="false">
+
+        <item android:id="@+id/change_status_spinner"
+              android:title="@string/update_status_label"
+              android:showAsAction="always" />
+
+        <item android:id="@+id/calling_delete_btn"
+              android:showAsAction="always" />
+
+    </group>
+
+</menu>
