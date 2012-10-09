@@ -86,8 +86,6 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
             }
         };
         LocalBroadcastManager.getInstance( this.getActivity() ).registerReceiver( syncCompleteReceiver, new IntentFilter(InternalIntents.SYNC_COMPLETE));
-	    android.view.MenuInflater vi = getActivity().getMenuInflater();
-	    vi.inflate(R.layout.member_name_status, null);
     }
 
     @Override
