@@ -62,6 +62,9 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
             callingIndex = getNextCallingIndex(bundle.getInt(CALLING_INDEX, 0) - 1, callingList);
 
             callingViewItem = callingList.get( callingIndex );
+            saveCallingButton.setFocusable(true);
+            saveCallingButton.setFocusableInTouchMode(true);
+            saveCallingButton.requestFocus();
             initUIFromCalling(callingViewItem);
         }
         saveCallingButton.setOnClickListener(new View.OnClickListener(){
