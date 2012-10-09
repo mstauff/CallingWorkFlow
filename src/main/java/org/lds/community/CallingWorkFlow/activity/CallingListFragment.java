@@ -46,6 +46,7 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
 
     private CallingViewItemAdapter callingViewItemAdapter;
     private List<CallingViewItem> callingViewItems;
+	public List<Integer> removalItems;
     private enum SortMode {NAME,CALLING,STATUS};
     private SortMode sortMode = SortMode.NAME;
     protected boolean spinnerInitialized = false;
