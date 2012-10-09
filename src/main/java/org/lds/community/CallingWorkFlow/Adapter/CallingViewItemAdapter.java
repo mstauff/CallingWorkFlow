@@ -8,14 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.activity.CallingListFragment;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
 
 import javax.inject.Inject;
-import java.util.Iterator;
 import java.util.List;
 
 public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
@@ -50,43 +47,10 @@ public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
 	        final CheckBox checkBox = (CheckBox) v.findViewById(R.id.calling_checkbox);
 	        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 		        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-			        initializeMenu(position, isChecked, convertView);
+			        callingListFragment.initializeMenu(position, isChecked, convertView);
 		        }
 	        });
         }
         return v;
     }
-
-	public View initializeMenu(int position, boolean checked, View v) {
-		Menu menu = (Menu) v.findViewById(R.id.bottom_menu_list);
-		if(menu == null) {
-			MenuInflater inflater = new MenuInflater(getContext());
-			//menu = inflater.inflate(R.menu.remove_calling_status_update_menu, null);
-			menu = (Menu) v.findViewById(R.id.bottom_menu_list);
-		}
-		if(menu != null) {
-			menu.setGroupVisible(R.id.bottom_menu_list_group, (callingListFragment.removalItems.size() > 0));
-		}
-		if(checked) {
-			removeItem(callingListFragment.removalItems, position);
-		} else {
-			safeAddCalling(callingListFragment.removalItems, position);
-		}
-		return v;
-	}
-
-	private void safeAddCalling(List<Integer> indexes, Integer position) {
-		removeItem(indexes, position);
-		indexes.add(position);
-	}
-
-	public void removeItem(List<Integer> indexes, Integer position) {
-		Iterator iterator = indexes.iterator();
-		while(iterator.hasNext()) {
-			if(iterator.next().equals(position)) {
-				iterator.remove();
-				break;
-			}
-		}
-	}
 }
