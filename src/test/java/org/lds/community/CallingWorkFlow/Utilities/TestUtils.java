@@ -304,5 +304,14 @@ public class TestUtils {
         return isCompleted;
 
     }
+
+    public static String callingToJSON(Calling callingObj){
+
+        String jsonCallings = "{\"individualId\":\"" + callingObj.getIndividualId() + "\",\"positionId\":\"" + callingObj.getPositionId() + "\"," +
+                "\"statusName\":\"" + callingObj.getStatusName() +"\", \"assignedTo\":\""+ callingObj.getAssignedToId() + "\"," +
+                "\"synced\":\""+ callingObj.getIsSynced() + "\" } " ;
+
+        return jsonCallings;
+    }
 }
 
