@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.xtremelabs.robolectric.Robolectric;
 import junit.framework.Assert;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPut;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -197,7 +198,7 @@ public class CallingManagerTest {
         String jsonCallings = TestUtils.callingToJSON(callingObj) ;
 
         String url = String.format(CwfNetworkUtil.CALLING_UPDATE_URL, callingObj.getIndividualId(), callingObj.getPositionId(), callingObj.getStatusName());
-        TestUtils.httpMockJSONResponse(jsonCallings,url,CwfNetworkUtil.CALLING_UPDATE_URL);
+        TestUtils.httpMockJSONResponse(jsonCallings,url, HttpPut.METHOD_NAME);
 //        db.updateCalling(callingObj);
 
 

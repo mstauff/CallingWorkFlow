@@ -278,7 +278,7 @@ public class TestUtils {
         res.setEntity(entity1);
         if(url==null){
            Robolectric.addPendingHttpResponse(res );
-        }else if( method == null ){
+        }else if( method != null ){
             Robolectric.addHttpResponseRule(method, url, res);
         } else {
             Robolectric.addHttpResponseRule(url, res);
