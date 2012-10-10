@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -86,8 +87,6 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
             }
         };
         LocalBroadcastManager.getInstance( this.getActivity() ).registerReceiver( syncCompleteReceiver, new IntentFilter(InternalIntents.SYNC_COMPLETE));
-	    android.view.MenuInflater vi = getActivity().getMenuInflater();
-	    vi.inflate(R.layout.member_name_status, null);
     }
 
     @Override
@@ -291,30 +290,52 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
     }
 
 	public View initializeMenu(int position, boolean checked, View v) {
-			Menu menu = (Menu) v.findViewById(R.id.bottom_menu_list);
-			if(menu != null) {
-				menu.setGroupVisible(R.id.bottom_menu_list_group, (removalItems.size() > 0));
-			}
-			if(checked) {
-				removeItem(removalItems, position);
-			} else {
-				safeAddCalling(removalItems, position);
-			}
-			return v;
-		}
+		//Menu menu = (Menu) v.findViewById(R.id.bottom_menu_list);
+		//android.view.MenuInflater vi = getActivity().getMenuInflater();
+		//vi.inflate(R.menu.remove_calling_status_update_menu, null);
 
-		private void safeAddCalling(List<Integer> indexes, Integer position) {
-			removeItem(indexes, position);
-			indexes.add(position);
-		}
+		getSherlockActivity().startActionMode(new ActionMode.Callback() {
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				return false;
+			}
 
-		public void removeItem(List<Integer> indexes, Integer position) {
-			Iterator iterator = indexes.iterator();
-			while(iterator.hasNext()) {
-				if(iterator.next().equals(position)) {
-					iterator.remove();
-					break;
-				}
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				return false;
+			}
+
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				return false;
+			}
+
+			@Override
+			public void onDestroyActionMode(ActionMode mode) {
+			}
+		});
+
+			//menu.setGroupVisible(R.id.bottom_menu_list_group, (removalItems.size() > 0));
+		if(checked) {
+			removeItem(removalItems, position);
+		} else {
+			safeAddCalling(removalItems, position);
+		}
+		return v;
+	}
+
+	private void safeAddCalling(List<Integer> indexes, Integer position) {
+		removeItem(indexes, position);
+		indexes.add(position);
+	}
+
+	public void removeItem(List<Integer> indexes, Integer position) {
+		Iterator iterator = indexes.iterator();
+		while(iterator.hasNext()) {
+			if(iterator.next().equals(position)) {
+				iterator.remove();
+				break;
 			}
 		}
+	}
 }
