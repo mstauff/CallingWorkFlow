@@ -62,7 +62,13 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
             callingIndex = getNextCallingIndex(bundle.getInt(CALLING_INDEX, 0) - 1, callingList);
 
             callingViewItem = callingList.get( callingIndex );
+            saveCallingButton.setFocusable(true);
+            saveCallingButton.setFocusableInTouchMode(true);
+            saveCallingButton.requestFocus();
             initUIFromCalling(callingViewItem);
+        } else {
+            saveCallingButton.setEnabled(false);
+            deleteButton.setVisibility(View.GONE);
         }
         saveCallingButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -130,6 +136,9 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         selectedPositionId = ((Position)positionField.getAdapter().getItem(i)).getPositionId();
                         selectedPositionName = ((Position)positionField.getAdapter().getItem(i)).getPositionName();
+                        if(selectedMemberName != null && selectedPositionName != null){
+                            saveCallingButton.setEnabled(true);
+                        }
                     }
                 }
         );
@@ -153,6 +162,9 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                         positionField.setText("");
                     }
                 }
+                if(selectedMemberName != null && selectedPositionName != null){
+                    saveCallingButton.setEnabled(true);
+                }
             }
         });
 
@@ -166,6 +178,9 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         selectedMemberId = ((Member)memberField.getAdapter().getItem(i)).getIndividualId();
                         selectedMemberName = ((Member)memberField.getAdapter().getItem(i)).getDisplayString();
+                        if(selectedMemberName != null && selectedPositionName != null){
+                            saveCallingButton.setEnabled(true);
+                        }
                     }
                 }
         );
@@ -188,6 +203,9 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
                     } else {
                         memberField.setText("");
                     }
+                }
+                if(selectedMemberName != null && selectedPositionName != null){
+                    saveCallingButton.setEnabled(true);
                 }
             }
         });
@@ -233,23 +251,8 @@ public class CallingDetailFragment extends RoboSherlockFragment implements View.
     }
 
     public void deleteCalling(View v){
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
-        alertBuilder.setMessage(R.string.confirmation_message);
-        alertBuilder.setCancelable(false);
-        alertBuilder.setPositiveButton(R.string.delete_btn_label, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                callingManager.deleteCalling(callingViewItem, getActivity());
-                getActivity().onBackPressed();
-            }
-        });
-        alertBuilder.setNegativeButton(R.string.cancel_btn_label,new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        alertBuilder.create().show();
+        callingManager.deleteCalling(callingViewItem, getActivity());
+        getActivity().onBackPressed();
     }
 
     @Override

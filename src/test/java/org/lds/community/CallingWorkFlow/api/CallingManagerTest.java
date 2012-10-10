@@ -3,13 +3,16 @@ package org.lds.community.CallingWorkFlow.api;
 import android.content.Context;
 import com.google.inject.Inject;
 import com.xtremelabs.robolectric.Robolectric;
+import junit.framework.Assert;
 import org.apache.http.client.methods.HttpDelete;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lds.community.CallingWorkFlow.InjectedTestRunner;
 import org.lds.community.CallingWorkFlow.Utilities.TestUtils;
-import org.lds.community.CallingWorkFlow.domain.*;
+import org.lds.community.CallingWorkFlow.domain.Calling;
+import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
+import org.lds.community.CallingWorkFlow.domain.WorkFlowDB;
 
 import java.util.List;
 
@@ -72,7 +75,6 @@ public class CallingManagerTest {
 
     @Test
     public void testDeleteWithNoNetwork() throws Exception {
-
         // test the scenario where a network cxn is not available when the user performs the delete
         List<Calling> callings = TestUtils.createCallingList( db, 5, false, true );
         Calling callingToDelete = callings.get(0);
@@ -101,11 +103,17 @@ public class CallingManagerTest {
         callingsFromDB = db.getPendingCallings();
         callingToDelete = TestUtils.getCallingObjectFromList( callingsFromDB, callingToDelete.getIndividualId(), callingToDelete.getPositionId() );
         assertNull("Calling was not removed from the db", callingToDelete);
+    }
+
+    private void eraseCallingsOnServer() throws Exception {
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+
+        List<Calling> callings = networkUtil.getCallings();
+        manager.deleteCallings( callings, context );
 
     }
 
-
-    @Test
+//    @Test
     public void testUpdateCalling() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
@@ -126,5 +134,86 @@ public class CallingManagerTest {
 
         networkUtil.deleteCalling( calling );
     }
+
+//    @Test
+    public void testUpdateCallingList(){
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+
+        List<Calling> callingListDelete=networkUtil.getCompletedCallings();
+        manager.deleteCallings(callingListDelete, context);
+
+        List<Calling> callingListSource=TestUtils.createCallingList(db,10,false,false);
+        manager.saveCallings(callingListSource, context);
+
+        List<Calling> callingListResult=networkUtil.getPendingCallings();
+
+        // modify callings to completed =true
+        for(Calling c:callingListResult){
+            c.setStatusName(TestUtils.getStatusName(networkUtil.getStatuses(), true));
+        }
+
+        manager.saveCallings(callingListResult, context);
+        List<Calling> callingListModify=networkUtil.getCompletedCallings();
+        for(Calling c:callingListModify){
+            String statusName=c.getStatusName();
+            Assert.assertTrue(TestUtils.isStatusCompleted(db,statusName));
+        }
+        manager.deleteCallings(callingListModify, context);
+    }
+
+//    @Test
+    public void syncCallingsTest(){
+
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+
+        List<Calling> callingListDelete=networkUtil.getCallings();
+        manager.deleteCallings(callingListDelete, context);
+
+        List<Calling> callingListSource=TestUtils.createCallingList(db,10,false,false);
+
+        manager.saveCallings(callingListSource, context);
+        List<Calling> callingListSync=networkUtil.getPendingCallings();
+        for(Calling c:callingListSync){
+            Assert.assertFalse("Calling is not synced",c.getIsSynced());
+        }
+
+        manager.refreshCallingsFromServer();
+
+        List<Calling> callingListSyncTrue=networkUtil.getCallings();
+        for(Calling c:callingListSyncTrue){
+           Assert.assertTrue("Calling is  synced",c.getIsSynced());
+        }
+    }
+
+    @Test
+    public void updateCallingOnServerTest(){
+
+        String jsonCallings = "[{\"individualId\":\"1111\",\"positionId\":\"1\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0\",\"synced\":\"false\" }] " ;
+
+        Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+
+        // this code will return a callingObject
+        String url = CwfNetworkUtil.ALL_CALLINGS_URL;
+        TestUtils.httpMockJSONResponse(jsonCallings,url);
+        List<Calling> callingList= networkUtil.getCallings();
+
+
+        // this code will test the  updateCallingOnServer
+        String url2 = CwfNetworkUtil.CALLING_UPDATE_URL;
+        TestUtils.httpMockJSONResponse(jsonCallings,url2);
+        Boolean isUpdated = manager.updateCallingOnServer(callingList.get(0));
+        Assert.assertTrue("Calling was not updated",isUpdated);
+
+    }
+
+
+
+    // todo need to make a test to when NoNetwork is available for the second time and have the network the third time
+    // todo areCallingsEqual test with different callings to pass and not pass
+    // todo refreshCallingsFromServer pass a JSON of callings, or one calling or no calling
+    // todo refreshCallingsFromServer two valid callings and the pass two different callings and the first couple is not there anymore
+    // todo refreshCallingsFromServer- create them as calling objects  and convert them to JSON
+    // todo use entityAssert
+
 
 }

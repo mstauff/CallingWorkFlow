@@ -237,7 +237,6 @@ public class TestUtils {
         List<Position> positionMasterDB=createPositionDB(db);
         List<WorkFlowStatus> statusesFromDB=createStatusDB(db);
 
-
         HashSet hs = new HashSet();
         Long positionID=0L;
         Long individualId=0L;
@@ -291,6 +290,18 @@ public class TestUtils {
         HttpRequest request= Robolectric.getSentHttpRequest(0);
         Assert.assertTrue("The call for " + url + " was not successful",request.getRequestLine().getUri().contentEquals(url));
         Robolectric.clearPendingHttpResponses();
+
+    }
+
+    public static Boolean isStatusCompleted(WorkFlowDB db, String statusName){
+        List<WorkFlowStatus> statusList=createStatusDB(db);
+        Boolean isCompleted=false;
+        for(WorkFlowStatus w:statusList){
+           if(w.getStatusName().equals(statusName)){
+               isCompleted=w.getComplete();
+           }
+        }
+        return isCompleted;
 
     }
 }
