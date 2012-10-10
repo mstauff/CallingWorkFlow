@@ -1,6 +1,7 @@
 package org.lds.community.CallingWorkFlow.api;
 
 import android.content.Context;
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.xtremelabs.robolectric.Robolectric;
 import junit.framework.Assert;
@@ -195,10 +196,13 @@ public class CallingManagerTest {
 //        manager.saveCalling( callingObj, context );
 
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
-        String jsonCallings = TestUtils.callingToJSON(callingObj) ;
+        Gson gson = new Gson();
+        String jsonCalling = gson.toJson( callingObj );
+        String result = "{result:SUCCESS,calling:" + jsonCalling + "}";
+
 
         String url = String.format(CwfNetworkUtil.CALLING_UPDATE_URL, callingObj.getIndividualId(), callingObj.getPositionId(), callingObj.getStatusName());
-        TestUtils.httpMockJSONResponse(jsonCallings,url, HttpPut.METHOD_NAME);
+        TestUtils.httpMockJSONResponse(result,url, HttpPut.METHOD_NAME);
 //        db.updateCalling(callingObj);
 
 

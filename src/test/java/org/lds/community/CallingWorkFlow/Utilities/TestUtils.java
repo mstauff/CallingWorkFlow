@@ -2,6 +2,7 @@ package org.lds.community.CallingWorkFlow.Utilities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import com.google.gson.Gson;
 import com.xtremelabs.robolectric.Robolectric;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -305,13 +306,5 @@ public class TestUtils {
 
     }
 
-    public static String callingToJSON(Calling callingObj){
-
-        String jsonCallings = "{\"individualId\":\"" + callingObj.getIndividualId() + "\",\"positionId\":\"" + callingObj.getPositionId() + "\"," +
-                "\"statusName\":\"" + callingObj.getStatusName() +"\", \"assignedTo\":\""+ callingObj.getAssignedToId() + "\"," +
-                "\"synced\":\""+ callingObj.getIsSynced() + "\" } " ;
-
-        return jsonCallings;
-    }
 }
 
