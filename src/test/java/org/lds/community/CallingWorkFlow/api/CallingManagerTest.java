@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.xtremelabs.robolectric.Robolectric;
 import junit.framework.Assert;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPut;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -186,24 +187,25 @@ public class CallingManagerTest {
     }
 
     @Test
-    public void updateCallingOnServerTest(){
+    public void updateCallingOnServerTest()  {
+//        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
+        List<Calling> callings = TestUtils.createCallingList( db, 5, false, false );
 
-        String jsonCallings = "[{\"individualId\":\"1111\",\"positionId\":\"1\",\"statusName\":\"SUBMITTED\", \"assignedTo\":\"0\",\"synced\":\"false\" }] " ;
+        Calling callingObj=callings.get(0);
+//        manager.saveCalling( callingObj, context );
 
         Robolectric.getFakeHttpLayer().interceptHttpRequests(true);
+        String jsonCallings = TestUtils.callingToJSON(callingObj) ;
 
-        // this code will return a callingObject
-        String url = CwfNetworkUtil.ALL_CALLINGS_URL;
-        TestUtils.httpMockJSONResponse(jsonCallings,url);
-        List<Calling> callingList= networkUtil.getCallings();
+        String url = String.format(CwfNetworkUtil.CALLING_UPDATE_URL, callingObj.getIndividualId(), callingObj.getPositionId(), callingObj.getStatusName());
+        TestUtils.httpMockJSONResponse(jsonCallings,url, HttpPut.METHOD_NAME);
+//        db.updateCalling(callingObj);
 
 
-        // this code will test the  updateCallingOnServer
-        String url2 = CwfNetworkUtil.CALLING_UPDATE_URL;
-        TestUtils.httpMockJSONResponse(jsonCallings,url2);
-        Boolean isUpdated = manager.updateCallingOnServer(callingList.get(0));
-        Assert.assertTrue("Calling was not updated",isUpdated);
+        Boolean isUpdated = manager.updateCallingOnServer(callingObj);
+//        TestUtils.validateURLRequest( url );
 
+        Assert.assertTrue("Calling was Not updated",isUpdated);
     }
 
 
