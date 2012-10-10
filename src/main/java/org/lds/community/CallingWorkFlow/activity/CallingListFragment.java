@@ -191,7 +191,8 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
         } else {
             callingViewItems = listItems;
         }
-        this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_2, callingViewItems);
+        this.callingViewItemAdapter = new CallingViewItemAdapter(getActivity(), android.R.layout.simple_list_item_2,
+                callingViewItems, this);
         setListAdapter(callingViewItemAdapter);
         ListView listView = getListView();
 
@@ -294,26 +295,26 @@ public class CallingListFragment extends RoboSherlockListFragment implements Loa
 		//android.view.MenuInflater vi = getActivity().getMenuInflater();
 		//vi.inflate(R.menu.remove_calling_status_update_menu, null);
 
-		getSherlockActivity().startActionMode(new ActionMode.Callback() {
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
+        getSherlockActivity().startActionMode(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
 
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
 
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				return false;
-			}
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
 
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {
-			}
-		});
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+        });
 
 			//menu.setGroupVisible(R.id.bottom_menu_list_group, (removalItems.size() > 0));
 		if(checked) {

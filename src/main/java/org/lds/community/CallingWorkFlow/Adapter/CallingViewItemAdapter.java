@@ -11,22 +11,19 @@ import android.widget.TextView;
 import org.lds.community.CallingWorkFlow.R;
 import org.lds.community.CallingWorkFlow.activity.CallingListFragment;
 import org.lds.community.CallingWorkFlow.domain.CallingViewItem;
-import roboguice.RoboGuice;
 
-import javax.inject.Inject;
 import java.util.List;
 
 public class CallingViewItemAdapter extends ArrayAdapter<CallingViewItem> {
 
-	@Inject
 	CallingListFragment callingListFragment;
 
     private List<CallingViewItem> items;
 
-    public CallingViewItemAdapter(Context context, int textViewResourceId, List<CallingViewItem> items) {
+    public CallingViewItemAdapter(Context context, int textViewResourceId, List<CallingViewItem> items, CallingListFragment callingListFragment) {
         super(context, textViewResourceId, items);
         this.items = items;
-	    RoboGuice.getInjector(context).injectMembers(this);
+        this.callingListFragment = callingListFragment;
     }
 
     @Override
